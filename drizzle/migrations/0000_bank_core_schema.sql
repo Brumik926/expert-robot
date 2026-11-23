@@ -542,7 +542,7 @@ begin
   return n;
 end $$;
 
--- ============ Demo data seeding on signup ============
+-- ============ Data seeding on signup ============
 create or replace function public.seed_demo_data(p_user uuid, p_name text, p_email text) returns void
 language plpgsql security definer set search_path = public as $$
 declare
@@ -592,16 +592,16 @@ begin
     (45, 'out',  64.00, 'Kino Lumière',           null,                       'card',         'zabava',     null, 4.10),
     (48, 'out',  58.20, 'Čerpacia stanica Orol',  null,                       'card',         'doprava',    null, 31.40),
     (55, 'out', 312.00, 'Hotel Panoráma',         null,                       'card',         'cestovanie', null, 25.70),
-    (70, 'in', 1450.00, 'Demo Company s.r.o.',    'SK6399000000000162042648', 'transfer_in',  'prijem',     'Mzda', null),
+    (70, 'in', 1450.00, 'Build Company s.r.o.',    'SK6399000000000162042648', 'transfer_in',  'prijem',     'Mzda', null),
     (75, 'out', 450.00, 'Bytové družstvo Lipa',   'SK1099000000002180419893', 'transfer_out', 'byvanie',    'Nájomné', null),
     (80, 'out', 236.40, 'Fresh Market',           null,                       'card',         'potraviny',  null, 20.95)
   ) as v(days, d, a, n, ib, t, c, m, co2);
 
   insert into public.recipients(user_id, name, iban, is_favorite) values
-    (p_user, 'Mária Vzorová', 'SK1699000000004943859575', true),
+    (p_user, 'Mária Vozárová', 'SK1699000000004943859575', true),
     (p_user, 'Ján Nový', 'SK7499000000002796742288', true),
     (p_user, 'Bytové družstvo Lipa', 'SK1099000000002180419893', true),
-    (p_user, 'Demo Company s.r.o.', 'SK6399000000000162042648', false),
+    (p_user, 'Build Company s.r.o.', 'SK6399000000000162042648', false),
     (p_user, 'Peter Novák', 'SK7399000000002302595691', false),
     (p_user, 'Jana Horáková (CZ)', 'CZ6508000000192000145399', false);
 
@@ -616,7 +616,7 @@ begin
            else (date_trunc('month', today) + interval '1 month 14 days')::date end, 'Nájomné');
 
   insert into public.notifications(user_id, kind, title, body, link) values
-    (p_user, 'info', 'Vitajte vo Vega banke', 'Toto je simulované bankovníctvo s fiktívnymi údajmi. Žiadne platby neodchádzajú do skutočných bánk.', null),
+    (p_user, 'info', 'Vitajte vo Tatra banky', null),
     (p_user, 'card', 'Vaše karty sú pripravené', 'Debetnú aj kreditnú kartu môžete spravovať v sekcii Karty.', '/karty'),
     (p_user, 'security', 'Bezpečnostný tip', 'Tatra banka vás nikdy nebude žiadať o heslo e-mailom ani telefonicky.', null);
 end $$;
