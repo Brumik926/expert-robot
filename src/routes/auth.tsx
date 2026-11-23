@@ -26,9 +26,9 @@ export const Route = createFileRoute("/auth")({
   head: () => ({
     meta: [
       { title: "Prihlásenie – Tatra banka" },
-      { name: "description", content: "Prihláste sa alebo si vytvorte demo účet vo Vega banke." },
+      { name: "description", content: "Prihláste sa alebo si vytvorte účet v Tatra banke." },
       { property: "og:title", content: "Prihlásenie – Tatra banka" },
-      { property: "og:description", content: "Prihlásenie a registrácia do simulovaného bankovníctva Tatra banka." },
+      { property: "og:description", content: "Prihlásenie a registrácia do internet bankingu Tatra banka." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
     ],
@@ -150,7 +150,7 @@ function AuthPage() {
           <VegaMark className="h-8 w-8 text-foreground" />
           <p className="text-sm">
             {mode === "register"
-              ? "Vytvorte si demo účet. Dostanete fiktívny zostatok, karty a históriu."
+              ? "Vytvorte si účet."
               : mode === "forgot"
                 ? "Pošleme vám odkaz na nastavenie nového hesla."
                 : "Prihláste sa svojím e-mailom a heslom."}
@@ -205,7 +205,7 @@ function AuthPage() {
             </Button>
           ) : null}
           <p className="text-center text-xs text-muted-foreground">
-            Toto je simulácia. Nezadávajte údaje zo svojej skutočnej banky. <Link to="/kontakty" className="text-link">Pomoc</Link>
+          <Link to="/kontakty" className="text-link">Pomoc</Link>
           </p>
         </div>
       </form>
