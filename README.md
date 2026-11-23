@@ -1,2 +1,2 @@
 
-Na prihlásenie do Internet bankingu Tatra banky vám odporúčame použiť niektorý z novších a modernejších prehliadačov ako je Google Chrome, …
+Na prihlásenie do Internet bankingu Tatra banky vám odporúčame použiť niektorý z novších a modernejších prehliadačov ako je Google Chrome, 
