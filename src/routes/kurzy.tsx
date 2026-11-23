@@ -10,9 +10,9 @@ export const Route = createFileRoute("/kurzy")({
   head: () => ({
     meta: [
       { title: "Kurzový lístok – Tatra banka" },
-      { name: "description", content: "Orientačné kurzy mien a prepočet z EUR." },
+      { name: "description", content: "Kurzy mien a prepočet z EUR." },
       { property: "og:title", content: "Kurzový lístok – Tatra banka" },
-      { property: "og:description", content: "Orientačné kurzy mien vo Vega banke." },
+      { property: "og:description", content: "Kurzy mien v Tatra banke." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
     ],
@@ -48,7 +48,7 @@ function Rates() {
             <span className="tabular-nums">{String(r.sell).replace(".", ",")}</span>
           </div>
         ))}
-        <p className="mx-5 pt-4 text-xs text-muted-foreground">Kurzy sú fiktívne a orientačné, nie sú to trhové údaje.</p>
+        <p className="mx-5 pt-4 text-xs text-muted-foreground"></p>
       </section>
     </main>
   );
