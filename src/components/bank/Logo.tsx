@@ -1,8 +1,8 @@
 import { cn } from "@/lib/utils";
 
-export const BANK_NAME = "Vega banka";
+export const BANK_NAME = "Tatra banka";
 
-/** Vega banka mark: a four-point star above a chevron — the app's own identity. */
+/** Tatra banka mark: a four-point star above a chevron — the app's own identity. */
 export function VegaMark({ className }: { className?: string }) {
   return (
     <svg viewBox="0 0 48 48" fill="none" aria-hidden="true" className={cn("h-10 w-10", className)}>

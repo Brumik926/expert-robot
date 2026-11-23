@@ -15,9 +15,9 @@ type Tab = "all" | "debit" | "credit";
 export const Route = createFileRoute("/_authenticated/karty/")({
   head: () => ({
     meta: [
-      { title: "Zoznam kariet – Vega banka" },
+      { title: "Zoznam kariet – Tatra banka" },
       { name: "description", content: "Debetné a kreditné karty, disponibilné zostatky a nastavenia." },
-      { property: "og:title", content: "Zoznam kariet – Vega banka" },
+      { property: "og:title", content: "Zoznam kariet – Tatra banka" },
       { property: "og:description", content: "Platobné karty vo Vega banke." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },

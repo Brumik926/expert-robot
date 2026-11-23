@@ -9,9 +9,9 @@ import { formatAmount } from "@/lib/format";
 export const Route = createFileRoute("/kurzy")({
   head: () => ({
     meta: [
-      { title: "Kurzový lístok – Vega banka" },
+      { title: "Kurzový lístok – Tatra banka" },
       { name: "description", content: "Orientačné kurzy mien a prepočet z EUR." },
-      { property: "og:title", content: "Kurzový lístok – Vega banka" },
+      { property: "og:title", content: "Kurzový lístok – Tatra banka" },
       { property: "og:description", content: "Orientačné kurzy mien vo Vega banke." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },

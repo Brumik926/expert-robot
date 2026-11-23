@@ -25,10 +25,10 @@ export const Route = createFileRoute("/auth")({
   },
   head: () => ({
     meta: [
-      { title: "Prihlásenie – Vega banka" },
+      { title: "Prihlásenie – Tatra banka" },
       { name: "description", content: "Prihláste sa alebo si vytvorte demo účet vo Vega banke." },
-      { property: "og:title", content: "Prihlásenie – Vega banka" },
-      { property: "og:description", content: "Prihlásenie a registrácia do simulovaného bankovníctva Vega banka." },
+      { property: "og:title", content: "Prihlásenie – Tatra banka" },
+      { property: "og:description", content: "Prihlásenie a registrácia do simulovaného bankovníctva Tatra banka." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
     ],

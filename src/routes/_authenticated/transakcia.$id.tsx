@@ -21,9 +21,9 @@ import { cn } from "@/lib/utils";
 export const Route = createFileRoute("/_authenticated/transakcia/$id")({
   head: () => ({
     meta: [
-      { title: "Detail pohybu – Vega banka" },
+      { title: "Detail pohybu – Tatra banka" },
       { name: "description", content: "Podrobnosti transakcie: suma, protistrana, symboly a správa." },
-      { property: "og:title", content: "Detail pohybu – Vega banka" },
+      { property: "og:title", content: "Detail pohybu – Tatra banka" },
       { property: "og:description", content: "Podrobnosti transakcie vo Vega banke." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
@@ -95,7 +95,7 @@ function TransactionDetail() {
 
   async function share() {
     const text = [
-      `${incoming ? "Prijatá" : "Odoslaná"} platba – Vega banka (simulácia)`,
+      `${incoming ? "Prijatá" : "Odoslaná"} platba – Tatra banka (simulácia)`,
       `Suma: ${formatMoney(tx.amount)}`,
       `${incoming ? "Od" : "Príjemca"}: ${tx.counterparty_name}`,
       tx.counterparty_iban ? `IBAN: ${formatIban(tx.counterparty_iban)}` : "",

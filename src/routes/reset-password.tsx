@@ -10,9 +10,9 @@ import { bankErrorMessage } from "@/lib/errors";
 export const Route = createFileRoute("/reset-password")({
   head: () => ({
     meta: [
-      { title: "Nové heslo – Vega banka" },
+      { title: "Nové heslo – Tatra banka" },
       { name: "description", content: "Nastavte si nové heslo do Vega banky." },
-      { property: "og:title", content: "Nové heslo – Vega banka" },
+      { property: "og:title", content: "Nové heslo – Tatra banka" },
       { property: "og:description", content: "Nastavenie nového hesla do simulovaného bankovníctva." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },

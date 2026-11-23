@@ -9,12 +9,12 @@ import { formatShortDate } from "@/lib/format";
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "Vega banka – vitajte v simulovanom bankovníctve" },
+      { title: "Tatra banka – vitajte v simulovanom bankovníctve" },
       {
         name: "description",
-        content: "Prihláste sa do demo mobilného bankovníctva Vega banka: účty, karty, platby a prehľad výdavkov s fiktívnymi údajmi.",
+        content: "Prihláste sa do demo mobilného bankovníctva Tatra banka: účty, karty, platby a prehľad výdavkov s fiktívnymi údajmi.",
       },
-      { property: "og:title", content: "Vega banka – vitajte v simulovanom bankovníctve" },
+      { property: "og:title", content: "Tatra banka – vitajte v simulovanom bankovníctve" },
       {
         property: "og:description",
         content: "Demo mobilné bankovníctvo s fiktívnymi údajmi. Žiadne platby neodchádzajú do skutočných bánk.",

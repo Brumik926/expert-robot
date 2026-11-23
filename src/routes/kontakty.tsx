@@ -14,9 +14,9 @@ import { bankErrorMessage } from "@/lib/errors";
 export const Route = createFileRoute("/kontakty")({
   head: () => ({
     meta: [
-      { title: "Kontakty a podpora – Vega banka" },
+      { title: "Kontakty a podpora – Tatra banka" },
       { name: "description", content: "Zavolajte nám, požiadajte o spätné zavolanie alebo si dohodnite stretnutie." },
-      { property: "og:title", content: "Kontakty a podpora – Vega banka" },
+      { property: "og:title", content: "Kontakty a podpora – Tatra banka" },
       { property: "og:description", content: "Kontakty a podpora Vega banky." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
@@ -70,7 +70,7 @@ function Contacts() {
         <DetailRow label="Infolinka" value={<a href={`tel:${PHONE.replace(/\s/g, "")}`}>{PHONE}</a>} />
         <DetailRow label="Zo zahraničia" value={<a href="tel:+421200000000">+421 2 0000 0000</a>} />
         <DetailRow label="E-mail" value="podpora@vegabanka.example" />
-        <p className="mt-4 text-xs text-muted-foreground">Fiktívne kontakty – Vega banka je simulácia.</p>
+        <p className="mt-4 text-xs text-muted-foreground">Fiktívne kontakty – Tatra banka je simulácia.</p>
       </section>
       <BottomSheet open={kind !== null} onOpenChange={(v) => !v && setKind(null)} title={kind === "meeting" ? "Dohodnúť stretnutie" : "Zavolajte mi"}>
         {session ? (

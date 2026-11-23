@@ -44,9 +44,9 @@ export const Route = createFileRoute("/_authenticated/prijemcovia")({
     s["tab"] === "vsetky" || s["tab"] === "prijemcovia" || s["tab"] === "sablony" ? { tab: s["tab"] } : {},
   head: () => ({
     meta: [
-      { title: "Príjemcovia a šablóny – Vega banka" },
+      { title: "Príjemcovia a šablóny – Tatra banka" },
       { name: "description", content: "Uložení príjemcovia platieb a platobné šablóny." },
-      { property: "og:title", content: "Príjemcovia a šablóny – Vega banka" },
+      { property: "og:title", content: "Príjemcovia a šablóny – Tatra banka" },
       { property: "og:description", content: "Správa príjemcov a šablón platieb vo Vega banke." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },

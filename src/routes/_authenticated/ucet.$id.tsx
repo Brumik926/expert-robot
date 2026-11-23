@@ -25,9 +25,9 @@ import { renameAccount } from "@/services/bank";
 export const Route = createFileRoute("/_authenticated/ucet/$id")({
   head: () => ({
     meta: [
-      { title: "Detail účtu – Vega banka" },
+      { title: "Detail účtu – Tatra banka" },
       { name: "description", content: "Zostatok, IBAN, vývoj zostatkov a informácie o účte." },
-      { property: "og:title", content: "Detail účtu – Vega banka" },
+      { property: "og:title", content: "Detail účtu – Tatra banka" },
       { property: "og:description", content: "Detail účtu vo Vega banke." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
@@ -134,7 +134,7 @@ function AccountDetail() {
           <button
             type="button"
             onClick={() =>
-              shareText("Môj IBAN", `${account.name}\nIBAN: ${formatIban(account.iban)}\nBIC: VEGASKBX\n(Vega banka – simulácia)`, "IBAN skopírovaný do schránky")
+              shareText("Môj IBAN", `${account.name}\nIBAN: ${formatIban(account.iban)}\nBIC: VEGASKBX\n(Tatra banka – simulácia)`, "IBAN skopírovaný do schránky")
             }
             className="flex items-center justify-center gap-3 py-4 text-[1.05rem]"
           >
@@ -234,7 +234,7 @@ function AccountDetail() {
               `IBAN: ${formatIban(account.iban)}`,
               amount ? `Suma: ${formatAmount(amount)} EUR` : "",
               reqMessage.trim() ? `Správa: ${reqMessage.trim().slice(0, 140)}` : "",
-              "(Vega banka – simulácia)",
+              "(Tatra banka – simulácia)",
             ]
               .filter(Boolean)
               .join("\n");

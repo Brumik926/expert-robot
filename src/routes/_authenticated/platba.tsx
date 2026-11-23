@@ -44,9 +44,9 @@ export const Route = createFileRoute("/_authenticated/platba")({
   },
   head: () => ({
     meta: [
-      { title: "Nová platba – Vega banka" },
+      { title: "Nová platba – Tatra banka" },
       { name: "description", content: "Zadajte simulovanú SEPA platbu s IBAN, sumou a symbolmi." },
-      { property: "og:title", content: "Nová platba – Vega banka" },
+      { property: "og:title", content: "Nová platba – Tatra banka" },
       { property: "og:description", content: "Simulovaná platba vo Vega banke." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },

@@ -16,10 +16,10 @@ import { cn } from "@/lib/utils";
 export const Route = createFileRoute("/_authenticated/nastavenia")({
   head: () => ({
     meta: [
-      { title: "Nastavenia – Vega banka" },
+      { title: "Nastavenia – Tatra banka" },
       { name: "description", content: "Vzhľad aplikácie, súkromie, notifikácie a domovská obrazovka." },
-      { property: "og:title", content: "Nastavenia – Vega banka" },
-      { property: "og:description", content: "Nastavenia aplikácie Vega banka." },
+      { property: "og:title", content: "Nastavenia – Tatra banka" },
+      { property: "og:description", content: "Nastavenia aplikácie Tatra banka." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
     ],
@@ -110,7 +110,7 @@ function SettingsPage() {
           <LogOut /> Odhlásiť sa
         </Button>
         <p className="mt-6 text-center text-xs text-muted-foreground">
-          Vega banka 1.0 · simulované bankovníctvo s fiktívnymi údajmi. <Link to="/kontakty" className="text-link">Podpora</Link>
+          Tatra banka 1.0 · simulované bankovníctvo s fiktívnymi údajmi. <Link to="/kontakty" className="text-link">Podpora</Link>
         </p>
       </Section>
     </div>

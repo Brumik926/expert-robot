@@ -35,9 +35,9 @@ import { bankErrorMessage } from "@/lib/errors";
 export const Route = createFileRoute("/_authenticated/domov")({
   head: () => ({
     meta: [
-      { title: "Domov – Vega banka" },
+      { title: "Domov – Tatra banka" },
       { name: "description", content: "Prehľad účtov, kariet, sporení a výdavkov." },
-      { property: "og:title", content: "Domov – Vega banka" },
+      { property: "og:title", content: "Domov – Tatra banka" },
       { property: "og:description", content: "Prehľad účtov, kariet, sporení a výdavkov vo Vega banke." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },

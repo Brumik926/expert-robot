@@ -9,9 +9,9 @@ import { useSignOut } from "@/hooks/use-sign-out";
 export const Route = createFileRoute("/_authenticated/menu")({
   head: () => ({
     meta: [
-      { title: "Menu – Vega banka" },
+      { title: "Menu – Tatra banka" },
       { name: "description", content: "Hlavné menu Vega banky." },
-      { property: "og:title", content: "Menu – Vega banka" },
+      { property: "og:title", content: "Menu – Tatra banka" },
       { property: "og:description", content: "Hlavné menu Vega banky." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },

@@ -31,9 +31,9 @@ import { createStandingOrder, deleteStandingOrder, updateStandingOrder, type Sta
 export const Route = createFileRoute("/_authenticated/trvale-prikazy")({
   head: () => ({
     meta: [
-      { title: "Trvalé príkazy – Vega banka" },
+      { title: "Trvalé príkazy – Tatra banka" },
       { name: "description", content: "Pravidelné platby: nájomné, sporenie a ďalšie trvalé príkazy." },
-      { property: "og:title", content: "Trvalé príkazy – Vega banka" },
+      { property: "og:title", content: "Trvalé príkazy – Tatra banka" },
       { property: "og:description", content: "Správa trvalých príkazov vo Vega banke." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },

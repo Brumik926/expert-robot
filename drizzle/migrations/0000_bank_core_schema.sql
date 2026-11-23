@@ -618,7 +618,7 @@ begin
   insert into public.notifications(user_id, kind, title, body, link) values
     (p_user, 'info', 'Vitajte vo Vega banke', 'Toto je simulované bankovníctvo s fiktívnymi údajmi. Žiadne platby neodchádzajú do skutočných bánk.', null),
     (p_user, 'card', 'Vaše karty sú pripravené', 'Debetnú aj kreditnú kartu môžete spravovať v sekcii Karty.', '/karty'),
-    (p_user, 'security', 'Bezpečnostný tip', 'Vega banka vás nikdy nebude žiadať o heslo e-mailom ani telefonicky.', null);
+    (p_user, 'security', 'Bezpečnostný tip', 'Tatra banka vás nikdy nebude žiadať o heslo e-mailom ani telefonicky.', null);
 end $$;
 
 create or replace function public.handle_new_user() returns trigger

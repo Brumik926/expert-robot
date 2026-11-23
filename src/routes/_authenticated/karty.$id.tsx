@@ -32,9 +32,9 @@ import { CARD_LIMIT_RANGES, clampLimit } from "@/lib/card-limits";
 export const Route = createFileRoute("/_authenticated/karty/$id")({
   head: () => ({
     meta: [
-      { title: "Detail karty – Vega banka" },
+      { title: "Detail karty – Tatra banka" },
       { name: "description", content: "Blokovanie karty, internetové platby a denné limity." },
-      { property: "og:title", content: "Detail karty – Vega banka" },
+      { property: "og:title", content: "Detail karty – Tatra banka" },
       { property: "og:description", content: "Nastavenia platobnej karty vo Vega banke." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },

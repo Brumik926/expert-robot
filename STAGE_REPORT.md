@@ -1,7 +1,7 @@
 # Správa o stave projektu a etapách implementácie
 
 ## 1. Prehľad zadania a referencií
-Projekt **Vega banka** predstavuje mobilnú webovú aplikáciu simulovaného internet bankingu postavenú na technológiách **React, TypeScript, Vite, Tailwind CSS, TanStack Router / Start** a **Supabase (PostgreSQL, RLS, RPC funkcie)**.
+Projekt **Tatra banka** predstavuje mobilnú webovú aplikáciu simulovaného internet bankingu postavenú na technológiách **React, TypeScript, Vite, Tailwind CSS, TanStack Router / Start** a **Supabase (PostgreSQL, RLS, RPC funkcie)**.
 
 Dizajn a štruktúra vychádzajú z 23 dodaných referenčných screenshotov a podrobného PDF zadania:
 - **Tmavý / svetlý režim**: Tmavý režim (pozadie `#000000`, sekcie `#1E1F24`, polia `#131417`, primárny akcent `#0A8CFF`, zisk `#1ED48C`, výdavok `#E5565B`).

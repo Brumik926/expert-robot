@@ -28,9 +28,9 @@ export const Route = createFileRoute("/_authenticated/pohyby")({
   },
   head: () => ({
     meta: [
-      { title: "Pohyby na účte – Vega banka" },
+      { title: "Pohyby na účte – Tatra banka" },
       { name: "description", content: "História prijatých a odoslaných platieb a nákupov kartou." },
-      { property: "og:title", content: "Pohyby na účte – Vega banka" },
+      { property: "og:title", content: "Pohyby na účte – Tatra banka" },
       { property: "og:description", content: "História transakcií vo Vega banke." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },

@@ -1,7 +1,7 @@
 # Finálna správa o dokončení implementácie aplikácie
 
 **Dátum a čas:** 22. november 2026  
-**Projekt:** Vega banka (mobilné simulované bankovníctvo)  
+**Projekt:** Tatra banka (mobilné simulované bankovníctvo)  
 **Technológie:** React 18, TypeScript, Vite 8, Tailwind CSS, TanStack Router / Start, Supabase (PostgreSQL, RLS, RPC funkcie)  
 **Dizajnový systém:** TBDS (Tatra Banka Design System) – extrahovaný z originálnej dekompilovanej aplikácie
 

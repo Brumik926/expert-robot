@@ -20,9 +20,9 @@ import { useSignOut } from "@/hooks/use-sign-out";
 export const Route = createFileRoute("/_authenticated/profil")({
   head: () => ({
     meta: [
-      { title: "Profil – Vega banka" },
+      { title: "Profil – Tatra banka" },
       { name: "description", content: "Osobné a kontaktné údaje, adresa a zmena hesla." },
-      { property: "og:title", content: "Profil – Vega banka" },
+      { property: "og:title", content: "Profil – Tatra banka" },
       { property: "og:description", content: "Osobný profil klienta Vega banky." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },

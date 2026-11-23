@@ -16,9 +16,9 @@ import { formatMoney } from "@/lib/format";
 export const Route = createFileRoute("/_authenticated/mafin")({
   head: () => ({
     meta: [
-      { title: "MaFin – prehľad príjmov a výdavkov – Vega banka" },
+      { title: "MaFin – prehľad príjmov a výdavkov – Tatra banka" },
       { name: "description", content: "Mesačný prehľad príjmov, výdavkov a kategórií." },
-      { property: "og:title", content: "MaFin – Vega banka" },
+      { property: "og:title", content: "MaFin – Tatra banka" },
       { property: "og:description", content: "Prehľad príjmov a výdavkov vo Vega banke." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
