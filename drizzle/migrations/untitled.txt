@@ -1,0 +1,6 @@
+[
+  {
+    "name": "Brumik926/expert-robot/main",
+    "url": "gh://repo/Brumik926/expert-robot@main/"
+  }
+]
