@@ -1,0 +1,245 @@
+REFERENČNÝ TECHNICKÝ BALÍK – NOVÁ BANKOVÁ APLIKÁCIA
+Zdroj: používateľom dodaný dekompilovaný výpis aplikácie Tatra banka pre Android.
+Pôvodný súbor: vsetky_kody.txt
+Pôvodná veľkosť: približne 114,2 MB; 2 356 597 riadkov podľa pôvodného exportu.
+
+ÚČEL
+Tento jediný súbor zhŕňa podstatné technické časti pôvodného výpisu pre AI agenta, ktorý má vytvoriť NOVÚ samostatnú aplikáciu.
+
+AKO SÚ INFORMÁCIE ZORADENÉ
+1. Najprv je stručný orientačný prehľad oblastí a dôležitých tried.
+2. Potom nasledujú celé vybrané dekompilované Java/Kotlin-konvertované zdrojové súbory z pôvodného výpisu (bez zámerného prepisovania ich obsahu).
+3. Každý zdrojový súbor má pred sebou presnú pôvodnú cestu, aby agent vedel identifikovať jeho úlohu.
+
+DÔLEŽITÉ PRE AI AGENTA
+- Použi tento súbor ako referenčný materiál na pochopenie správania a dátových modelov.
+- Novú aplikáciu implementuj ako vlastný projekt podľa jej zvoleného technologického stacku. Android triedy sa nemajú mechanicky kopírovať do webovej alebo multiplatformovej aplikácie.
+- Zachovaj názvy a význam polí, typov a stavov tam, kde sú v zdroji jasné.
+- Obfuskované alebo syntetické názvy metód (napr. a(), b(), D0()) neinterpretuj bez čítania ich tela a volaní.
+- Rozlišuj medzi priamo potvrdeným správaním, technickou inferenciou a tým, čo zdroj neukazuje.
+- Tento výber nie je kompletný zdrojový kód Tatra banky. Vynecháva množstvo knižníc, generovaných tried, analytiky, assetov a nesúvisiacich modulov.
+- V dodanom výpise sú primárne zdrojové triedy. Presné farby, rozmery, fonty a grafické assety nemusia byť v tomto výbere prítomné.
+- Nepoužívaj žiadne reálne bankové prihlasovacie údaje, kľúče, certifikáty, API tokeny ani produkčné služby. Ak ide o demo/simuláciu, všetky účty a platby musia byť fiktívne.
+- Reprodukcia dizajnu má byť inšpirovaná referenciou; nepoužívaj cudzie ochranné známky, identitu ani prvky spôsobom, ktorý by novú aplikáciu vydával za oficiálnu aplikáciu banky.
+
+MAPA HLAVNÝCH OBLASTÍ A TRIED
+
+DOMOVSKÁ OBRAZOVKA / DASHBOARD
+- DashboardFragment
+- DashboardAccountView
+- DashboardCardsView
+- CardWidgetData
+- DashboardMovement
+- GetDashboardMovementsResponse
+Účel: koordinácia dashboardu, účtového widgetu, kariet a prehľadu pohybov.
+
+ÚČTY A ZOSTATKY
+- AccountsWithSettings
+- AccountBalanceBase
+- DailyAccountBalance
+- AccountListActivity
+- AccountDetailActivity
+Účel: účty, ich vlastnosti, zostatky, časové rady zostatkov a detailné obrazovky.
+
+KARTY
+- CardAdapter
+- CardWidgetData
+- DashboardCardsView
+- CardsActivity
+- CardListActivity
+Účel: model karty, zoznam kariet, dashboardový karusel, výber a otvorenie detailu.
+
+NAVIGÁCIA
+- Tab
+- NavigationFragment
+- NavigationViewModel
+Pozor: enum/model navigácie nepreukazuje sám osebe presné vizuálne poradie, ikony, farby ani rozmery lišty.
+
+PLATBY A PRÍJEMCOVIA
+- Addressee
+- PaymentData
+- PaymentForm
+- PaymentActivity
+- PaymentConfirmActivity
+- PaymentAuthorizationActivity
+Účel: príjemca, platiteľ, suma, mena, popis, platobné symboly, dátum, formulár, potvrdenie a samostatná autorizačná obrazovka.
+Pozor: autorizačný kód je bezpečnostne citlivý a nie je určený na kopírovanie do nebankovej simulácie.
+
+HISTÓRIA / PLÁNOVANÉ POHYBY
+- Safe2SpendTransactionActivity
+- Safe2SpendTransaction
+- Safe2SpendTransactionHistory
+Účel: osobitný modul plánovaných alebo predpokladaných transakcií. Jeho stavy sa nesmú zamieňať za univerzálny stav každej transakcie.
+
+NASTAVENIA A DÁTOVÁ VRSTVA
+- UserSettings
+- AppDataStore
+Účel: používateľské nastavenia, dostupnosť funkcií, dátová koordinácia a závislosti na službách.
+
+TRVALÉ / OPAKOVANÉ PLATBY
+- StandingOrdersViewModel
+- StandingOrdersListFragment
+Účel: zoznam a správa trvalých príkazov.
+
+ZDROJOVÉ ÚRYVKY
+Nasledujúce sekcie obsahujú celé vybrané súbory z pôvodného exportu. Obsah zdrojových súborov je ponechaný v pôvodnej podobe, vrátane názvov balíkov, importov, komentárov a názvov metód.
+
+
+
+====================================================================================================
+ZDROJOVÝ SÚBOR 01: /sdcard/Download/Tatra banka_decompiled/src/sk/tb/ib/tatraandroid/fragment/DashboardFragment.java
+====================================================================================================
+
+package sk.tb.ib.tatraandroid.fragment;
+
+import android.app.Activity;
+import android.content.Context;
+import android.location.Location;
+import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
+import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.LinearLayout;
+import androidx.compose.runtime.internal.StabilityInferred;
+import androidx.core.content.ContextCompat;
+import androidx.core.widget.NestedScrollView;
+import androidx.databinding.ObservableField;
+import androidx.fragment.app.FragmentActivity;
+import androidx.lifecycle.LifecycleOwner;
+import androidx.lifecycle.LiveData;
+import androidx.lifecycle.MutableLiveData;
+import androidx.lifecycle.Observer;
+import com.avast.android.dialogs.core.IPositiveButtonDialogListener;
+import com.dynatrace.android.callback.Callback;
+import com.google.android.gms.common.GoogleApiAvailability;
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationAvailability;
+import com.google.android.gms.location.LocationCallback;
+import com.google.android.gms.location.LocationRequest;
+import com.google.android.gms.location.LocationResult;
+import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.maps.model.LatLng;
+import eu.inmite.android.fw.async.execution.Tasks;
+import eu.inmite.android.fw.async.execution.impl.SimpleCallback;
+import eu.inmite.android.fw.async.iterface.ITask;
+import h.ap;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.Iterator;
+import java.util.List;
+import kotlin.Lazy;
+import kotlin.LazyKt;
+import kotlin.Metadata;
+import kotlin.NoWhenBranchMatchedException;
+import kotlin.Unit;
+import kotlin.collections.CollectionsKt;
+import kotlin.comparisons.ComparisonsKt;
+import kotlin.jvm.functions.Function0;
+import kotlin.jvm.functions.Function1;
+import kotlin.jvm.functions.Function2;
+import kotlin.jvm.functions.Function3;
+import kotlin.jvm.internal.DefaultConstructorMarker;
+import kotlin.jvm.internal.Intrinsics;
+import kotlin.jvm.internal.PropertyReference1Impl;
+import kotlin.jvm.internal.Reflection;
+import kotlin.jvm.internal.SourceDebugExtension;
+import kotlin.reflect.KProperty;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
+import org.jetbrains.annotations.NotNull;
+import sk.tb.ib.tatraandroid.activity.DialogLiveSessionActivity;
+import sk.tb.ib.tatraandroid.activity.ExchangeRateActivity;
+import sk.tb.ib.tatraandroid.activity.SpendingReportActivity;
+import sk.tb.ib.tatraandroid.activity.base.BaseActivity;
+import sk.tb.ib.tatraandroid.atm.map.AtmMapViewModel;
+import sk.tb.ib.tatraandroid.common.Accounts_utilsKt;
+import sk.tb.ib.tatraandroid.common.DialogsKt;
+import sk.tb.ib.tatraandroid.common.Error_dialog_utilsKt;
+import sk.tb.ib.tatraandroid.common.GeneralKt;
+import sk.tb.ib.tatraandroid.common.NetworkData;
+import sk.tb.ib.tatraandroid.common.Staging;
+import sk.tb.ib.tatraandroid.common.delegate.ViewModelDelegate;
+import sk.tb.ib.tatraandroid.common_activities.web_activity.WebActivity;
+import sk.tb.ib.tatraandroid.dashboardconfig.EditHomeBottomSheetFragment;
+import sk.tb.ib.tatraandroid.dashboardconfig.accountconfig.DashboardAccount;
+import sk.tb.ib.tatraandroid.databinding.FragmentDashboardBinding;
+import sk.tb.ib.tatraandroid.datastore.AppDataStore;
+import sk.tb.ib.tatraandroid.datastore.CampaignZoneMapKey;
+import sk.tb.ib.tatraandroid.datastore.HelloDataStore;
+import sk.tb.ib.tatraandroid.datastore.InitDataStore;
+import sk.tb.ib.tatraandroid.dds.DdsProcessViewModel;
+import sk.tb.ib.tatraandroid.event.BeneficiariesRefresh;
+import sk.tb.ib.tatraandroid.event.InvalidateAssetBalanceEvent;
+import sk.tb.ib.tatraandroid.event.InvalidateCampaignsEvent;
+import sk.tb.ib.tatraandroid.event.PaymentProcessedEvent;
+import sk.tb.ib.tatraandroid.event.SpendingReportChangedEvent;
+import sk.tb.ib.tatraandroid.home.Tab;
+import sk.tb.ib.tatraandroid.home.customlifecycle.HomeFragment;
+import sk.tb.ib.tatraandroid.home.liteskin.overview.spending.widget.DashboardSpendingReport2View;
+import sk.tb.ib.tatraandroid.home.navigation.MenuMoreItem;
+import sk.tb.ib.tatraandroid.home.widget.CampaignsDataWrapper;
+import sk.tb.ib.tatraandroid.home.widget.CampaignsView;
+import sk.tb.ib.tatraandroid.injection.Singletons;
+import sk.tb.ib.tatraandroid.livedata.CustomKt;
+import sk.tb.ib.tatraandroid.livedata.SimpleObserver;
+import sk.tb.ib.tatraandroid.model.AccountsWithSettings;
+import sk.tb.ib.tatraandroid.model.DashboardItem;
+import sk.tb.ib.tatraandroid.model.DashboardItemsWrapper;
+import sk.tb.ib.tatraandroid.model.UnreadMessages;
+import sk.tb.ib.tatraandroid.model.Widget;
+import sk.tb.ib.tatraandroid.parent_section.ParentSectionDashboardViewModelKt;
+import sk.tb.ib.tatraandroid.service.AppSettingsService;
+import sk.tb.ib.tatraandroid.session.SessionService;
+import sk.tb.ib.tatraandroid.tam.account_list.TamContractListActivity;
+import sk.tb.ib.tatraandroid.utils.AccountsHelper;
+import sk.tb.ib.tatraandroid.utils.Const;
+import sk.tb.ib.tatraandroid.utils.LocationUtilsKt;
+import sk.tb.ib.tatraandroid.view.NotificationMenuView;
+import sk.tb.ib.tatraandroid.view.dashboard.AbstractDashboardView;
+import sk.tb.ib.tatraandroid.view.dashboard.DashboardTamView;
+import sk.tb.ib.tatraandroid.view.dashboard.accounts.DashboardAccountView;
+import sk.tb.ib.tatraandroid.view.dashboard.assetbalance.DashboardAssetBalanceView;
+import sk.tb.ib.tatraandroid.view.dashboard.beneficiaries.DashboardBeneficiariesView;
+import sk.tb.ib.tatraandroid.view.dashboard.branchesandatm.DashboardAtmView;
+import sk.tb.ib.tatraandroid.view.dashboard.cards.CardWidgetData;
+import sk.tb.ib.tatraandroid.view.dashboard.cards.DashboardCardsView;
+import sk.tb.ib.tatraandroid.view.dashboard.exchangerates.DashboardExchangeRateView;
+import sk.tb.ib.tatraandroid.view.dashboard.loans.DashboardLoanView;
+import sk.tb.ib.tatraandroid.view.dashboard.loans.LoanBaseData;
+import sk.tb.ib.tatraandroid.view.dashboard.parentSection.DashboardParentView;
+import sk.tb.ib.tatraandroid.view.dashboard.pension.DashboardDdsView;
+import sk.tb.ib.tatraandroid.view.dashboard.processes.DashboardTopProcessView;
+import sk.tb.ib.tatraandroid.view.dashboard.safe2spend.DashboardSafe2SpendView;
+import sk.tb.ib.tatraandroid.view.dashboard.savings.DashboardSavingsView;
+import sk.tb.ib.tatraandroid.vm.DialogLiveViewModel;
+import sk.tb.ib.tatraandroid.vm.ProcessesViewModel;
+import sk.tb.mobapp.account.types.AccountBalance;
+import sk.tb.mobapp.account.types.AccountBalanceBase;
+import sk.tb.mobapp.account.types.DailyAccountBalance;
+import sk.tb.mobapp.assetbalance.types.AssetBalanceSheet;
+import sk.tb.mobapp.campaign.types.GetBannerListResponse;
+import sk.tb.mobapp.common.extensions.ViewKt;
+import sk.tb.mobapp.dds.types.DdsChart;
+import sk.tb.mobapp.dds.types.DdsChartFilter;
+import sk.tb.mobapp.dds.types.DdsChartFrequency;
+import sk.tb.mobapp.dds.types.DdsContract;
+import sk.tb.mobapp.dds.types.DdsContractList;
+import sk.tb.mobapp.investment.types.InvestmentAccountDetailDashboardResponse;
+import sk.tb.mobapp.loan.types.LoanDashboardResult;
+import sk.tb.mobapp.login.types.SystemInfo;
+import sk.tb.mobapp.safe2spend.types.Safe2SpendWidgetResponse;
+import sk.tb.mobapp.settings.types.UserSettings;
+import sk.tb.mobapp.spendingreport2.types.SpendingDashboardResult;
+import sk.tb.mobapp.types.DateInterval;
+import sk.tb.mobapp.types.common.movements.TBAccountId;
+import sk.tb.mobapp.types.forms.actions.Action;
+
+/* JADX INFO: compiled from: r8-map-id-559afa075ae96892fdc7ae845a2d9d726ead99cbbe2299009c8f01cdba1a0747 */
+/* JADX INFO: loaded from: /storage/emulated/0/Android/data/com.dastanapps.androiddevtools/files/decompiled/sk.tb.ib.tatraandroid/dex/classes11.dex */
+@StabilityInferred
+@Metadata(d1 = {"\u0000´\u0004\n\u0002\u0018\u0002\n\u0002\u0018\u0002\n\u0002\u0018\u0002\n\u0002\u0018\u0002\n\u0002\b\u0003\n\u0002\u0018\u0002\n\u0000\n\u0002\u0010\b\n\u0000\n\u0002\u0010\u0002\n\u0002\b\u0004\n\u0002\u0018\u0002\n\u0002\b\u0004\n\u0002\u0018\u0002\n\u0002\b\u0003\n\u0002\u0010 \n\u0002\u0018\u0002\n\u0002\b\u0003\n\u0002\u0018\u0002\n\u0000\n\u0002\u0018\u0002\n\u0002\u0018\u0002\n\u0002\b\u0003\n\u0002\u0018\u0002\n\u0002\b\u0003\n\u0002\u0010\u000e\n\u0002\b\u0004\n\u0002\u0018\u0002\n\u0002\b\u0002\n\u0002\u0018\u0002\n\u0002\b\u0005\n\u0002\u0010\u0003\n\u0002\b\u0003\n\u0002\u0018\u0002\n\u0002\b\u0005\n\u0002\u0018\u0002\n\u0002\b\u0004\n\u0002\u0018\u0002\n\u0002\b\u0006\n\u0002\u0018\u0002\n\u0002\b\u0004\n\u0002\u0018\u0002\n\u0002\b\u0004\n\u0002\u0018\u0002\n\u0002\b\u0005\n\u0002\u0018\u0002\n\u0000\n\u0002\u0018\u0002\n\u0002\b\u000b\n\u0002\u0018\u0002\n\u0002\b\u0006\n\u0002\u0018\u0002\n\u0002\b\u0003\n\u0002\u0018\u0002\n\u0000\n\u0002\u0018\u0002\n\u0002\b\u0005\n\u0002\u0018\u0002\n\u0000\n\u0002\u0018\u0002\n\u0002\b\u0002\n\u0002\u0018\u0002\n\u0002\u0010\u000b\n\u0002\b\b\n\u0002\u0010\u0011\n\u0000\n\u0002\u0010\u0015\n\u0002\b\u0005\n\u0002\u0018\u0002\n\u0002\b\u0003\n\u0002\u0018\u0002\n\u0000\n\u0002\u0018\u0002\n\u0000\n\u0002\u0018\u0002\n\u0000\n\u0002\u0018\u0002\n\u0002\b\b\n\u0002\u0018\u0002\n\u0002\b\u0005\n\u0002\u0018\u0002\n\u0002\b\u0004\n\u0002\u0018\u0002\n\u0002\b\u0004\n\u0002\u0018\u0002\n\u0002\b\u0004\n\u0002\u0018\u0002\n\u0002\b\u0005\n\u0002\u0018\u0002\n\u0002\b\u0004\n\u0002\u0018\u0002\n\u0002\b\u0003\n\u0002\u0018\u0002\n\u0002\b\u0002\n\u0002\u0018\u0002\n\u0002\b\u0006\n\u0002\u0018\u0002\n\u0002\b\u0003\n\u0002\u0018\u0002\n\u0002\b\u0003\n\u0002\u0018\u0002\n\u0002\b\u0003\n\u0002\u0018\u0002\n\u0002\b\u0003\n\u0002\u0018\u0002\n\u0002\b\u0003\n\u0002\u0018\u0002\n\u0002\b\u0003\n\u0002\u0018\u0002\n\u0002\b\u0003\n\u0002\u0018\u0002\n\u0002\b\u0003\n\u0002\u0018\u0002\n\u0002\b\u0003\n\u0002\u0018\u0002\n\u0002\b\u0003\n\u0002\u0018\u0002\n\u0002\b\u0003\n\u0002\u0018\u0002\n\u0002\b\u0003\n\u0002\u0018\u0002\n\u0002\b\u0005\n\u0002\u0010!\n\u0002\u0018\u0002\n\u0002\b\u0003\n\u0002\u0018\u0002\n\u0002\u0018\u0002\n\u0002\b\u0006\n\u0002\u0018\u0002\n\u0002\b\u0005\n\u0002\u0018\u0002\n\u0002\b\u0003\n\u0002\u0018\u0002\n\u0002\b\u0003\n\u0002\u0018\u0002\n\u0002\b\u0003\n\u0002\b\u0004\n\u0002\u0018\u0002\n\u0002\u0018\u0002\n\u0002\b\u0003\n\u0002\b\u0004\n\u0002\b\u0004\n\u0002\u0018\u0002\n\u0002\b\f*\u0006«\u0002´\u0002¸\u0002\b\u0007\u0018\u0000 Å\u00022\u00020\u00012\u00020\u00022\u00020\u0003:\u0004Æ\u0002Ç\u0002B\u0007¢\u0006\u0004\b\u0004\u0010\u0005J/\u0010\f\u001a\u00020\u000b\"\u0004\b\u0000\u0010\u00062\u000e\u0010\b\u001a\n\u0012\u0004\u0012\u00028\u0000\u0018\u00010\u00072\b\b\u0001\u0010\n\u001a\u00020\tH\u0002¢\u0006\u0004\b\f\u0010\rJ\u000f\u0010\u000e\u001a\u00020\u000bH\u0002¢\u0006\u0004\b\u000e\u0010\u0005J\u000f\u0010\u000f\u001a\u00020\u000bH\u0002¢\u0006\u0004\b\u000f\u0010\u0005J\u0019\u0010\u0012\u001a\u00020\u000b2\b\u0010\u0011\u001a\u0004\u0018\u00010\u0010H\u0002¢\u0006\u0004\b\u0012\u0010\u0013J\u000f\u0010\u0014\u001a\u00020\u000bH\u0002¢\u0006\u0004\b\u0014\u0010\u0005J\u0017\u0010\u0017\u001a\u00020\u000b2\u0006\u0010\u0016\u001a\u00020\u0015H\u0002¢\u0006\u0004\b\u0017\u0010\u0018J\u001d\u0010\u001c\u001a\u00020\u000b2\f\u0010\u001b\u001a\b\u0012\u0004\u0012\u00020\u001a0\u0019H\u0002¢\u0006\u0004\b\u001c\u0010\u001dJ3\u0010#\u001a\u00020\u000b2\u0006\u0010\u001f\u001a\u00020\u001e2\u001a\u0010\"\u001a\u0016\u0012\f\u0012\n\u0012\u0004\u0012\u00020!\u0018\u00010\u0019\u0012\u0004\u0012\u00020\u000b0 H\u0002¢\u0006\u0004\b#\u0010$J\u0017\u0010'\u001a\u00020\u000b2\u0006\u0010&\u001a\u00020%H\u0002¢\u0006\u0004\b'\u0010(J\u0017\u0010+\u001a\u00020\u000b2\u0006\u0010*\u001a\u00020)H\u0002¢\u0006\u0004\b+\u0010,J\u000f\u0010-\u001a\u00020\u000bH\u0002¢\u0006\u0004\b-\u0010\u0005J\u0013\u0010/\u001a\u00020\u000b*\u00020.H\u0002¢\u0006\u0004\b/\u00100J\u0017\u00103\u001a\u00020\u000b2\u0006\u00102\u001a\u000201H\u0002¢\u0006\u0004\b3\u00104J\u000f\u00105\u001a\u00020\u000bH\u0002¢\u0006\u0004\b5\u0010\u0005J\u000f\u00106\u001a\u00020\u000bH\u0002¢\u0006\u0004\b6\u0010\u0005J\u0017\u00109\u001a\u00020\u000b2\u0006\u00108\u001a\u000207H\u0002¢\u0006\u0004\b9\u0010:J\u0019\u0010=\u001a\u00020\u000b2\b\u0010<\u001a\u0004\u0018\u00010;H\u0002¢\u0006\u0004\b=\u0010>J\u0019\u0010?\u001a\u00020\u000b2\b\u00108\u001a\u0004\u0018\u000107H\u0002¢\u0006\u0004\b?\u0010:J\u0017\u0010@\u001a\u00020\u000b2\u0006\u00108\u001a\u000207H\u0002¢\u0006\u0004\b@\u0010:J\u0017\u0010C\u001a\u00020\u000b2\u0006\u0010B\u001a\u00020AH\u0002¢\u0006\u0004\bC\u0010DJ\u0017\u0010E\u001a\u00020\u000b2\u0006\u00108\u001a\u000207H\u0002¢\u0006\u0004\bE\u0010:J\u0019\u0010H\u001a\u00020\u000b2\b\u0010G\u001a\u0004\u0018\u00010FH\u0002¢\u0006\u0004\bH\u0010IJ\u000f\u0010J\u001a\u00020\u000bH\u0002¢\u0006\u0004\bJ\u0010\u0005J\u000f\u0010K\u001a\u00020\u000bH\u0002¢\u0006\u0004\bK\u0010\u0005J\u000f\u0010L\u001a\u00020\u000bH\u0002¢\u0006\u0004\bL\u0010\u0005J\u0019\u0010O\u001a\u00020\u000b2\b\u0010N\u001a\u0004\u0018\u00010MH\u0002¢\u0006\u0004\bO\u0010PJ\u0017\u0010Q\u001a\u00020\u000b2\u0006\u00108\u001a\u000207H\u0002¢\u0006\u0004\bQ\u0010:J\u0019\u0010T\u001a\u00020\u000b2\b\u0010S\u001a\u0004\u0018\u00010RH\u0002¢\u0006\u0004\bT\u0010UJ\u0017\u0010V\u001a\u00020\u000b2\u0006\u00108\u001a\u000207H\u0002¢\u0006\u0004\bV\u0010:J\u0017\u0010Y\u001a\u00020\u000b2\u0006\u0010X\u001a\u00020WH\u0002¢\u0006\u0004\bY\u0010ZJ\u000f\u0010[\u001a\u00020\u000bH\u0002¢\u0006\u0004\b[\u0010\u0005J\u000f\u0010\\\u001a\u00020\u000bH\u0002¢\u0006\u0004\b\\\u0010\u0005J!\u0010a\u001a\u00020\u000b2\b\u0010^\u001a\u0004\u0018\u00010]2\u0006\u0010`\u001a\u00020_H\u0002¢\u0006\u0004\ba\u0010bJ+\u0010e\u001a\u00020\u000b2\b\u0010c\u001a\u0004\u0018\u00010]2\b\u0010d\u001a\u0004\u0018\u00010]2\u0006\u0010`\u001a\u00020_H\u0002¢\u0006\u0004\be\u0010fJ3\u0010i\u001a\u00020\u000b2\u0006\u0010g\u001a\u00020\t2\u0006\u0010h\u001a\u00020]2\b\u0010c\u001a\u0004\u0018\u00010]2\b\u0010d\u001a\u0004\u0018\u00010]H\u0002¢\u0006\u0004\bi\u0010jJ\u0017\u0010l\u001a\u00020]2\u0006\u0010h\u001a\u00020kH\u0002¢\u0006\u0004\bl\u0010mJ!\u0010n\u001a\u00028\u0000\"\f\b\u0000\u0010\u0006*\u0006\u0012\u0002\b\u00030\u0007*\u00020kH\u0002¢\u0006\u0004\bn\u0010oJ\u000f\u0010p\u001a\u00020)H\u0016¢\u0006\u0004\bp\u0010qJ\u0019\u0010t\u001a\u00020\u000b2\b\u0010s\u001a\u0004\u0018\u00010rH\u0016¢\u0006\u0004\bt\u0010uJ+\u0010y\u001a\u00020x2\u0006\u0010w\u001a\u00020v2\b\u0010^\u001a\u0004\u0018\u00010]2\b\u0010s\u001a\u0004\u0018\u00010rH\u0016¢\u0006\u0004\by\u0010zJ!\u0010|\u001a\u00020\u000b2\u0006\u0010{\u001a\u00020x2\b\u0010s\u001a\u0004\u0018\u00010rH\u0016¢\u0006\u0004\b|\u0010}J#\u0010\u0081\u0001\u001a\u00020\u000b2\u0006\u0010\u007f\u001a\u00020~2\u0007\u0010w\u001a\u00030\u0080\u0001H\u0014¢\u0006\u0006\b\u0081\u0001\u0010\u0082\u0001J\u001c\u0010\u0085\u0001\u001a\u00030\u0084\u00012\u0007\u0010h\u001a\u00030\u0083\u0001H\u0016¢\u0006\u0006\b\u0085\u0001\u0010\u0086\u0001J\u0011\u0010\u0087\u0001\u001a\u00020\u000bH\u0016¢\u0006\u0005\b\u0087\u0001\u0010\u0005J\u0011\u0010\u0088\u0001\u001a\u00020\u000bH\u0016¢\u0006\u0005\b\u0088\u0001\u0010\u0005J\u001b\u0010\u0089\u0001\u001a\u00020\u000b2\b\u0010s\u001a\u0004\u0018\u00010rH\u0016¢\u0006\u0005\b\u0089\u0001\u0010uJ\u0011\u0010\u008a\u0001\u001a\u00020\u000bH\u0016¢\u0006\u0005\b\u008a\u0001\u0010\u0005J\u0011\u0010\u008b\u0001\u001a\u00020\u000bH\u0014¢\u0006\u0005\b\u008b\u0001\u0010\u0005J5\u0010\u0091\u0001\u001a\u00020\u000b2\u0007\u0010\u008c\u0001\u001a\u00020\t2\u000e\u0010\u008e\u0001\u001a\t\u0012\u0004\u0012\u00020)0\u008d\u00012\b\u0010\u0090\u0001\u001a\u00030\u008f\u0001H\u0016¢\u0006\u0006\b\u0091\u0001\u0010\u0092\u0001J\u001b\u0010\u0093\u0001\u001a\u00020\u000b2\u0007\u0010\u008c\u0001\u001a\u
