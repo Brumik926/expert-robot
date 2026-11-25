@@ -91,7 +91,10 @@ function AuthPage() {
       if (data.session) return navigate({ to: "/domov", replace: true });
       return setSentTo({ email: parsed.data.email, kind: "confirm" });
     }
-    const { error } = await supabase.auth.signInWithPassword({ email: parsed.data.email, password: parsed.data.password });
+    const { error } = await supabase.auth.signInWithPassword({
+      email: parsed.data.email,
+      password: parsed.data.password,
+    });
     setBusy(false);
     if (error) return toast.error(bankErrorMessage(error));
     navigate({ to: search.redirect ?? "/domov", replace: true });
