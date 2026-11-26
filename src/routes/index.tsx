@@ -1,8 +1,8 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { CircleHelp, LineChart, UserPlus, Phone } from "lucide-react";
+import { Building2, LineChart, MessageCircle, Sparkles, LayoutGrid, PlayCircle } from "lucide-react";
 import art from "@/assets/welcome-art.webp.asset.json";
 import { Button } from "@/components/ui/button";
-import { TatraWordmark, BANK_NAME } from "@/components/bank/Logo";
+import { BANK_NAME } from "@/components/bank/Logo";
 import { useSession } from "@/hooks/use-session";
 import { formatShortDate } from "@/lib/format";
 
@@ -27,6 +27,27 @@ export const Route = createFileRoute("/")({
   component: Welcome,
 });
 
+/** Brand mark used on the welcome screen: registered sign above the wordmark. */
+function BrandMark() {
+  return (
+    <div className="flex flex-col items-center gap-1 text-foreground">
+      <span className="text-lg leading-none">®</span>
+      <span className="text-[1.6rem] leading-none font-extrabold tracking-[0.14em] uppercase">
+        {BANK_NAME}
+      </span>
+    </div>
+  );
+}
+
+const QUICK_LINKS = [
+  { to: "/auth", label: "Vyskúšať demo", icon: PlayCircle, search: { mode: "register" } },
+  { to: "/kontakty", label: "Pobočky", icon: Building2, search: {} },
+  { to: "/kurzy", label: "Kurzový lístok", icon: LineChart, search: {} },
+  { to: "/kontakty", label: "Chatbot", icon: MessageCircle, search: {} },
+  { to: "/kontakty", label: "Adam", icon: Sparkles, search: {} },
+  { to: "/auth", label: "možnosti", icon: LayoutGrid, search: { mode: "login" } },
+] as const;
+
 function Welcome() {
   const { session } = useSession();
   return (
@@ -39,23 +60,13 @@ function Welcome() {
         />
         <div className="welcome-fade absolute inset-0" />
 
-        <div className="relative flex justify-end px-5 pt-[calc(env(safe-area-inset-top)+1.25rem)]">
-          <Link
-            to="/kontakty"
-            aria-label="Pomoc a kontakty"
-            className="rounded-full p-1 text-primary"
-          >
-            <CircleHelp className="h-11 w-11" strokeWidth={1.3} />
-          </Link>
-        </div>
-
-        <div className="relative mt-[18dvh] flex justify-center animate-page-in">
-          <TatraWordmark />
+        <div className="relative flex justify-center px-5 pt-[calc(env(safe-area-inset-top)+2.5rem)]">
+          <BrandMark />
         </div>
 
         <div className="relative mt-auto px-6 pb-6">
           <h1 className="text-center text-[2rem] leading-tight font-normal">
-            Vitajte vo svete <strong className="font-extrabold">jednoduchého bankovníctva</strong>
+            Vitajte vo svete <strong className="font-extrabold">inovatívneho bankovníctva</strong>
           </h1>
           <div className="mt-8 flex flex-col gap-4">
             {session ? (
@@ -63,22 +74,15 @@ function Welcome() {
                 <Link to="/domov">Pokračovať do aplikácie</Link>
               </Button>
             ) : (
-              <>
-                <Button asChild variant="bank" size="xl">
-                  <Link to="/auth" search={{ mode: "login" }}>
-                    Prihlásiť sa
-                  </Link>
-                </Button>
-                <Button asChild variant="bankOutline" size="xl">
-                  <Link to="/auth" search={{ mode: "register" }}>
-                    Som tu prvýkrát
-                  </Link>
-                </Button>
-              </>
+              <Button asChild variant="bank" size="xl">
+                <Link to="/auth" search={{ mode: "register" }}>
+                  Som tu prvýkrát
+                </Link>
+              </Button>
             )}
           </div>
           <p className="mt-5 text-center text-sm text-muted-foreground">
-            {BANK_NAME.toUpperCase()} 1.0
+            {BANK_NAME.toUpperCase()} 3.27.7
           </p>
           <p className="mt-1 text-center text-sm text-muted-foreground">
             Aktuálny bankový deň: {formatShortDate(new Date())}
@@ -89,28 +93,17 @@ function Welcome() {
           aria-label="Rýchle odkazy"
           className="relative grid grid-cols-3 border-t border-border bg-canvas safe-bottom"
         >
-          <Link
-            to="/auth"
-            search={{ mode: "register" }}
-            className="flex flex-col items-center gap-1 py-3 text-sm text-muted-foreground hover:text-foreground"
-          >
-            <UserPlus className="h-7 w-7 text-primary" strokeWidth={1.4} />
-            Registrácia
-          </Link>
-          <Link
-            to="/kurzy"
-            className="flex flex-col items-center gap-1 py-3 text-sm text-muted-foreground hover:text-foreground"
-          >
-            <LineChart className="h-7 w-7 text-primary" strokeWidth={1.4} />
-            Kurzový lístok
-          </Link>
-          <Link
-            to="/kontakty"
-            className="flex flex-col items-center gap-1 py-3 text-sm text-muted-foreground hover:text-foreground"
-          >
-            <Phone className="h-7 w-7 text-primary" strokeWidth={1.4} />
-            Kontakty
-          </Link>
+          {QUICK_LINKS.map((item) => (
+            <Link
+              key={item.label}
+              to={item.to}
+              search={item.search}
+              className="flex flex-col items-center gap-1 py-3 text-center text-[0.8rem] leading-tight text-muted-foreground hover:text-foreground"
+            >
+              <item.icon className="h-7 w-7 text-primary" strokeWidth={1.4} />
+              {item.label}
+            </Link>
+          ))}
         </nav>
       </main>
     </div>
