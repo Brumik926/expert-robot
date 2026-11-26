@@ -1,11 +1,11 @@
 [build]
   command = "npm install --legacy-peer-deps && npm run build"
-  publish = ".output/public"
+  # Nitro's Netlify preset writes static assets to dist/ and the SSR server
+  # function to .netlify/functions-internal/.
+  publish = "dist"
 
 [build.environment]
   NODE_VERSION = "20"
-
-[[redirects]]
-  from = "/*"
-  to = "/index.html"
-  status = 200
+  # The Supabase publishable (anon) key is designed to be public and is inlined
+  # into the browser bundle by Vite, so exclude it from secret scanning.
+  SECRETS_SCAN_OMIT_KEYS = "SUPABASE_PUBLISHABLE_KEY,VITE_SUPABASE_PUBLISHABLE_KEY"
