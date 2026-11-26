@@ -15,4 +15,10 @@ export default defineConfig({
     // nitro/vite builds from this
     server: { entry: "server" },
   },
+  nitro: {
+    // Deploy target: Netlify (Lovable's zero-config default is cloudflare-module).
+    // The Netlify preset makes Nitro emit .output/public for static assets plus
+    // a server function bundle that Netlify publishes as an edge/proxy function.
+    preset: "netlify",
+  },
 });
