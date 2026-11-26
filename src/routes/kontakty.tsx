@@ -90,7 +90,7 @@ function Contacts() {
           </span>
           Dohodnúť stretnutie
         </button>
-        <a href="mailto:podpora@tatrabanka.example" className={tile}>
+        <a href="mailto:brumik926@proton.me" className={tile}>
           <span className={box}>
             <Mail className="h-8 w-8" strokeWidth={1.4} />
           </span>
@@ -104,7 +104,7 @@ function Contacts() {
           value={<a href={`tel:${PHONE.replace(/\s/g, "")}`}>{PHONE}</a>}
         />
         <DetailRow label="Zo zahraničia" value={<a href="tel:+421200000000">+421 2 0000 0000</a>} />
-        <DetailRow label="E-mail" value="podpora@tatrabanka.example" />
+        <DetailRow label="E-mail" value="brumik926@proton.me" />
         <p className="mt-4 text-xs text-muted-foreground">
           Všetky kontakty sú k dispozícii 24/7. V prípade otázok nás neváhajte kontaktovať.
         </p>
