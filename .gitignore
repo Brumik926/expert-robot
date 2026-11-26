@@ -19,6 +19,9 @@ dist-ssr
 # Local leftovers / scratch clones
 tatra-clone/
 
+# Netlify build output (Nitro netlify preset)
+.netlify/
+
 # Wrangler / Cloudflare
 .wrangler/
 .dev.vars
