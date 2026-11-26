@@ -28,12 +28,29 @@ function ResetPassword() {
   const [error, setError] = useState<string>();
   const [busy, setBusy] = useState(false);
   const [recovery, setRecovery] = useState(false);
+  const [linkError, setLinkError] = useState(false);
 
   useEffect(() => {
-    if (window.location.hash.includes("type=recovery")) setRecovery(true);
+    // Supabase sends the recovery token either in the hash (implicit flow) or
+    // as a ?code= query parameter (PKCE, the default). The client exchanges it
+    // automatically; we only have to notice that a recovery session exists.
+    const params = new URLSearchParams(window.location.search);
+    const hasRecoveryToken = window.location.hash.includes("type=recovery") || params.has("code");
+    if (hasRecoveryToken) setRecovery(true);
+
     const { data } = supabase.auth.onAuthStateChange((event) => {
       if (event === "PASSWORD_RECOVERY") setRecovery(true);
     });
+
+    // The token exchange can finish before the event fires; a session that
+    // exists while a recovery token was present means the link was accepted.
+    if (hasRecoveryToken) {
+      supabase.auth.getSession().then(({ data: sessionData }) => {
+        if (sessionData.session) setRecovery(true);
+        else setLinkError(true);
+      });
+    }
+
     return () => data.subscription.unsubscribe();
   }, []);
 
@@ -56,7 +73,9 @@ function ResetPassword() {
       <form onSubmit={submit} className="flex flex-col gap-4 px-5 pt-6">
         {!recovery ? (
           <p className="text-sm text-muted-foreground">
-            Otvorte túto stránku cez odkaz z e-mailu na obnovu hesla.
+            {linkError
+              ? "Odkaz na obnovu hesla je neplatný alebo expiroval. Požiadajte si nový cez „Zabudli ste heslo?“."
+              : "Otvorte túto stránku cez odkaz z e-mailu na obnovu hesla."}
           </p>
         ) : null}
         <TextField
