@@ -12,6 +12,14 @@ import {
   LineChart,
   Settings,
   LogOut,
+  Briefcase,
+  PiggyBank,
+  MapPin,
+  CreditCard as CreditCardIcon,
+  ShieldAlert,
+  Building,
+  Users,
+  Lock,
 } from "lucide-react";
 import { notificationsQuery, profileQuery } from "@/hooks/use-bank";
 import { NavRow } from "@/components/bank/rows";
@@ -120,6 +128,50 @@ function MenuPage() {
           label="Nastavenia"
           to="/nastavenia"
           className="border-b border-border"
+        />
+        <Group icon={<Briefcase className={ic} strokeWidth={1.4} />} label="Ponuky">
+          <NavRow label="Osobné financie" to="/kurzy" />
+          <NavRow label="Firemné financie" to="/kurzy" />
+          <NavRow label="Podnikateľské účty" to="/kurzy" />
+          <NavRow label="Parovanie platieb" to="/kurzy" />
+          <NavRow label="Termínované vklady" to="/kurzy" />
+          <NavRow label="Financovanie" to="/kurzy" />
+          <NavRow label="Kreditné karty" to="/karty" />
+          <NavRow label="Poistenia" to="/kurzy" />
+          <NavRow label="Platobné nástroje" to="/kurzy" />
+        </Group>
+        <Group icon={<Building className={ic} strokeWidth={1.4} />} label="Moja firma">
+          <NavRow label="Osobné účty" to="/kurzy" />
+          <NavRow label="Úvery" to="/kurzy" />
+          <NavRow label="Šetrenia a vklady" to="/kurzy" />
+          <NavRow label="Kreditné karty" to="/karty" />
+          <NavRow label="Poistenia" to="/kurzy" />
+          <NavRow label="Investície" to="/kurzy" />
+        </Group>
+        <NavRow
+          icon={<ShieldAlert className={ic} strokeWidth={1.4} />}
+          label="Úvery"
+          to="/kurzy"
+        />
+        <NavRow
+          icon={<MapPin className={ic} strokeWidth={1.4} />}
+          label="Služby pre podnikateľov"
+          to="/kurzy"
+        />
+        <NavRow
+          icon={<PiggyBank className={ic} strokeWidth={1.4} />}
+          label="DDS dôchodok"
+          to="/kurzy"
+        />
+        <NavRow
+          icon={<Users className={ic} strokeWidth={1.4} />}
+          label="Rodičovská záma"
+          to="/kurzy"
+        />
+        <NavRow
+          icon={<Lock className={ic} strokeWidth={1.4} />}
+          label="Poistné produkty"
+          to="/kurzy"
         />
         <NavRow
           icon={<LogOut className={ic} strokeWidth={1.4} />}
