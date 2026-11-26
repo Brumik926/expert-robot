@@ -8,11 +8,10 @@ export type ExecutePaymentResult =
   | { ok: false; error: string };
 
 /**
- * Executes a simulated transfer. Validation runs here and again inside the
+ * Executes a transfer. Validation runs here and again inside the
  * `execute_payment` database function, which locks the payer account, checks
  * funds and writes the balance + transaction atomically. The idempotency key
  * makes a repeated submit return the original transaction instead of paying twice.
- * Nothing is ever sent to a real banking system.
  */
 export const executePayment = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])

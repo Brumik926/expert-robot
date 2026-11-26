@@ -16,7 +16,7 @@ import {
 } from "@/hooks/use-bank";
 import { Section } from "@/components/bank/Section";
 import { HeaderIconButton } from "@/components/bank/PageHeader";
-import { VegaMark } from "@/components/bank/Logo";
+import { TatraMark } from "@/components/bank/Logo";
 import { Money } from "@/components/bank/Money";
 import { Iban } from "@/components/bank/Iban";
 import { Sparkline } from "@/components/bank/Sparkline";
@@ -38,7 +38,7 @@ export const Route = createFileRoute("/_authenticated/domov")({
       { title: "Domov – Tatra banka" },
       { name: "description", content: "Prehľad účtov, kariet, sporení a výdavkov." },
       { property: "og:title", content: "Domov – Tatra banka" },
-      { property: "og:description", content: "Prehľad účtov, kariet, sporení a výdavkov vo Vega banke." },
+      { property: "og:description", content: "Prehľad účtov, kariet, sporení a výdavkov vo Tatra banke." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
     ],
@@ -83,7 +83,7 @@ function Home() {
           </HeaderIconButton>
         </div>
         <div className="flex justify-center">
-          <VegaMark className="h-11 w-11 text-foreground" />
+          <TatraMark className="h-11 w-11 text-foreground" />
         </div>
         <div className="flex justify-end gap-5">
           <HeaderIconButton label="Kontakty" onClick={() => navigate({ to: "/kontakty" })}>

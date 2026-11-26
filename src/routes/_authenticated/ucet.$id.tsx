@@ -13,7 +13,7 @@ import { BalanceChart } from "@/components/bank/BalanceChart";
 import { RecipientAvatar } from "@/components/bank/Avatar";
 import { BottomSheet } from "@/components/bank/BottomSheet";
 import { TextField } from "@/components/bank/fields";
-import { VegaMark } from "@/components/bank/Logo";
+import { TatraMark } from "@/components/bank/Logo";
 import { Button } from "@/components/ui/button";
 import { balanceHistory } from "@/lib/stats";
 import { formatAmount, formatShortDate, formatTime } from "@/lib/format";
@@ -28,7 +28,7 @@ export const Route = createFileRoute("/_authenticated/ucet/$id")({
       { title: "Detail účtu – Tatra banka" },
       { name: "description", content: "Zostatok, IBAN, vývoj zostatkov a informácie o účte." },
       { property: "og:title", content: "Detail účtu – Tatra banka" },
-      { property: "og:description", content: "Detail účtu vo Vega banke." },
+      { property: "og:description", content: "Detail účtu vo Tatra banke." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
     ],
@@ -105,7 +105,7 @@ function AccountDetail() {
       <PageHeader title="Detail účtu" back />
       <section className="bank-section">
         <div className="bank-tile relative overflow-hidden px-6 py-7 text-center">
-          <VegaMark className="pointer-events-none absolute -right-6 -bottom-8 h-44 w-44 text-foreground/5" />
+          <TatraMark className="pointer-events-none absolute -right-6 -bottom-8 h-44 w-44 text-foreground/5" />
           <button type="button" aria-label="Premenovať účet" onClick={() => setRenameOpen(true)} className="absolute top-5 right-5 text-primary">
             <Pencil className="h-6 w-6" strokeWidth={1.5} />
           </button>
@@ -134,7 +134,7 @@ function AccountDetail() {
           <button
             type="button"
             onClick={() =>
-              shareText("Môj IBAN", `${account.name}\nIBAN: ${formatIban(account.iban)}\nBIC: VEGASKBX\n(Tatra banka – simulácia)`, "IBAN skopírovaný do schránky")
+              shareText("Môj IBAN", `${account.name}\nIBAN: ${formatIban(account.iban)}\nBIC: TATRAKBX`, "IBAN skopírovaný do schránky")
             }
             className="flex items-center justify-center gap-3 py-4 text-[1.05rem]"
           >
@@ -196,7 +196,7 @@ function AccountDetail() {
         <DetailRow label="Číslo účtu" value={<strong>{accountNumber}</strong>} />
         <DetailRow label="Mena" value={account.currency} />
         <DetailRow label="Typ účtu" value={account.account_type === "savings" ? "Sporiaci účet" : "Bežný účet"} />
-        <DetailRow label="SWIFT kód (BIC)" value="VEGASKBX" />
+        <DetailRow label="SWIFT kód (BIC)" value="TATRAKBX" />
       </Section>
 
       <BottomSheet open={renameOpen} onOpenChange={setRenameOpen} title="Premenovať účet">
@@ -234,7 +234,6 @@ function AccountDetail() {
               `IBAN: ${formatIban(account.iban)}`,
               amount ? `Suma: ${formatAmount(amount)} EUR` : "",
               reqMessage.trim() ? `Správa: ${reqMessage.trim().slice(0, 140)}` : "",
-              "(Tatra banka – simulácia)",
             ]
               .filter(Boolean)
               .join("\n");

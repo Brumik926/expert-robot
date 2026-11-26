@@ -1,7 +1,7 @@
 import forest from "@/assets/card-forest.webp.asset.json";
 import mono from "@/assets/card-mono.webp.asset.json";
 import { cn } from "@/lib/utils";
-import { VegaMark } from "./Logo";
+import { TatraMark } from "./Logo";
 import { Lock } from "lucide-react";
 
 const DESIGNS: Record<string, string> = { forest: forest.url, mono: mono.url };
@@ -32,7 +32,7 @@ export function CardVisual({ design, brand, cardType, holder, number, blocked, s
     >
       <img src={DESIGNS[design] ?? forest.url} alt="" className="absolute inset-0 h-full w-full object-cover" loading="lazy" />
       <div className={cn("absolute inset-0", dark ? "text-paper" : "text-ink")}>
-        <VegaMark className={cn("absolute", size === "sm" ? "top-1.5 left-1.5 h-4 w-4" : "top-4 left-4 h-9 w-9")} />
+        <TatraMark className={cn("absolute", size === "sm" ? "top-1.5 left-1.5 h-4 w-4" : "top-4 left-4 h-9 w-9")} />
         {size === "lg" ? (
           <>
             <div className="absolute top-[38%] left-[9%] h-[17%] w-[13%] rounded-md bg-gradient-to-br from-chart-6/90 to-chart-1/70 ring-1 ring-black/20" />

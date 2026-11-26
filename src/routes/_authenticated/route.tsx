@@ -24,7 +24,7 @@ function applyTheme(theme: string) {
   const dark = theme === "dark" || (theme === "system" && window.matchMedia("(prefers-color-scheme: dark)").matches);
   document.documentElement.classList.toggle("dark", dark);
   try {
-    localStorage.setItem("vega-theme", theme);
+    localStorage.setItem("tatra-theme", theme);
   } catch {
     // Storage may be unavailable (private mode); the theme still applies for this session.
   }

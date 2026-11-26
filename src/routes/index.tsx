@@ -2,22 +2,22 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { CircleHelp, LineChart, UserPlus, Phone } from "lucide-react";
 import art from "@/assets/welcome-art.webp.asset.json";
 import { Button } from "@/components/ui/button";
-import { VegaWordmark, BANK_NAME } from "@/components/bank/Logo";
+import { TatraWordmark, BANK_NAME } from "@/components/bank/Logo";
 import { useSession } from "@/hooks/use-session";
 import { formatShortDate } from "@/lib/format";
 
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "Tatra banka – vitajte v simulovanom bankovníctve" },
+      { title: "Tatra banka – vitajte v mobilnom bankovníctve" },
       {
         name: "description",
-        content: "Prihláste sa do demo mobilného bankovníctva Tatra banka: účty, karty, platby a prehľad výdavkov s fiktívnymi údajmi.",
+        content: "Prihláste sa do mobilného bankovníctva Tatra banka: účty, karty, platby a prehľad výdavkov.",
       },
-      { property: "og:title", content: "Tatra banka – vitajte v simulovanom bankovníctve" },
+      { property: "og:title", content: "Tatra banka – vitajte v mobilnom bankovníctve" },
       {
         property: "og:description",
-        content: "Demo mobilné bankovníctvo s fiktívnymi údajmi. Žiadne platby neodchádzajú do skutočných bánk.",
+        content: "Moderné mobilné bankovníctvo: účty, karty, platby a prehľad výdavkov.",
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
@@ -41,7 +41,7 @@ function Welcome() {
         </div>
 
         <div className="relative mt-[18dvh] flex justify-center animate-page-in">
-          <VegaWordmark />
+          <TatraWordmark />
         </div>
 
         <div className="relative mt-auto px-6 pb-6">
@@ -69,7 +69,7 @@ function Welcome() {
             )}
           </div>
           <p className="mt-5 text-center text-sm text-muted-foreground">
-            {BANK_NAME.toUpperCase()} 1.0 · simulácia, žiadne skutočné platby
+            {BANK_NAME.toUpperCase()} 1.0
           </p>
           <p className="mt-1 text-center text-sm text-muted-foreground">
             Aktuálny bankový deň: {formatShortDate(new Date())}

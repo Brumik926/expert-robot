@@ -64,7 +64,7 @@ function ErrorComponent({ error, reset }: ErrorComponentProps) {
 }
 
 // Applies the cached theme before paint so the dark/light choice never flashes.
-const themeInit = `(function(){try{var t=localStorage.getItem('vega-theme')||'dark';var d=t==='dark'||(t==='system'&&window.matchMedia('(prefers-color-scheme: dark)').matches);document.documentElement.classList.toggle('dark',d);}catch(e){}})();`;
+const themeInit = `(function(){try{var t=localStorage.getItem('tatra-theme')||'dark';var d=t==='dark'||(t==='system'&&window.matchMedia('(prefers-color-scheme: dark)').matches);document.documentElement.classList.toggle('dark',d);}catch(e){}})();`;
 
 export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()({
   head: () => ({
@@ -72,11 +72,11 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1, viewport-fit=cover" },
       { name: "theme-color", content: "#1c1e24" },
-      { title: "Tatra banka – simulované mobilné bankovníctvo" },
-      { name: "description", content: "Demo mobilné bankovníctvo s fiktívnymi údajmi a simulovanými platbami." },
+      { title: "Tatra banka – mobilné bankovníctvo" },
+      { name: "description", content: "Moderné mobilné bankovníctvo: účty, karty, platby a prehľad výdavkov." },
       { name: "author", content: "Tatra banka" },
-      { property: "og:title", content: "Tatra banka – simulované mobilné bankovníctvo" },
-      { property: "og:description", content: "Demo mobilné bankovníctvo s fiktívnymi údajmi a simulovanými platbami." },
+      { property: "og:title", content: "Tatra banka – mobilné bankovníctvo" },
+      { property: "og:description", content: "Moderné mobilné bankovníctvo: účty, karty, platby a prehľad výdavkov." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
     ],

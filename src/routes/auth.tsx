@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/button";
 import { TextField } from "@/components/bank/fields";
 import { PageHeader } from "@/components/bank/PageHeader";
 import { UnderlineTabs } from "@/components/bank/rows";
-import { VegaMark } from "@/components/bank/Logo";
+import { TatraMark } from "@/components/bank/Logo";
 import { bankErrorMessage } from "@/lib/errors";
 
 type Mode = "login" | "register" | "forgot";
@@ -150,7 +150,7 @@ function AuthPage() {
       ) : null}
       <form onSubmit={submit} noValidate className="flex flex-1 flex-col gap-4 px-5 pt-8 pb-8 animate-page-in">
         <div className="mb-4 flex items-center gap-3 text-muted-foreground">
-          <VegaMark className="h-8 w-8 text-foreground" />
+          <TatraMark className="h-8 w-8 text-foreground" />
           <p className="text-sm">
             {mode === "register"
               ? "Vytvorte si účet."
