@@ -38,11 +38,23 @@ function ErrorComponent({ error, reset }: ErrorComponentProps) {
     reportLovableError(error, { boundary: "tanstack_root_error_component" });
   }, [error]);
 
+  // A missing table means the database has no schema yet; the generic message
+  // would send people looking for a broken button instead.
+  const raw = error instanceof Error ? error.message : String(error ?? "");
+  const missingSchema =
+    raw.includes("Could not find the table") ||
+    raw.includes("schema cache") ||
+    raw.includes("does not exist");
+
   return (
     <div className="flex min-h-dvh items-center justify-center bg-canvas px-6">
       <div className="w-full max-w-md text-center">
         <h1 className="text-xl font-bold text-foreground">Stránku sa nepodarilo načítať</h1>
-        <p className="mt-2 text-sm text-muted-foreground">Niečo sa pokazilo. Skúste to znova.</p>
+        <p className="mt-2 text-sm text-muted-foreground">
+          {missingSchema
+            ? "Databáza aplikácie ešte nemá nasadenú schému. Spustite súbor docs/apply-schema.sql v Supabase Dashboardi (SQL Editor) a potom to skúste znova."
+            : "Niečo sa pokazilo. Skúste to znova."}
+        </p>
         <div className="mt-6 flex flex-col gap-3">
           <Button
             variant="bank"
