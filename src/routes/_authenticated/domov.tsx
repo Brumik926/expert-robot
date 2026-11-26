@@ -322,139 +322,155 @@ function CardsSection({
   return (
     <>
       <Section title="Karty" action={<Link to="/karty">Zoznam kariet</Link>}>
-      <div
-        ref={scroller}
-        onScroll={(e) => {
-          const el = e.currentTarget;
-          const i = Math.round(el.scrollLeft / (el.clientWidth * 0.72));
-          if (i !== index) setIndex(Math.max(0, Math.min(cards.length - 1, i)));
-        }}
-        className="no-scrollbar -mx-5 flex snap-x snap-mandatory gap-4 overflow-x-auto px-[14%]"
-      >
-        {cards.map((c) => (
-          <Link
-            key={c.id}
-            to="/karty/$id"
-            params={{ id: c.id }}
-            className="w-[72%] shrink-0 snap-center first:ml-0"
-          >
-            <CardVisual
-              design={c.design}
-              brand={c.brand}
-              cardType={c.card_type}
-              blocked={c.status === "blocked"}
+        <div
+          ref={scroller}
+          onScroll={(e) => {
+            const el = e.currentTarget;
+            const i = Math.round(el.scrollLeft / (el.clientWidth * 0.72));
+            if (i !== index) setIndex(Math.max(0, Math.min(cards.length - 1, i)));
+          }}
+          className="no-scrollbar -mx-5 flex snap-x snap-mandatory gap-4 overflow-x-auto px-[14%]"
+        >
+          {cards.map((c) => (
+            <Link
+              key={c.id}
+              to="/karty/$id"
+              params={{ id: c.id }}
+              className="w-[72%] shrink-0 snap-center first:ml-0"
+            >
+              <CardVisual
+                design={c.design}
+                brand={c.brand}
+                cardType={c.card_type}
+                blocked={c.status === "blocked"}
+              />
+            </Link>
+          ))}
+        </div>
+        <div className="mt-4 flex justify-center gap-2" aria-hidden="true">
+          {cards.map((c, i) => (
+            <span
+              key={c.id}
+              className={
+                i === index
+                  ? "h-2.5 w-2.5 rounded-full bg-primary"
+                  : "h-2 w-2 rounded-full bg-muted-foreground/50"
+              }
             />
+          ))}
+        </div>
+        <div className="mt-5 grid grid-cols-[minmax(0,1fr)_auto] gap-4">
+          <div className="min-w-0">
+            <h3 className="truncate text-[1.2rem] font-bold">{card.name}</h3>
+            <p className="mt-1 text-muted-foreground tabular-nums">{card.masked_number}</p>
+          </div>
+          <div className="text-right">
+            <Money value={available} sensitive className="text-[1.3rem] font-bold" />
+            {isCredit ? (
+              <>
+                <div className="mt-2 h-2 w-40 overflow-hidden rounded-full bg-muted">
+                  <div
+                    className="h-full rounded-full bg-primary"
+                    style={{ width: `${limit ? (available / limit) * 100 : 0}%` }}
+                  />
+                </div>
+                <p className="mt-1.5 text-sm text-muted-foreground">
+                  Z úver. rámca {formatAmount(limit)} EUR
+                </p>
+              </>
+            ) : (
+              <p className="mt-1 text-sm text-muted-foreground">Disponibilný zostatok</p>
+            )}
+          </div>
+        </div>
+        <div className="mt-5 grid grid-cols-2 border-t border-border pt-4">
+          <label className="flex items-center justify-center gap-3 text-[1.05rem]">
+            <Globe className="h-6 w-6 text-primary" strokeWidth={1.5} />
+            <span>Internet</span>
+            <Switch
+              checked={card.internet_payments}
+              disabled={toggle.isPending || card.status === "blocked"}
+              onCheckedChange={(v) =>
+                toggle.mutate(
+                  { id: card.id, internet_payments: v },
+                  {
+                    onSuccess: () =>
+                      toast.success(
+                        v ? "Internetové platby zapnuté" : "Internetové platby vypnuté",
+                      ),
+                    onError: (e) => toast.error(bankErrorMessage(e)),
+                  },
+                )
+              }
+              aria-label="Internetové platby"
+            />
+          </label>
+          <Link
+            to="/karty/$id"
+            params={{ id: card.id }}
+            className="flex items-center justify-center gap-3 text-[1.05rem]"
+          >
+            <SlidersHorizontal className="h-6 w-6 text-primary" strokeWidth={1.5} />
+            Limity karty
           </Link>
-        ))}
-      </div>
-      <div className="mt-4 flex justify-center gap-2" aria-hidden="true">
-        {cards.map((c, i) => (
-          <span
-            key={c.id}
-            className={
-              i === index
-                ? "h-2.5 w-2.5 rounded-full bg-primary"
-                : "h-2 w-2 rounded-full bg-muted-foreground/50"
-            }
-          />
-        ))}
-      </div>
-      <div className="mt-5 grid grid-cols-[minmax(0,1fr)_auto] gap-4">
-        <div className="min-w-0">
-          <h3 className="truncate text-[1.2rem] font-bold">{card.name}</h3>
-          <p className="mt-1 text-muted-foreground tabular-nums">{card.masked_number}</p>
         </div>
-        <div className="text-right">
-          <Money value={available} sensitive className="text-[1.3rem] font-bold" />
-          {isCredit ? (
-            <>
-              <div className="mt-2 h-2 w-40 overflow-hidden rounded-full bg-muted">
-                <div
-                  className="h-full rounded-full bg-primary"
-                  style={{ width: `${limit ? (available / limit) * 100 : 0}%` }}
-                />
+      </Section>
+
+      <Section
+        title="Moje produkty"
+        action={
+          <Link to="/uvery" className="text-link">
+            Úvery
+          </Link>
+        }
+      >
+        <div className="grid grid-cols-2 gap-4">
+          <Link
+            key="uvery-1"
+            to="/uvery"
+            className="flex flex-col items-center justify-center gap-3 p-5 rounded-2xl border border-border bg-background"
+          >
+            <div className="relative w-full h-24 rounded-xl bg-primary overflow-hidden">
+              <svg
+                className="absolute inset-0 w-full h-full fill-current opacity-10"
+                viewBox="0 0 100 100"
+                preserveAspectRatio="none"
+              >
+                <path d="M0 100 Q50 0 100 100 T0 100" />
+              </svg>
+              <div className="absolute top-4 left-4">
+                <TatraMark className="h-8 w-8 text-white" />
               </div>
-              <p className="mt-1.5 text-sm text-muted-foreground">
-                Z úver. rámca {formatAmount(limit)} EUR
-              </p>
-            </>
-          ) : (
-            <p className="mt-1 text-sm text-muted-foreground">Disponibilný zostatok</p>
-          )}
+              <div className="absolute bottom-4 left-4">
+                <h3 className="text-white font-bold text-lg">Úvery</h3>
+                <p className="text-white/90 text-sm">Prehľad vašich úverov</p>
+              </div>
+            </div>
+          </Link>
+          <Link
+            key="pobocky-1"
+            to="/kontakty"
+            className="flex flex-col items-center justify-center gap-3 p-5 rounded-2xl border border-border bg-background"
+          >
+            <div className="relative w-full h-24 rounded-xl border-2 border-border bg-white overflow-hidden">
+              <svg
+                className="absolute inset-0 w-full h-full text-border opacity-30"
+                viewBox="0 0 100 100"
+                preserveAspectRatio="none"
+              >
+                <path d="M0 0 H100 V100 H0 V0 Z M20 20 H80 V80 H20 V20 Z M40 40 H60 V60 H40 V40 Z" />
+              </svg>
+              <div className="absolute top-4 left-4 text-primary">
+                <Map className="h-8 w-8" strokeWidth={1.5} />
+              </div>
+              <div className="absolute bottom-4 left-4">
+                <h3 className="text-foreground font-bold text-lg">Pobočky a bankomaty</h3>
+                <p className="text-muted-foreground text-sm">Najbližšie pobočky a bankomaty</p>
+              </div>
+            </div>
+          </Link>
         </div>
-      </div>
-      <div className="mt-5 grid grid-cols-2 border-t border-border pt-4">
-        <label className="flex items-center justify-center gap-3 text-[1.05rem]">
-          <Globe className="h-6 w-6 text-primary" strokeWidth={1.5} />
-          <span>Internet</span>
-          <Switch
-            checked={card.internet_payments}
-            disabled={toggle.isPending || card.status === "blocked"}
-            onCheckedChange={(v) =>
-              toggle.mutate(
-                { id: card.id, internet_payments: v },
-                {
-                  onSuccess: () =>
-                    toast.success(v ? "Internetové platby zapnuté" : "Internetové platby vypnuté"),
-                  onError: (e) => toast.error(bankErrorMessage(e)),
-                },
-              )
-            }
-            aria-label="Internetové platby"
-          />
-        </label>
-        <Link
-          to="/karty/$id"
-          params={{ id: card.id }}
-          className="flex items-center justify-center gap-3 text-[1.05rem]"
-        >
-          <SlidersHorizontal className="h-6 w-6 text-primary" strokeWidth={1.5} />
-          Limity karty
-        </Link>
-      </div>
-    </Section>
-
-    <Section title="Moje produkty" action={<Link to="/uvery" className="text-link">Úvery</Link>}>
-      <div className="grid grid-cols-2 gap-4">
-        <Link
-          key="uvery-1"
-          to="/uvery"
-          className="flex flex-col items-center justify-center gap-3 p-5 rounded-2xl border border-border bg-background"
-        >
-          <div className="relative w-full h-24 rounded-xl bg-primary overflow-hidden">
-            <svg className="absolute inset-0 w-full h-full fill-current opacity-10" viewBox="0 0 100 100" preserveAspectRatio="none">
-              <path d="M0 100 Q50 0 100 100 T0 100" />
-            </svg>
-            <div className="absolute top-4 left-4">
-              <TatraMark className="h-8 w-8 text-white" />
-            </div>
-            <div className="absolute bottom-4 left-4">
-              <h3 className="text-white font-bold text-lg">Úvery</h3>
-              <p className="text-white/90 text-sm">Prehľad vašich úverov</p>
-            </div>
-          </div>
-        </Link>
-        <Link
-          key="pobocky-1"
-          to="/kontakty"
-          className="flex flex-col items-center justify-center gap-3 p-5 rounded-2xl border border-border bg-background"
-        >
-          <div className="relative w-full h-24 rounded-xl border-2 border-border bg-white overflow-hidden">
-            <svg className="absolute inset-0 w-full h-full text-border opacity-30" viewBox="0 0 100 100" preserveAspectRatio="none">
-              <path d="M0 0 H100 V100 H0 V0 Z M20 20 H80 V80 H20 V20 Z M40 40 H60 V60 H40 V40 Z" />
-            </svg>
-            <div className="absolute top-4 left-4 text-primary">
-              <Map className="h-8 w-8" strokeWidth={1.5} />
-            </div>
-            <div className="absolute bottom-4 left-4">
-              <h3 className="text-foreground font-bold text-lg">Pobočky a bankomaty</h3>
-              <p className="text-muted-foreground text-sm">Najbližšie pobočky a bankomaty</p>
-            </div>
-          </div>
-        </Link>
-      </div>
-    </Section>
+      </Section>
     </>
-
   );
 }

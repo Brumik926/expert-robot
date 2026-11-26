@@ -148,11 +148,7 @@ function MenuPage() {
           <NavRow label="Poistenia" to="/kurzy" />
           <NavRow label="Investície" to="/kurzy" />
         </Group>
-        <NavRow
-          icon={<ShieldAlert className={ic} strokeWidth={1.4} />}
-          label="Úvery"
-          to="/kurzy"
-        />
+        <NavRow icon={<ShieldAlert className={ic} strokeWidth={1.4} />} label="Úvery" to="/kurzy" />
         <NavRow
           icon={<MapPin className={ic} strokeWidth={1.4} />}
           label="Služby pre podnikateľov"

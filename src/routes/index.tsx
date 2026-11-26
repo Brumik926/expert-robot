@@ -1,5 +1,12 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { Building2, LineChart, MessageCircle, Sparkles, LayoutGrid, PlayCircle } from "lucide-react";
+import {
+  Building2,
+  LineChart,
+  MessageCircle,
+  Sparkles,
+  LayoutGrid,
+  PlayCircle,
+} from "lucide-react";
 import art from "@/assets/welcome-art.webp.asset.json";
 import { Button } from "@/components/ui/button";
 import { BANK_NAME } from "@/components/bank/Logo";

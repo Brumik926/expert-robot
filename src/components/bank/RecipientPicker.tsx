@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 import { BottomSheet } from "./BottomSheet";
 import { SearchField } from "./fields";
 import { UnderlineTabs, EmptyState } from "./rows";
@@ -28,15 +28,18 @@ export function RecipientPicker({
 }) {
   const [tab, setTab] = useState<Tab>("prijemcovia");
   const [q, setQ] = useState("");
-  const match = (name: string, iban: string) => {
-    const s = q.trim().toLowerCase();
-    return !s || name.toLowerCase().includes(s) || iban.includes(normalizeIban(q));
-  };
-  const rs = useMemo(() => recipients.filter((r) => match(r.name, r.iban)), [recipients, q]); // eslint-disable-line react-hooks/exhaustive-deps
+  const match = useCallback(
+    (name: string, iban: string) => {
+      const s = q.trim().toLowerCase();
+      return !s || name.toLowerCase().includes(s) || iban.includes(normalizeIban(q));
+    },
+    [q],
+  );
+  const rs = useMemo(() => recipients.filter((r) => match(r.name, r.iban)), [recipients, match]);
   const ts = useMemo(
     () => templates.filter((t) => match(t.name + " " + t.recipient_name, t.iban)),
-    [templates, q],
-  ); // eslint-disable-line react-hooks/exhaustive-deps
+    [templates, match],
+  );
 
   return (
     <BottomSheet open={open} onOpenChange={onOpenChange} title="Vyberte príjemcu">
