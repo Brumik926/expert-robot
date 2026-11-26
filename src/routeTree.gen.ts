@@ -15,17 +15,24 @@ import { Route as AuthRouteImport } from './routes/auth'
 import { Route as KontaktyRouteImport } from './routes/kontakty'
 import { Route as KurzyRouteImport } from './routes/kurzy'
 import { Route as ResetPasswordRouteImport } from './routes/reset-password'
+import { Route as AuthenticatedDdsRouteImport } from './routes/_authenticated/dds'
 import { Route as AuthenticatedDomovRouteImport } from './routes/_authenticated/domov'
 import { Route as AuthenticatedMafinRouteImport } from './routes/_authenticated/mafin'
 import { Route as AuthenticatedMenuRouteImport } from './routes/_authenticated/menu'
+import { Route as AuthenticatedMojaFirmaRouteImport } from './routes/_authenticated/moja-firma'
 import { Route as AuthenticatedNastaveniaRouteImport } from './routes/_authenticated/nastavenia'
 import { Route as AuthenticatedNotifikacieRouteImport } from './routes/_authenticated/notifikacie'
 import { Route as AuthenticatedPlatbaRouteImport } from './routes/_authenticated/platba'
 import { Route as AuthenticatedPohybyRouteImport } from './routes/_authenticated/pohyby'
+import { Route as AuthenticatedPoistneProduktyRouteImport } from './routes/_authenticated/poistne-produkty'
+import { Route as AuthenticatedPonukyRouteImport } from './routes/_authenticated/ponuky'
 import { Route as AuthenticatedPrijemcoviaRouteImport } from './routes/_authenticated/prijemcovia'
 import { Route as AuthenticatedProfilRouteImport } from './routes/_authenticated/profil'
+import { Route as AuthenticatedRodicovskaZamaRouteImport } from './routes/_authenticated/rodicovska-zama'
 import { Route as AuthenticatedSablonyRouteImport } from './routes/_authenticated/sablony'
+import { Route as AuthenticatedSluzbyRouteImport } from './routes/_authenticated/sluzby'
 import { Route as AuthenticatedTrvalePrikazyRouteImport } from './routes/_authenticated/trvale-prikazy'
+import { Route as AuthenticatedUveryRouteImport } from './routes/_authenticated/uvery'
 import { Route as AuthenticatedKartyIndexRouteImport } from './routes/_authenticated/karty.index'
 import { Route as AuthenticatedKartyIdRouteImport } from './routes/_authenticated/karty.$id'
 import { Route as AuthenticatedTransakciaIdRouteImport } from './routes/_authenticated/transakcia.$id'
@@ -60,6 +67,11 @@ const ResetPasswordRoute = ResetPasswordRouteImport.update({
   path: '/reset-password',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AuthenticatedDdsRoute = AuthenticatedDdsRouteImport.update({
+  id: '/dds',
+  path: '/dds',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
 const AuthenticatedDomovRoute = AuthenticatedDomovRouteImport.update({
   id: '/domov',
   path: '/domov',
@@ -73,6 +85,11 @@ const AuthenticatedMafinRoute = AuthenticatedMafinRouteImport.update({
 const AuthenticatedMenuRoute = AuthenticatedMenuRouteImport.update({
   id: '/menu',
   path: '/menu',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthenticatedMojaFirmaRoute = AuthenticatedMojaFirmaRouteImport.update({
+  id: '/moja-firma',
+  path: '/moja-firma',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
 const AuthenticatedNastaveniaRoute = AuthenticatedNastaveniaRouteImport.update({
@@ -96,6 +113,17 @@ const AuthenticatedPohybyRoute = AuthenticatedPohybyRouteImport.update({
   path: '/pohyby',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const AuthenticatedPoistneProduktyRoute =
+  AuthenticatedPoistneProduktyRouteImport.update({
+    id: '/poistne-produkty',
+    path: '/poistne-produkty',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
+const AuthenticatedPonukyRoute = AuthenticatedPonukyRouteImport.update({
+  id: '/ponuky',
+  path: '/ponuky',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
 const AuthenticatedPrijemcoviaRoute =
   AuthenticatedPrijemcoviaRouteImport.update({
     id: '/prijemcovia',
@@ -107,9 +135,20 @@ const AuthenticatedProfilRoute = AuthenticatedProfilRouteImport.update({
   path: '/profil',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const AuthenticatedRodicovskaZamaRoute =
+  AuthenticatedRodicovskaZamaRouteImport.update({
+    id: '/rodicovska-zama',
+    path: '/rodicovska-zama',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
 const AuthenticatedSablonyRoute = AuthenticatedSablonyRouteImport.update({
   id: '/sablony',
   path: '/sablony',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthenticatedSluzbyRoute = AuthenticatedSluzbyRouteImport.update({
+  id: '/sluzby',
+  path: '/sluzby',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
 const AuthenticatedTrvalePrikazyRoute =
@@ -118,6 +157,11 @@ const AuthenticatedTrvalePrikazyRoute =
     path: '/trvale-prikazy',
     getParentRoute: () => AuthenticatedRouteRoute,
   } as any)
+const AuthenticatedUveryRoute = AuthenticatedUveryRouteImport.update({
+  id: '/uvery',
+  path: '/uvery',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
 const AuthenticatedKartyIndexRoute = AuthenticatedKartyIndexRouteImport.update({
   id: '/karty/',
   path: '/karty/',
@@ -146,17 +190,24 @@ export interface FileRoutesByFullPath {
   '/kontakty': typeof KontaktyRoute
   '/kurzy': typeof KurzyRoute
   '/reset-password': typeof ResetPasswordRoute
+  '/dds': typeof AuthenticatedDdsRoute
   '/domov': typeof AuthenticatedDomovRoute
   '/mafin': typeof AuthenticatedMafinRoute
   '/menu': typeof AuthenticatedMenuRoute
+  '/moja-firma': typeof AuthenticatedMojaFirmaRoute
   '/nastavenia': typeof AuthenticatedNastaveniaRoute
   '/notifikacie': typeof AuthenticatedNotifikacieRoute
   '/platba': typeof AuthenticatedPlatbaRoute
   '/pohyby': typeof AuthenticatedPohybyRoute
+  '/poistne-produkty': typeof AuthenticatedPoistneProduktyRoute
+  '/ponuky': typeof AuthenticatedPonukyRoute
   '/prijemcovia': typeof AuthenticatedPrijemcoviaRoute
   '/profil': typeof AuthenticatedProfilRoute
+  '/rodicovska-zama': typeof AuthenticatedRodicovskaZamaRoute
   '/sablony': typeof AuthenticatedSablonyRoute
+  '/sluzby': typeof AuthenticatedSluzbyRoute
   '/trvale-prikazy': typeof AuthenticatedTrvalePrikazyRoute
+  '/uvery': typeof AuthenticatedUveryRoute
   '/karty/$id': typeof AuthenticatedKartyIdRoute
   '/transakcia/$id': typeof AuthenticatedTransakciaIdRoute
   '/ucet/$id': typeof AuthenticatedUcetIdRoute
@@ -168,17 +219,24 @@ export interface FileRoutesByTo {
   '/kontakty': typeof KontaktyRoute
   '/kurzy': typeof KurzyRoute
   '/reset-password': typeof ResetPasswordRoute
+  '/dds': typeof AuthenticatedDdsRoute
   '/domov': typeof AuthenticatedDomovRoute
   '/mafin': typeof AuthenticatedMafinRoute
   '/menu': typeof AuthenticatedMenuRoute
+  '/moja-firma': typeof AuthenticatedMojaFirmaRoute
   '/nastavenia': typeof AuthenticatedNastaveniaRoute
   '/notifikacie': typeof AuthenticatedNotifikacieRoute
   '/platba': typeof AuthenticatedPlatbaRoute
   '/pohyby': typeof AuthenticatedPohybyRoute
+  '/poistne-produkty': typeof AuthenticatedPoistneProduktyRoute
+  '/ponuky': typeof AuthenticatedPonukyRoute
   '/prijemcovia': typeof AuthenticatedPrijemcoviaRoute
   '/profil': typeof AuthenticatedProfilRoute
+  '/rodicovska-zama': typeof AuthenticatedRodicovskaZamaRoute
   '/sablony': typeof AuthenticatedSablonyRoute
+  '/sluzby': typeof AuthenticatedSluzbyRoute
   '/trvale-prikazy': typeof AuthenticatedTrvalePrikazyRoute
+  '/uvery': typeof AuthenticatedUveryRoute
   '/karty/$id': typeof AuthenticatedKartyIdRoute
   '/transakcia/$id': typeof AuthenticatedTransakciaIdRoute
   '/ucet/$id': typeof AuthenticatedUcetIdRoute
@@ -192,17 +250,24 @@ export interface FileRoutesById {
   '/kontakty': typeof KontaktyRoute
   '/kurzy': typeof KurzyRoute
   '/reset-password': typeof ResetPasswordRoute
+  '/_authenticated/dds': typeof AuthenticatedDdsRoute
   '/_authenticated/domov': typeof AuthenticatedDomovRoute
   '/_authenticated/mafin': typeof AuthenticatedMafinRoute
   '/_authenticated/menu': typeof AuthenticatedMenuRoute
+  '/_authenticated/moja-firma': typeof AuthenticatedMojaFirmaRoute
   '/_authenticated/nastavenia': typeof AuthenticatedNastaveniaRoute
   '/_authenticated/notifikacie': typeof AuthenticatedNotifikacieRoute
   '/_authenticated/platba': typeof AuthenticatedPlatbaRoute
   '/_authenticated/pohyby': typeof AuthenticatedPohybyRoute
+  '/_authenticated/poistne-produkty': typeof AuthenticatedPoistneProduktyRoute
+  '/_authenticated/ponuky': typeof AuthenticatedPonukyRoute
   '/_authenticated/prijemcovia': typeof AuthenticatedPrijemcoviaRoute
   '/_authenticated/profil': typeof AuthenticatedProfilRoute
+  '/_authenticated/rodicovska-zama': typeof AuthenticatedRodicovskaZamaRoute
   '/_authenticated/sablony': typeof AuthenticatedSablonyRoute
+  '/_authenticated/sluzby': typeof AuthenticatedSluzbyRoute
   '/_authenticated/trvale-prikazy': typeof AuthenticatedTrvalePrikazyRoute
+  '/_authenticated/uvery': typeof AuthenticatedUveryRoute
   '/_authenticated/karty/$id': typeof AuthenticatedKartyIdRoute
   '/_authenticated/transakcia/$id': typeof AuthenticatedTransakciaIdRoute
   '/_authenticated/ucet/$id': typeof AuthenticatedUcetIdRoute
@@ -216,17 +281,24 @@ export interface FileRouteTypes {
     | '/kontakty'
     | '/kurzy'
     | '/reset-password'
+    | '/dds'
     | '/domov'
     | '/mafin'
     | '/menu'
+    | '/moja-firma'
     | '/nastavenia'
     | '/notifikacie'
     | '/platba'
     | '/pohyby'
+    | '/poistne-produkty'
+    | '/ponuky'
     | '/prijemcovia'
     | '/profil'
+    | '/rodicovska-zama'
     | '/sablony'
+    | '/sluzby'
     | '/trvale-prikazy'
+    | '/uvery'
     | '/karty/$id'
     | '/transakcia/$id'
     | '/ucet/$id'
@@ -238,17 +310,24 @@ export interface FileRouteTypes {
     | '/kontakty'
     | '/kurzy'
     | '/reset-password'
+    | '/dds'
     | '/domov'
     | '/mafin'
     | '/menu'
+    | '/moja-firma'
     | '/nastavenia'
     | '/notifikacie'
     | '/platba'
     | '/pohyby'
+    | '/poistne-produkty'
+    | '/ponuky'
     | '/prijemcovia'
     | '/profil'
+    | '/rodicovska-zama'
     | '/sablony'
+    | '/sluzby'
     | '/trvale-prikazy'
+    | '/uvery'
     | '/karty/$id'
     | '/transakcia/$id'
     | '/ucet/$id'
@@ -261,17 +340,24 @@ export interface FileRouteTypes {
     | '/kontakty'
     | '/kurzy'
     | '/reset-password'
+    | '/_authenticated/dds'
     | '/_authenticated/domov'
     | '/_authenticated/mafin'
     | '/_authenticated/menu'
+    | '/_authenticated/moja-firma'
     | '/_authenticated/nastavenia'
     | '/_authenticated/notifikacie'
     | '/_authenticated/platba'
     | '/_authenticated/pohyby'
+    | '/_authenticated/poistne-produkty'
+    | '/_authenticated/ponuky'
     | '/_authenticated/prijemcovia'
     | '/_authenticated/profil'
+    | '/_authenticated/rodicovska-zama'
     | '/_authenticated/sablony'
+    | '/_authenticated/sluzby'
     | '/_authenticated/trvale-prikazy'
+    | '/_authenticated/uvery'
     | '/_authenticated/karty/$id'
     | '/_authenticated/transakcia/$id'
     | '/_authenticated/ucet/$id'
@@ -331,6 +417,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ResetPasswordRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/_authenticated/dds': {
+      id: '/_authenticated/dds'
+      path: '/dds'
+      fullPath: '/dds'
+      preLoaderRoute: typeof AuthenticatedDdsRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/domov': {
       id: '/_authenticated/domov'
       path: '/domov'
@@ -350,6 +443,13 @@ declare module '@tanstack/react-router' {
       path: '/menu'
       fullPath: '/menu'
       preLoaderRoute: typeof AuthenticatedMenuRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/moja-firma': {
+      id: '/_authenticated/moja-firma'
+      path: '/moja-firma'
+      fullPath: '/moja-firma'
+      preLoaderRoute: typeof AuthenticatedMojaFirmaRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
     '/_authenticated/nastavenia': {
@@ -380,6 +480,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedPohybyRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/poistne-produkty': {
+      id: '/_authenticated/poistne-produkty'
+      path: '/poistne-produkty'
+      fullPath: '/poistne-produkty'
+      preLoaderRoute: typeof AuthenticatedPoistneProduktyRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/ponuky': {
+      id: '/_authenticated/ponuky'
+      path: '/ponuky'
+      fullPath: '/ponuky'
+      preLoaderRoute: typeof AuthenticatedPonukyRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/prijemcovia': {
       id: '/_authenticated/prijemcovia'
       path: '/prijemcovia'
@@ -394,6 +508,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedProfilRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/rodicovska-zama': {
+      id: '/_authenticated/rodicovska-zama'
+      path: '/rodicovska-zama'
+      fullPath: '/rodicovska-zama'
+      preLoaderRoute: typeof AuthenticatedRodicovskaZamaRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/sablony': {
       id: '/_authenticated/sablony'
       path: '/sablony'
@@ -401,11 +522,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedSablonyRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/sluzby': {
+      id: '/_authenticated/sluzby'
+      path: '/sluzby'
+      fullPath: '/sluzby'
+      preLoaderRoute: typeof AuthenticatedSluzbyRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/trvale-prikazy': {
       id: '/_authenticated/trvale-prikazy'
       path: '/trvale-prikazy'
       fullPath: '/trvale-prikazy'
       preLoaderRoute: typeof AuthenticatedTrvalePrikazyRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/uvery': {
+      id: '/_authenticated/uvery'
+      path: '/uvery'
+      fullPath: '/uvery'
+      preLoaderRoute: typeof AuthenticatedUveryRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
     '/_authenticated/karty/': {
@@ -440,17 +575,24 @@ declare module '@tanstack/react-router' {
 }
 
 interface AuthenticatedRouteRouteChildren {
+  AuthenticatedDdsRoute: typeof AuthenticatedDdsRoute
   AuthenticatedDomovRoute: typeof AuthenticatedDomovRoute
   AuthenticatedMafinRoute: typeof AuthenticatedMafinRoute
   AuthenticatedMenuRoute: typeof AuthenticatedMenuRoute
+  AuthenticatedMojaFirmaRoute: typeof AuthenticatedMojaFirmaRoute
   AuthenticatedNastaveniaRoute: typeof AuthenticatedNastaveniaRoute
   AuthenticatedNotifikacieRoute: typeof AuthenticatedNotifikacieRoute
   AuthenticatedPlatbaRoute: typeof AuthenticatedPlatbaRoute
   AuthenticatedPohybyRoute: typeof AuthenticatedPohybyRoute
+  AuthenticatedPoistneProduktyRoute: typeof AuthenticatedPoistneProduktyRoute
+  AuthenticatedPonukyRoute: typeof AuthenticatedPonukyRoute
   AuthenticatedPrijemcoviaRoute: typeof AuthenticatedPrijemcoviaRoute
   AuthenticatedProfilRoute: typeof AuthenticatedProfilRoute
+  AuthenticatedRodicovskaZamaRoute: typeof AuthenticatedRodicovskaZamaRoute
   AuthenticatedSablonyRoute: typeof AuthenticatedSablonyRoute
+  AuthenticatedSluzbyRoute: typeof AuthenticatedSluzbyRoute
   AuthenticatedTrvalePrikazyRoute: typeof AuthenticatedTrvalePrikazyRoute
+  AuthenticatedUveryRoute: typeof AuthenticatedUveryRoute
   AuthenticatedKartyIdRoute: typeof AuthenticatedKartyIdRoute
   AuthenticatedTransakciaIdRoute: typeof AuthenticatedTransakciaIdRoute
   AuthenticatedUcetIdRoute: typeof AuthenticatedUcetIdRoute
@@ -458,17 +600,24 @@ interface AuthenticatedRouteRouteChildren {
 }
 
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
+  AuthenticatedDdsRoute: AuthenticatedDdsRoute,
   AuthenticatedDomovRoute: AuthenticatedDomovRoute,
   AuthenticatedMafinRoute: AuthenticatedMafinRoute,
   AuthenticatedMenuRoute: AuthenticatedMenuRoute,
+  AuthenticatedMojaFirmaRoute: AuthenticatedMojaFirmaRoute,
   AuthenticatedNastaveniaRoute: AuthenticatedNastaveniaRoute,
   AuthenticatedNotifikacieRoute: AuthenticatedNotifikacieRoute,
   AuthenticatedPlatbaRoute: AuthenticatedPlatbaRoute,
   AuthenticatedPohybyRoute: AuthenticatedPohybyRoute,
+  AuthenticatedPoistneProduktyRoute: AuthenticatedPoistneProduktyRoute,
+  AuthenticatedPonukyRoute: AuthenticatedPonukyRoute,
   AuthenticatedPrijemcoviaRoute: AuthenticatedPrijemcoviaRoute,
   AuthenticatedProfilRoute: AuthenticatedProfilRoute,
+  AuthenticatedRodicovskaZamaRoute: AuthenticatedRodicovskaZamaRoute,
   AuthenticatedSablonyRoute: AuthenticatedSablonyRoute,
+  AuthenticatedSluzbyRoute: AuthenticatedSluzbyRoute,
   AuthenticatedTrvalePrikazyRoute: AuthenticatedTrvalePrikazyRoute,
+  AuthenticatedUveryRoute: AuthenticatedUveryRoute,
   AuthenticatedKartyIdRoute: AuthenticatedKartyIdRoute,
   AuthenticatedTransakciaIdRoute: AuthenticatedTransakciaIdRoute,
   AuthenticatedUcetIdRoute: AuthenticatedUcetIdRoute,

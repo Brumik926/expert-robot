@@ -1,7 +1,7 @@
 import { useMemo, useRef, useState } from "react";
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useSuspenseQuery } from "@tanstack/react-query";
-import { Mail, Phone, Pencil, Info, Globe, SlidersHorizontal } from "lucide-react";
+import { Mail, Phone, Pencil, Info, Globe, SlidersHorizontal, Map } from "lucide-react";
 import { toast } from "sonner";
 import {
   accountsQuery,
@@ -320,7 +320,8 @@ function CardsSection({
   const limit = Number(card.credit_limit ?? 0);
 
   return (
-    <Section title="Karty" action={<Link to="/karty">Zoznam kariet</Link>}>
+    <>
+      <Section title="Karty" action={<Link to="/karty">Zoznam kariet</Link>}>
       <div
         ref={scroller}
         onScroll={(e) => {
@@ -412,5 +413,48 @@ function CardsSection({
         </Link>
       </div>
     </Section>
+
+    <Section title="Moje produkty" action={<Link to="/uvery" className="text-link">Úvery</Link>}>
+      <div className="grid grid-cols-2 gap-4">
+        <Link
+          key="uvery-1"
+          to="/uvery"
+          className="flex flex-col items-center justify-center gap-3 p-5 rounded-2xl border border-border bg-background"
+        >
+          <div className="relative w-full h-24 rounded-xl bg-primary overflow-hidden">
+            <svg className="absolute inset-0 w-full h-full fill-current opacity-10" viewBox="0 0 100 100" preserveAspectRatio="none">
+              <path d="M0 100 Q50 0 100 100 T0 100" />
+            </svg>
+            <div className="absolute top-4 left-4">
+              <TatraMark className="h-8 w-8 text-white" />
+            </div>
+            <div className="absolute bottom-4 left-4">
+              <h3 className="text-white font-bold text-lg">Úvery</h3>
+              <p className="text-white/90 text-sm">Prehľad vašich úverov</p>
+            </div>
+          </div>
+        </Link>
+        <Link
+          key="pobocky-1"
+          to="/kontakty"
+          className="flex flex-col items-center justify-center gap-3 p-5 rounded-2xl border border-border bg-background"
+        >
+          <div className="relative w-full h-24 rounded-xl border-2 border-border bg-white overflow-hidden">
+            <svg className="absolute inset-0 w-full h-full text-border opacity-30" viewBox="0 0 100 100" preserveAspectRatio="none">
+              <path d="M0 0 H100 V100 H0 V0 Z M20 20 H80 V80 H20 V20 Z M40 40 H60 V60 H40 V40 Z" />
+            </svg>
+            <div className="absolute top-4 left-4 text-primary">
+              <Map className="h-8 w-8" strokeWidth={1.5} />
+            </div>
+            <div className="absolute bottom-4 left-4">
+              <h3 className="text-foreground font-bold text-lg">Pobočky a bankomaty</h3>
+              <p className="text-muted-foreground text-sm">Najbližšie pobočky a bankomaty</p>
+            </div>
+          </div>
+        </Link>
+      </div>
+    </Section>
+    </>
+
   );
 }

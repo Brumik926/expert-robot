@@ -16,6 +16,9 @@ dist-ssr
 .nitro
 *.local
 
+# Local leftovers / scratch clones
+tatra-clone/
+
 # Wrangler / Cloudflare
 .wrangler/
 .dev.vars
