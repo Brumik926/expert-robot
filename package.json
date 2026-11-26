@@ -11,7 +11,8 @@
     "lint": "eslint .",
     "format": "prettier --write .",
     "test": "vitest run",
-    "test:watch": "vitest"
+    "test:watch": "vitest",
+    "cf-build": "npm install --legacy-peer-deps && vite build"
   },
   "overrides": {
     "shell-quote": ">=1.11.0",
