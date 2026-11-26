@@ -14,7 +14,14 @@ export function Sparkline({ data, id }: { data: { day: string; balance: number }
             </linearGradient>
           </defs>
           <YAxis hide domain={["dataMin", "dataMax"]} />
-          <Area type="linear" dataKey="balance" stroke="var(--positive)" strokeWidth={2.5} fill={`url(#${gid})`} isAnimationActive={false} />
+          <Area
+            type="linear"
+            dataKey="balance"
+            stroke="var(--positive)"
+            strokeWidth={2.5}
+            fill={`url(#${gid})`}
+            isAnimationActive={false}
+          />
         </AreaChart>
       </ResponsiveContainer>
     </div>

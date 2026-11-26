@@ -34,7 +34,10 @@ const optionalAmount = z
     if (!v) return null;
     const n = parseAmount(v);
     if (!Number.isFinite(n) || n <= 0 || n > 100000) {
-      ctx.addIssue({ code: z.ZodIssueCode.custom, message: "Zadajte platnú sumu (0,01 – 100 000)" });
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: "Zadajte platnú sumu (0,01 – 100 000)",
+      });
       return z.NEVER;
     }
     return n;
@@ -46,7 +49,10 @@ const requiredAmount = z
   .transform((v, ctx) => {
     const n = parseAmount(v);
     if (!v || !Number.isFinite(n) || n <= 0 || n > 100000) {
-      ctx.addIssue({ code: z.ZodIssueCode.custom, message: "Zadajte platnú sumu (0,01 – 100 000)" });
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: "Zadajte platnú sumu (0,01 – 100 000)",
+      });
       return z.NEVER;
     }
     return n;

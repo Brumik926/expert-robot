@@ -1,7 +1,18 @@
 import { useState } from "react";
 import { createFileRoute } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
-import { ChevronDown, User, Bell, Phone, BarChart3, CreditCard, PieChart, LineChart, Settings, LogOut } from "lucide-react";
+import {
+  ChevronDown,
+  User,
+  Bell,
+  Phone,
+  BarChart3,
+  CreditCard,
+  PieChart,
+  LineChart,
+  Settings,
+  LogOut,
+} from "lucide-react";
 import { notificationsQuery, profileQuery } from "@/hooks/use-bank";
 import { NavRow } from "@/components/bank/rows";
 import { useSignOut } from "@/hooks/use-sign-out";
@@ -20,11 +31,28 @@ export const Route = createFileRoute("/_authenticated/menu")({
   component: MenuPage,
 });
 
-function Group({ icon, label, children }: { icon: React.ReactNode; label: string; children: React.ReactNode }) {
+function Group({
+  icon,
+  label,
+  children,
+}: {
+  icon: React.ReactNode;
+  label: string;
+  children: React.ReactNode;
+}) {
   const [open, setOpen] = useState(false);
   return (
     <div className="border-b border-border">
-      <NavRow icon={icon} label={label} onClick={() => setOpen(!open)} right={<ChevronDown className={`h-6 w-6 text-primary transition-transform ${open ? "rotate-180" : ""}`} />} />
+      <NavRow
+        icon={icon}
+        label={label}
+        onClick={() => setOpen(!open)}
+        right={
+          <ChevronDown
+            className={`h-6 w-6 text-primary transition-transform ${open ? "rotate-180" : ""}`}
+          />
+        }
+      />
       {open ? <div className="pb-2 pl-14">{children}</div> : null}
     </div>
   );
@@ -41,12 +69,30 @@ function MenuPage() {
       <header className="sticky top-0 z-30 grid grid-cols-3 items-center bg-background px-5 pt-[calc(env(safe-area-inset-top)+1rem)] pb-4">
         <span />
         <h1 className="text-center text-[1.6rem] font-extrabold">Menu</h1>
-        <button type="button" onClick={signOut} className="justify-self-end font-medium text-link">Odhlásiť sa</button>
+        <button type="button" onClick={signOut} className="justify-self-end font-medium text-link">
+          Odhlásiť sa
+        </button>
       </header>
       <nav className="px-5">
-        <NavRow icon={<User className={ic} strokeWidth={1.4} />} label={profile?.full_name || "Profil"} description="Profil" to="/profil" className="border-b border-border" />
-        <NavRow icon={<Bell className={ic} strokeWidth={1.4} />} label={unread ? `Notifikácie (${unread})` : "Notifikácie"} to="/notifikacie" className="border-b border-border" />
-        <NavRow icon={<Phone className={ic} strokeWidth={1.4} />} label="Kontakty" to="/kontakty" className="border-b border-border" />
+        <NavRow
+          icon={<User className={ic} strokeWidth={1.4} />}
+          label={profile?.full_name || "Profil"}
+          description="Profil"
+          to="/profil"
+          className="border-b border-border"
+        />
+        <NavRow
+          icon={<Bell className={ic} strokeWidth={1.4} />}
+          label={unread ? `Notifikácie (${unread})` : "Notifikácie"}
+          to="/notifikacie"
+          className="border-b border-border"
+        />
+        <NavRow
+          icon={<Phone className={ic} strokeWidth={1.4} />}
+          label="Kontakty"
+          to="/kontakty"
+          className="border-b border-border"
+        />
         <Group icon={<BarChart3 className={ic} strokeWidth={1.4} />} label="Účty a platby">
           <NavRow label="Pohyby" to="/pohyby" />
           <NavRow label="Nová platba" to="/platba" />
@@ -54,13 +100,32 @@ function MenuPage() {
           <NavRow label="Šablóny" to="/sablony" />
           <NavRow label="Trvalé príkazy" to="/trvale-prikazy" />
         </Group>
-        <NavRow icon={<CreditCard className={ic} strokeWidth={1.4} />} label="Karty" to="/karty" className="border-b border-border" />
+        <NavRow
+          icon={<CreditCard className={ic} strokeWidth={1.4} />}
+          label="Karty"
+          to="/karty"
+          className="border-b border-border"
+        />
         <Group icon={<PieChart className={ic} strokeWidth={1.4} />} label="MaFin">
           <NavRow label="Prehľad príjmov a výdavkov" to="/mafin" />
         </Group>
-        <NavRow icon={<LineChart className={ic} strokeWidth={1.4} />} label="Kurzový lístok" to="/kurzy" className="border-b border-border" />
-        <NavRow icon={<Settings className={ic} strokeWidth={1.4} />} label="Nastavenia" to="/nastavenia" className="border-b border-border" />
-        <NavRow icon={<LogOut className={ic} strokeWidth={1.4} />} label="Odhlásiť sa" onClick={signOut} />
+        <NavRow
+          icon={<LineChart className={ic} strokeWidth={1.4} />}
+          label="Kurzový lístok"
+          to="/kurzy"
+          className="border-b border-border"
+        />
+        <NavRow
+          icon={<Settings className={ic} strokeWidth={1.4} />}
+          label="Nastavenia"
+          to="/nastavenia"
+          className="border-b border-border"
+        />
+        <NavRow
+          icon={<LogOut className={ic} strokeWidth={1.4} />}
+          label="Odhlásiť sa"
+          onClick={signOut}
+        />
       </nav>
     </div>
   );

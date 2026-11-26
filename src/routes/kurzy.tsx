@@ -30,8 +30,23 @@ function Rates() {
       <PageHeader title="Kurzový lístok" back />
       <section className="bank-section flex flex-col gap-4">
         <h2 className="text-xl font-extrabold">Prepočet</h2>
-        <TextField id="conv-amount" label="Suma v EUR" inputMode="decimal" value={amount} onChange={(e) => setAmount(e.target.value)} />
-        <SelectField id="conv-code" label="Mena" value={code} onChange={(e) => setCode(e.target.value)} options={EXCHANGE_RATES.map((r) => ({ value: r.code, label: `${r.code} – ${r.country}` }))} />
+        <TextField
+          id="conv-amount"
+          label="Suma v EUR"
+          inputMode="decimal"
+          value={amount}
+          onChange={(e) => setAmount(e.target.value)}
+        />
+        <SelectField
+          id="conv-code"
+          label="Mena"
+          value={code}
+          onChange={(e) => setCode(e.target.value)}
+          options={EXCHANGE_RATES.map((r) => ({
+            value: r.code,
+            label: `${r.code} – ${r.country}`,
+          }))}
+        />
         <p className="text-center text-2xl font-bold">
           {Number.isFinite(n) ? formatAmount(convertFromEur(n, rate.buy)) : "—"} {rate.code}
         </p>
@@ -41,14 +56,23 @@ function Rates() {
           <span /> <span>Krajina</span> <span>Nákup</span> <span>Predaj</span>
         </div>
         {EXCHANGE_RATES.map((r) => (
-          <div key={r.code} className="mx-5 grid grid-cols-[2rem_minmax(0,1fr)_auto_auto] items-center gap-4 border-t border-border py-4">
-            <span className="text-2xl" aria-hidden="true">{r.flag}</span>
-            <span className="truncate">{r.country} <span className="text-muted-foreground">{r.code}</span></span>
+          <div
+            key={r.code}
+            className="mx-5 grid grid-cols-[2rem_minmax(0,1fr)_auto_auto] items-center gap-4 border-t border-border py-4"
+          >
+            <span className="text-2xl" aria-hidden="true">
+              {r.flag}
+            </span>
+            <span className="truncate">
+              {r.country} <span className="text-muted-foreground">{r.code}</span>
+            </span>
             <span className="tabular-nums">{String(r.buy).replace(".", ",")}</span>
             <span className="tabular-nums">{String(r.sell).replace(".", ",")}</span>
           </div>
         ))}
-        <p className="mx-5 pt-4 text-xs text-muted-foreground"></p>
+        <p className="mx-5 pt-4 text-xs text-muted-foreground">
+          Kurzy sú informatívne a môžu sa líšiť od aktuálnych kurzov na pobočkách.
+        </p>
       </section>
     </main>
   );

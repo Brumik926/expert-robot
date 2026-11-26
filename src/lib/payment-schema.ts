@@ -69,7 +69,12 @@ export const executePaymentSchema = paymentFormSchema.extend({
 export type ExecutePaymentInput = z.input<typeof executePaymentSchema>;
 
 /** A payment can be executed now only when the date is today and funds cover it. */
-export function checkSufficientFunds(balance: number, amount: number, executionDate: string, today: string): boolean {
+export function checkSufficientFunds(
+  balance: number,
+  amount: number,
+  executionDate: string,
+  today: string,
+): boolean {
   if (executionDate > today) return true;
   return balance >= amount;
 }

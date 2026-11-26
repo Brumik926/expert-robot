@@ -1,4 +1,12 @@
-import { Area, AreaChart, CartesianGrid, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
+import {
+  Area,
+  AreaChart,
+  CartesianGrid,
+  ResponsiveContainer,
+  Tooltip,
+  XAxis,
+  YAxis,
+} from "recharts";
 import { formatMoney } from "@/lib/format";
 
 /** "Vývoj zostatkov": daily balance chart with axes. */
@@ -18,20 +26,42 @@ export function BalanceChart({ data }: { data: { day: string; balance: number }[
             </linearGradient>
           </defs>
           <CartesianGrid vertical={false} stroke="var(--border)" />
-          <XAxis dataKey="day" tickFormatter={fmtDay} tick={{ fill: "var(--muted-foreground)", fontSize: 12 }} axisLine={false} tickLine={false} interval={4} />
+          <XAxis
+            dataKey="day"
+            tickFormatter={fmtDay}
+            tick={{ fill: "var(--muted-foreground)", fontSize: 12 }}
+            axisLine={false}
+            tickLine={false}
+            interval={4}
+          />
           <YAxis
-            domain={[(min: number) => Math.floor((min * 0.9) / 50) * 50, (max: number) => Math.ceil((max * 1.05) / 50) * 50]}
+            domain={[
+              (min: number) => Math.floor((min * 0.9) / 50) * 50,
+              (max: number) => Math.ceil((max * 1.05) / 50) * 50,
+            ]}
             tick={{ fill: "var(--muted-foreground)", fontSize: 12 }}
             axisLine={false}
             tickLine={false}
             width={52}
           />
           <Tooltip
-            contentStyle={{ background: "var(--popover)", border: "1px solid var(--border)", borderRadius: 10, color: "var(--popover-foreground)" }}
+            contentStyle={{
+              background: "var(--popover)",
+              border: "1px solid var(--border)",
+              borderRadius: 10,
+              color: "var(--popover-foreground)",
+            }}
             labelFormatter={(d: string) => fmtDay(d)}
             formatter={(v: number) => [formatMoney(v), "Zostatok"]}
           />
-          <Area type="linear" dataKey="balance" stroke="var(--positive)" strokeWidth={2.5} fill="url(#bal-fill)" isAnimationActive={false} />
+          <Area
+            type="linear"
+            dataKey="balance"
+            stroke="var(--positive)"
+            strokeWidth={2.5}
+            fill="url(#bal-fill)"
+            isAnimationActive={false}
+          />
         </AreaChart>
       </ResponsiveContainer>
     </div>

@@ -5,9 +5,22 @@ import { Switch } from "@/components/ui/switch";
 import { cn } from "@/lib/utils";
 
 /** Label / value line used in detail screens. */
-export function DetailRow({ label, value, className }: { label: string; value: ReactNode; className?: string }) {
+export function DetailRow({
+  label,
+  value,
+  className,
+}: {
+  label: string;
+  value: ReactNode;
+  className?: string;
+}) {
   return (
-    <div className={cn("grid grid-cols-[minmax(0,auto)_minmax(0,1fr)] items-baseline gap-4 border-t border-border py-4", className)}>
+    <div
+      className={cn(
+        "grid grid-cols-[minmax(0,auto)_minmax(0,1fr)] items-baseline gap-4 border-t border-border py-4",
+        className,
+      )}
+    >
       <span className="text-[0.95rem] text-muted-foreground">{label}</span>
       <span className="min-w-0 text-right text-[1.05rem] break-words">{value}</span>
     </div>
@@ -28,15 +41,22 @@ type NavRowProps = {
 export function NavRow({ icon, label, description, to, onClick, right, className }: NavRowProps) {
   const body = (
     <>
-      {icon ? <span className="grid w-10 shrink-0 place-items-center text-primary">{icon}</span> : null}
+      {icon ? (
+        <span className="grid w-10 shrink-0 place-items-center text-primary">{icon}</span>
+      ) : null}
       <span className="min-w-0 flex-1 text-left">
         <span className="block truncate text-[1.05rem]">{label}</span>
-        {description ? <span className="mt-0.5 block text-sm text-muted-foreground">{description}</span> : null}
+        {description ? (
+          <span className="mt-0.5 block text-sm text-muted-foreground">{description}</span>
+        ) : null}
       </span>
       {right ?? <ChevronRight className="h-6 w-6 shrink-0 text-primary" strokeWidth={1.8} />}
     </>
   );
-  const cls = cn("flex w-full items-center gap-4 py-4 transition-colors hover:bg-card/50", className);
+  const cls = cn(
+    "flex w-full items-center gap-4 py-4 transition-colors hover:bg-card/50",
+    className,
+  );
   if (to) {
     return (
       <Link to={to} className={cls}>
@@ -70,7 +90,9 @@ export function ToggleRow({
     <div className="flex items-center gap-4 border-t border-border py-4 first:border-t-0">
       <label htmlFor={id} className="min-w-0 flex-1 cursor-pointer">
         <span className="block text-[1.05rem]">{label}</span>
-        {description ? <span className="mt-0.5 block text-sm text-muted-foreground">{description}</span> : null}
+        {description ? (
+          <span className="mt-0.5 block text-sm text-muted-foreground">{description}</span>
+        ) : null}
       </label>
       <Switch id={id} checked={checked} onCheckedChange={onCheckedChange} disabled={disabled} />
     </div>
@@ -97,7 +119,11 @@ export function UnderlineTabs<T extends string>({
   onChange: (v: T) => void;
 }) {
   return (
-    <div role="tablist" className="grid border-b border-border" style={{ gridTemplateColumns: `repeat(${tabs.length}, minmax(0, 1fr))` }}>
+    <div
+      role="tablist"
+      className="grid border-b border-border"
+      style={{ gridTemplateColumns: `repeat(${tabs.length}, minmax(0, 1fr))` }}
+    >
       {tabs.map((t) => (
         <button
           key={t.value}

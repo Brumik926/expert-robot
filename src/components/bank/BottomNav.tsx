@@ -1,5 +1,15 @@
 import { Link, useRouterState } from "@tanstack/react-router";
-import { Home, ArrowLeftRight, CreditCard, Menu, Send, PieChart, Users, CalendarClock, type LucideIcon } from "lucide-react";
+import {
+  Home,
+  ArrowLeftRight,
+  CreditCard,
+  Menu,
+  Send,
+  PieChart,
+  Users,
+  CalendarClock,
+  type LucideIcon,
+} from "lucide-react";
 import { cn } from "@/lib/utils";
 
 export type NavItemKey = "karty" | "mafin" | "prijemcovia" | "trvale-prikazy";
@@ -25,7 +35,9 @@ export function BottomNav({ navItem = "karty" }: { navItem?: NavItemKey }) {
     { to: fourth.to, label: fourth.label, icon: fourth.icon, match: [fourth.to] },
     { to: "/menu", label: "Viac", icon: Menu, match: ["/menu"] },
   ];
-  const activeIndex = items.findIndex((it) => it.match.some((m) => pathname === m || pathname.startsWith(m + "/")));
+  const activeIndex = items.findIndex((it) =>
+    it.match.some((m) => pathname === m || pathname.startsWith(m + "/")),
+  );
   return (
     <nav
       aria-label="Hlavná navigácia"

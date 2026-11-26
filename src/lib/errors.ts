@@ -18,7 +18,10 @@ const MESSAGES: Record<string, string> = {
   INSUFFICIENT_FUNDS: "Na účte nie je dostatok prostriedkov.",
 };
 
-export function bankErrorMessage(error: unknown, fallback = "Niečo sa pokazilo. Skúste to znova."): string {
+export function bankErrorMessage(
+  error: unknown,
+  fallback = "Niečo sa pokazilo. Skúste to znova.",
+): string {
   const raw =
     typeof error === "string"
       ? error
@@ -28,10 +31,12 @@ export function bankErrorMessage(error: unknown, fallback = "Niečo sa pokazilo.
   for (const code of Object.keys(MESSAGES)) {
     if (raw.includes(code)) return MESSAGES[code] ?? fallback;
   }
-  if (raw.includes("is_valid_iban") || raw.includes("iban_check")) return MESSAGES["INVALID_IBAN"] ?? fallback;
+  if (raw.includes("is_valid_iban") || raw.includes("iban_check"))
+    return MESSAGES["INVALID_IBAN"] ?? fallback;
   if (raw.includes("check constraint")) return "Zadané údaje nie sú platné.";
   if (raw.includes("Invalid login credentials")) return "Nesprávny e-mail alebo heslo.";
-  if (raw.includes("Email not confirmed")) return "E-mail ešte nie je potvrdený. Skontrolujte svoju schránku.";
+  if (raw.includes("Email not confirmed"))
+    return "E-mail ešte nie je potvrdený. Skontrolujte svoju schránku.";
   if (raw.includes("User already registered")) return "Používateľ s týmto e-mailom už existuje.";
   if (raw.includes("Password should be")) return "Heslo musí mať aspoň 6 znakov.";
   return fallback;

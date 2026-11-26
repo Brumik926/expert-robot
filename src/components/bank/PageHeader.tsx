@@ -60,7 +60,12 @@ export function HeaderIconButton({
   badge?: number;
 }) {
   return (
-    <button type="button" aria-label={label} onClick={onClick} className="relative p-1 text-primary">
+    <button
+      type="button"
+      aria-label={label}
+      onClick={onClick}
+      className="relative p-1 text-primary"
+    >
       {children}
       {badge ? (
         <span className="absolute -top-1 -right-1 grid h-5 min-w-5 place-items-center rounded-full border-2 border-primary bg-background px-1 text-[0.65rem] font-bold text-foreground">

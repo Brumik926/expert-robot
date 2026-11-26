@@ -16,7 +16,10 @@ export const Route = createFileRoute("/_authenticated/karty/")({
   head: () => ({
     meta: [
       { title: "Zoznam kariet – Tatra banka" },
-      { name: "description", content: "Debetné a kreditné karty, disponibilné zostatky a nastavenia." },
+      {
+        name: "description",
+        content: "Debetné a kreditné karty, disponibilné zostatky a nastavenia.",
+      },
       { property: "og:title", content: "Zoznam kariet – Tatra banka" },
       { property: "og:description", content: "Platobné karty vo Tatra banke." },
       { property: "og:type", content: "website" },
@@ -24,7 +27,10 @@ export const Route = createFileRoute("/_authenticated/karty/")({
     ],
   }),
   loader: ({ context: { queryClient } }) =>
-    Promise.all([queryClient.ensureQueryData(cardsQuery), queryClient.ensureQueryData(accountsQuery)]),
+    Promise.all([
+      queryClient.ensureQueryData(cardsQuery),
+      queryClient.ensureQueryData(accountsQuery),
+    ]),
   component: CardsPage,
 });
 
@@ -38,7 +44,9 @@ function CardsPage() {
       cards.filter(
         (c) =>
           (tab === "all" || c.card_type === tab) &&
-          (!q.trim() || c.name.toLowerCase().includes(q.trim().toLowerCase()) || c.masked_number.includes(q.trim())),
+          (!q.trim() ||
+            c.name.toLowerCase().includes(q.trim().toLowerCase()) ||
+            c.masked_number.includes(q.trim())),
       ),
     [cards, tab, q],
   );
@@ -65,12 +73,25 @@ function CardsPage() {
           const acc = accounts.find((a) => a.id === c.account_id);
           const credit = c.card_type === "credit";
           return (
-            <Link key={c.id} to="/karty/$id" params={{ id: c.id }} className="bank-tile block overflow-hidden bg-background transition-transform active:scale-[0.99]">
+            <Link
+              key={c.id}
+              to="/karty/$id"
+              params={{ id: c.id }}
+              className="bank-tile block overflow-hidden bg-background transition-transform active:scale-[0.99]"
+            >
               <div className="grid grid-cols-[7rem_minmax(0,1fr)_auto] items-center gap-4 p-5">
-                <CardVisual size="sm" design={c.design} brand={c.brand} cardType={c.card_type} blocked={c.status === "blocked"} />
+                <CardVisual
+                  size="sm"
+                  design={c.design}
+                  brand={c.brand}
+                  cardType={c.card_type}
+                  blocked={c.status === "blocked"}
+                />
                 <span className="min-w-0">
                   <span className="block truncate text-lg font-bold">{c.name}</span>
-                  <span className="block text-[0.95rem] text-muted-foreground tabular-nums">{c.masked_number}</span>
+                  <span className="block text-[0.95rem] text-muted-foreground tabular-nums">
+                    {c.masked_number}
+                  </span>
                   <span className="block truncate text-[0.95rem] text-muted-foreground">
                     {c.brand} {credit ? "kreditná" : "debetná"}
                     {c.status === "blocked" ? " · zablokovaná" : ""}
@@ -92,7 +113,11 @@ function CardsPage() {
                 )}
                 <div className="flex justify-between gap-3">
                   <span className="text-muted-foreground">Disponibilný zostatok</span>
-                  <Money value={credit ? (c.credit_available ?? 0) : (acc?.balance ?? 0)} sensitive className="text-lg font-bold" />
+                  <Money
+                    value={credit ? (c.credit_available ?? 0) : (acc?.balance ?? 0)}
+                    sensitive
+                    className="text-lg font-bold"
+                  />
                 </div>
               </div>
             </Link>

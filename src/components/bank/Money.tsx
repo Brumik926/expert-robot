@@ -13,13 +13,22 @@ type Props = {
   currencyClassName?: string;
 };
 
-export function Money({ value, currency = "EUR", signed, sensitive, className, currencyClassName }: Props) {
+export function Money({
+  value,
+  currency = "EUR",
+  signed,
+  sensitive,
+  className,
+  currencyClassName,
+}: Props) {
   const hide = useHideBalances() && sensitive;
   const sign = signed === "in" ? "+" : signed === "out" ? "−" : "";
   return (
     <span className={cn("whitespace-nowrap tabular-nums", className)}>
       {hide ? "••• •••" : `${sign ? sign + " " : ""}${formatAmount(value)}`}{" "}
-      <span className={cn("text-[0.62em] font-semibold uppercase", currencyClassName)}>{currency}</span>
+      <span className={cn("text-[0.62em] font-semibold uppercase", currencyClassName)}>
+        {currency}
+      </span>
     </span>
   );
 }

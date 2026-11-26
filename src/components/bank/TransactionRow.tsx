@@ -18,15 +18,29 @@ export function TransactionRow({ tx }: { tx: Transaction }) {
     >
       <span
         aria-hidden="true"
-        className={cn("text-3xl leading-none font-light", incoming ? "text-positive" : "text-negative", (pending || failed) && "text-muted-foreground")}
+        className={cn(
+          "text-3xl leading-none font-light",
+          incoming ? "text-positive" : "text-negative",
+          (pending || failed) && "text-muted-foreground",
+        )}
       >
         {incoming ? "+" : "—"}
       </span>
       <span className="min-w-0">
         <span className="block truncate text-[1.05rem]">{tx.counterparty_name || "Bez názvu"}</span>
         <span className="mt-1 flex items-center gap-1.5 text-[0.95rem] text-muted-foreground">
-          {pending ? <Clock className="h-4 w-4 text-warning" /> : failed ? <XCircle className="h-4 w-4 text-negative" /> : null}
-          {pending ? "Naplánovaná" : tx.status === "failed" ? "Zlyhala" : tx.status === "cancelled" ? "Zrušená" : txTypeLabel(tx.tx_type, tx.direction)}
+          {pending ? (
+            <Clock className="h-4 w-4 text-warning" />
+          ) : failed ? (
+            <XCircle className="h-4 w-4 text-negative" />
+          ) : null}
+          {pending
+            ? "Naplánovaná"
+            : tx.status === "failed"
+              ? "Zlyhala"
+              : tx.status === "cancelled"
+                ? "Zrušená"
+                : txTypeLabel(tx.tx_type, tx.direction)}
         </span>
       </span>
       <span className="text-right">

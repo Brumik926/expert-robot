@@ -3,7 +3,14 @@ import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useQueryClient, useSuspenseQuery } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { Repeat, UserPlus, FileText, Share2, XCircle, Clock, CheckCircle2 } from "lucide-react";
-import { accountsQuery, qk, recipientsQuery, transactionQuery, useBankMutation, useInvalidateMoney } from "@/hooks/use-bank";
+import {
+  accountsQuery,
+  qk,
+  recipientsQuery,
+  transactionQuery,
+  useBankMutation,
+  useInvalidateMoney,
+} from "@/hooks/use-bank";
 import { PageHeader } from "@/components/bank/PageHeader";
 import { Money } from "@/components/bank/Money";
 import { Iban } from "@/components/bank/Iban";
@@ -15,14 +22,22 @@ import { CATEGORIES, CATEGORY_KEYS, categoryOf, txTypeLabel } from "@/lib/catego
 import { formatIban } from "@/lib/iban";
 import { formatLongDate, formatMoney, formatShortDate, formatTime } from "@/lib/format";
 import { bankErrorMessage } from "@/lib/errors";
-import { cancelScheduledPayment, createRecipient, createTemplate, updateTransactionCategory } from "@/services/bank";
+import {
+  cancelScheduledPayment,
+  createRecipient,
+  createTemplate,
+  updateTransactionCategory,
+} from "@/services/bank";
 import { cn } from "@/lib/utils";
 
 export const Route = createFileRoute("/_authenticated/transakcia/$id")({
   head: () => ({
     meta: [
       { title: "Detail pohybu – Tatra banka" },
-      { name: "description", content: "Podrobnosti transakcie: suma, protistrana, symboly a správa." },
+      {
+        name: "description",
+        content: "Podrobnosti transakcie: suma, protistrana, symboly a správa.",
+      },
       { property: "og:title", content: "Detail pohybu – Tatra banka" },
       { property: "og:description", content: "Podrobnosti transakcie vo Tatra banke." },
       { property: "og:type", content: "website" },
@@ -70,10 +85,16 @@ function TransactionDetail() {
   const cat = categoryOf(tx.category);
   const CatIcon = cat.icon;
   const canSaveRecipient =
-    !!tx.counterparty_iban && tx.tx_type !== "card" && tx.tx_type !== "internal" && !recipients.some((r) => r.iban === tx.counterparty_iban);
+    !!tx.counterparty_iban &&
+    tx.tx_type !== "card" &&
+    tx.tx_type !== "internal" &&
+    !recipients.some((r) => r.iban === tx.counterparty_iban);
   const canRepeat = !incoming && !!tx.counterparty_iban && tx.tx_type !== "card";
 
-  const setCategory = useBankMutation((c: string) => updateTransactionCategory(tx.id, c), [qk.transactions]);
+  const setCategory = useBankMutation(
+    (c: string) => updateTransactionCategory(tx.id, c),
+    [qk.transactions],
+  );
   const saveRecipient = useBankMutation(
     () => createRecipient({ name: tx.counterparty_name, iban: tx.counterparty_iban ?? "" }),
     [qk.recipients],
@@ -122,7 +143,10 @@ function TransactionDetail() {
       const ok = await cancelScheduledPayment(tx.id);
       if (ok) toast.success("Naplánovaná platba bola zrušená");
       else toast.error("Platbu už nie je možné zrušiť");
-      await Promise.all([invalidateMoney(), qc.invalidateQueries({ queryKey: qk.transaction(tx.id) })]);
+      await Promise.all([
+        invalidateMoney(),
+        qc.invalidateQueries({ queryKey: qk.transaction(tx.id) }),
+      ]);
     } catch (e) {
       toast.error(bankErrorMessage(e));
     } finally {
@@ -134,38 +158,82 @@ function TransactionDetail() {
     <div className="flex flex-col gap-3 animate-page-in">
       <PageHeader title="Detail pohybu" back />
       <section className="bank-section text-center">
-        <p className="text-[1.05rem] text-muted-foreground">{txTypeLabel(tx.tx_type, tx.direction)}</p>
+        <p className="text-[1.05rem] text-muted-foreground">
+          {txTypeLabel(tx.tx_type, tx.direction)}
+        </p>
         <Money
           value={tx.amount}
           signed={incoming ? "in" : "out"}
-          className={cn("mt-2 block text-[2.4rem] font-extrabold", incoming ? "text-positive" : "text-negative", tx.status !== "completed" && "text-muted-foreground")}
+          className={cn(
+            "mt-2 block text-[2.4rem] font-extrabold",
+            incoming ? "text-positive" : "text-negative",
+            tx.status !== "completed" && "text-muted-foreground",
+          )}
         />
         <h2 className="mt-2 text-xl font-bold">{tx.counterparty_name || "Bez názvu"}</h2>
-        <p className={cn("mt-3 inline-flex items-center gap-2 rounded-full bg-card px-4 py-1.5 text-sm font-semibold", status.cls)}>
+        <p
+          className={cn(
+            "mt-3 inline-flex items-center gap-2 rounded-full bg-card px-4 py-1.5 text-sm font-semibold",
+            status.cls,
+          )}
+        >
           <StatusIcon className="h-4 w-4" /> {status.label}
         </p>
       </section>
 
       <section className="bank-section pt-2">
-        <DetailRow className="border-t-0" label="Dátum" value={`${formatLongDate(tx.booked_at)}, ${formatTime(tx.booked_at)}`} />
+        <DetailRow
+          className="border-t-0"
+          label="Dátum"
+          value={`${formatLongDate(tx.booked_at)}, ${formatTime(tx.booked_at)}`}
+        />
         <DetailRow label="Dátum splatnosti" value={formatShortDate(tx.execution_date)} />
         <DetailRow label="Účet" value={account?.name ?? "—"} />
         {tx.counterparty_iban ? (
-          <DetailRow label={incoming ? "IBAN platiteľa" : "IBAN príjemcu"} value={<Iban value={tx.counterparty_iban} />} />
+          <DetailRow
+            label={incoming ? "IBAN platiteľa" : "IBAN príjemcu"}
+            value={<Iban value={tx.counterparty_iban} />}
+          />
         ) : null}
-        {tx.variable_symbol ? <DetailRow label="Variabilný symbol" value={tx.variable_symbol} /> : null}
-        {tx.specific_symbol ? <DetailRow label="Špecifický symbol" value={tx.specific_symbol} /> : null}
-        {tx.constant_symbol ? <DetailRow label="Konštantný symbol" value={tx.constant_symbol} /> : null}
+        {tx.variable_symbol ? (
+          <DetailRow label="Variabilný symbol" value={tx.variable_symbol} />
+        ) : null}
+        {tx.specific_symbol ? (
+          <DetailRow label="Špecifický symbol" value={tx.specific_symbol} />
+        ) : null}
+        {tx.constant_symbol ? (
+          <DetailRow label="Konštantný symbol" value={tx.constant_symbol} />
+        ) : null}
         {tx.message ? <DetailRow label="Informácia pre príjemcu" value={tx.message} /> : null}
-        {tx.payer_reference ? <DetailRow label="Referencia platiteľa" value={tx.payer_reference} /> : null}
-        {tx.balance_after !== null ? <DetailRow label="Zostatok po pohybe" value={<Money value={tx.balance_after} sensitive />} /> : null}
-        {tx.co2_kg ? <DetailRow label="Uhlíková stopa" value={`${String(tx.co2_kg).replace(".", ",")} kg CO₂e`} /> : null}
-        <DetailRow label="Číslo transakcie" value={<span className="text-sm text-muted-foreground">{tx.id.slice(0, 8).toUpperCase()}</span>} />
+        {tx.payer_reference ? (
+          <DetailRow label="Referencia platiteľa" value={tx.payer_reference} />
+        ) : null}
+        {tx.balance_after !== null ? (
+          <DetailRow
+            label="Zostatok po pohybe"
+            value={<Money value={tx.balance_after} sensitive />}
+          />
+        ) : null}
+        {tx.co2_kg ? (
+          <DetailRow
+            label="Uhlíková stopa"
+            value={`${String(tx.co2_kg).replace(".", ",")} kg CO₂e`}
+          />
+        ) : null}
+        <DetailRow
+          label="Číslo transakcie"
+          value={
+            <span className="text-sm text-muted-foreground">{tx.id.slice(0, 8).toUpperCase()}</span>
+          }
+        />
       </section>
 
       <section className="bank-section">
         <div className="mb-3 flex items-center gap-3">
-          <span className="grid h-10 w-10 place-items-center rounded-full bg-card" style={{ color: cat.color }}>
+          <span
+            className="grid h-10 w-10 place-items-center rounded-full bg-card"
+            style={{ color: cat.color }}
+          >
             <CatIcon className="h-5 w-5" />
           </span>
           <h3 className="text-lg font-bold">Kategória</h3>
@@ -243,7 +311,13 @@ function TransactionDetail() {
           }}
           className="flex flex-col gap-4"
         >
-          <TextField id="tpl-name" label="Názov šablóny" maxLength={60} value={templateName} onChange={(e) => setTemplateName(e.target.value)} />
+          <TextField
+            id="tpl-name"
+            label="Názov šablóny"
+            maxLength={60}
+            value={templateName}
+            onChange={(e) => setTemplateName(e.target.value)}
+          />
           <Button type="submit" variant="bank" size="xl" disabled={saveTemplate.isPending}>
             Uložiť šablónu
           </Button>

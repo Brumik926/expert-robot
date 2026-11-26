@@ -3,7 +3,14 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { Lock, Unlock, Pencil } from "lucide-react";
-import { accountsQuery, cardLimitsQuery, cardsQuery, qk, transactionsQuery, useBankMutation } from "@/hooks/use-bank";
+import {
+  accountsQuery,
+  cardLimitsQuery,
+  cardsQuery,
+  qk,
+  transactionsQuery,
+  useBankMutation,
+} from "@/hooks/use-bank";
 import { PageHeader } from "@/components/bank/PageHeader";
 import { Section } from "@/components/bank/Section";
 import { CardVisual } from "@/components/bank/CardVisual";
@@ -50,7 +57,7 @@ export const Route = createFileRoute("/_authenticated/karty/$id")({
   errorComponent: () => (
     <div>
       <PageHeader title="Detail karty" back="/karty" />
-      <p className="bank-section text-muted-foreground">Karta sa nenašla.</p>
+      <p className="bank-section text-muted-foreground">Karta nie je dostupná. Skúste to znova.</p>
     </div>
   ),
   component: CardDetail,
@@ -75,7 +82,11 @@ function CardDetail() {
   const [name, setName] = useState(card?.name ?? "");
 
   useEffect(() => {
-    setDraft({ atm_daily: Number(limits.atm_daily), pos_daily: Number(limits.pos_daily), internet_daily: Number(limits.internet_daily) });
+    setDraft({
+      atm_daily: Number(limits.atm_daily),
+      pos_daily: Number(limits.pos_daily),
+      internet_daily: Number(limits.internet_daily),
+    });
   }, [limits]);
 
   const patchCard = useBankMutation(
@@ -86,13 +97,18 @@ function CardDetail() {
     (p: Record<LimitKey, number>) => updateCardLimits(id, p),
     [qk.cardLimits(id), qk.notifications],
   );
-  const cardTx = useMemo(() => transactions.filter((t) => t.card_id === id).slice(0, 5), [transactions, id]);
+  const cardTx = useMemo(
+    () => transactions.filter((t) => t.card_id === id).slice(0, 5),
+    [transactions, id],
+  );
 
   if (!card) {
     return (
       <div>
         <PageHeader title="Detail karty" back="/karty" />
-        <p className="bank-section text-muted-foreground">Karta sa nenašla.</p>
+        <p className="bank-section text-muted-foreground">
+          Karta nie je dostupná. Skúste to znova.
+        </p>
       </div>
     );
   }
@@ -105,7 +121,10 @@ function CardDetail() {
     draft.internet_daily !== Number(limits.internet_daily);
 
   const patch = (p: Parameters<typeof updateCard>[1], ok: string) =>
-    patchCard.mutate(p, { onSuccess: () => toast.success(ok), onError: (e) => toast.error(bankErrorMessage(e)) });
+    patchCard.mutate(p, {
+      onSuccess: () => toast.success(ok),
+      onError: (e) => toast.error(bankErrorMessage(e)),
+    });
 
   return (
     <div className="flex flex-col gap-3 animate-page-in">
@@ -113,25 +132,55 @@ function CardDetail() {
         title="Detail karty"
         back
         right={
-          <button type="button" aria-label="Premenovať kartu" onClick={() => { setName(card.name); setRenameOpen(true); }} className="text-primary">
+          <button
+            type="button"
+            aria-label="Premenovať kartu"
+            onClick={() => {
+              setName(card.name);
+              setRenameOpen(true);
+            }}
+            className="text-primary"
+          >
             <Pencil className="h-6 w-6" strokeWidth={1.5} />
           </button>
         }
       />
       <section className="bank-section">
         <div className="mx-auto max-w-[20rem]">
-          <CardVisual design={card.design} brand={card.brand} cardType={card.card_type} holder={card.holder_name} number={card.masked_number} blocked={blocked} />
+          <CardVisual
+            design={card.design}
+            brand={card.brand}
+            cardType={card.card_type}
+            holder={card.holder_name}
+            number={card.masked_number}
+            blocked={blocked}
+          />
         </div>
         <div className="mt-5 text-center">
           <h2 className="text-xl font-bold">{card.name}</h2>
           <p className="text-muted-foreground tabular-nums">{card.masked_number}</p>
-          <Money value={credit ? (card.credit_available ?? 0) : (account?.balance ?? 0)} sensitive className="mt-3 block text-[1.8rem] font-bold" />
+          <Money
+            value={credit ? (card.credit_available ?? 0) : (account?.balance ?? 0)}
+            sensitive
+            className="mt-3 block text-[1.8rem] font-bold"
+          />
           <p className="text-sm text-muted-foreground">
-            {credit ? `Disponibilný zostatok z rámca ${formatAmount(card.credit_limit ?? 0)} EUR` : "Disponibilný zostatok na účte"}
+            {credit
+              ? `Disponibilný zostatok z rámca ${formatAmount(card.credit_limit ?? 0)} EUR`
+              : "Disponibilný zostatok na účte"}
           </p>
         </div>
-        <Button variant={blocked ? "bank" : "bankDanger"} size="xl" className="mt-6" disabled={patchCard.isPending} onClick={() => (blocked ? patch({ status: "active" }, "Karta odblokovaná") : setConfirmBlock(true))}>
-          {blocked ? <Unlock /> : <Lock />} {blocked ? "Odblokovať kartu" : "Dočasne zablokovať kartu"}
+        <Button
+          variant={blocked ? "bank" : "bankDanger"}
+          size="xl"
+          className="mt-6"
+          disabled={patchCard.isPending}
+          onClick={() =>
+            blocked ? patch({ status: "active" }, "Karta odblokovaná") : setConfirmBlock(true)
+          }
+        >
+          {blocked ? <Unlock /> : <Lock />}{" "}
+          {blocked ? "Odblokovať kartu" : "Dočasne zablokovať kartu"}
         </Button>
       </section>
 
@@ -142,7 +191,12 @@ function CardDetail() {
           description="Platby kartou na internete"
           checked={card.internet_payments}
           disabled={blocked || patchCard.isPending}
-          onCheckedChange={(v) => patch({ internet_payments: v }, v ? "Internetové platby zapnuté" : "Internetové platby vypnuté")}
+          onCheckedChange={(v) =>
+            patch(
+              { internet_payments: v },
+              v ? "Internetové platby zapnuté" : "Internetové platby vypnuté",
+            )
+          }
         />
         <ToggleRow
           id="contactless"
@@ -150,7 +204,12 @@ function CardDetail() {
           description="Platby priložením karty"
           checked={card.contactless}
           disabled={blocked || patchCard.isPending}
-          onCheckedChange={(v) => patch({ contactless: v }, v ? "Bezkontaktné platby zapnuté" : "Bezkontaktné platby vypnuté")}
+          onCheckedChange={(v) =>
+            patch(
+              { contactless: v },
+              v ? "Bezkontaktné platby zapnuté" : "Bezkontaktné platby vypnuté",
+            )
+          }
         />
       </Section>
 
@@ -161,7 +220,9 @@ function CardDetail() {
             return (
               <div key={k}>
                 <div className="mb-3 flex items-baseline justify-between gap-3">
-                  <label htmlFor={`lim-${k}`} className="text-[1.05rem]">{r.label}</label>
+                  <label htmlFor={`lim-${k}`} className="text-[1.05rem]">
+                    {r.label}
+                  </label>
                   <Money value={draft[k]} className="text-lg font-bold" />
                 </div>
                 <Slider
@@ -198,27 +259,49 @@ function CardDetail() {
       </Section>
 
       <Section title="Informácie">
-        <DetailRow className="border-t-0" label="Typ karty" value={`${card.brand} ${credit ? "kreditná" : "debetná"}`} />
+        <DetailRow
+          className="border-t-0"
+          label="Typ karty"
+          value={`${card.brand} ${credit ? "kreditná" : "debetná"}`}
+        />
         <DetailRow label="Držiteľ" value={card.holder_name || "—"} />
         <DetailRow label="Platnosť do" value={card.expiry} />
         <DetailRow label="Účet" value={account?.name ?? "—"} />
-        <DetailRow label="Stav" value={blocked ? <span className="text-negative">Zablokovaná</span> : <span className="text-positive">Aktívna</span>} />
+        <DetailRow
+          label="Stav"
+          value={
+            blocked ? (
+              <span className="text-negative">Zablokovaná</span>
+            ) : (
+              <span className="text-positive">Aktívna</span>
+            )
+          }
+        />
       </Section>
 
       <section className="bank-section pr-0 pb-0">
         <h2 className="mb-3 text-[1.45rem] font-extrabold">Posledné platby kartou</h2>
-        {cardTx.length === 0 ? <EmptyState title="Kartou ste zatiaľ neplatili." /> : cardTx.map((t) => <TransactionRow key={t.id} tx={t} />)}
+        {cardTx.length === 0 ? (
+          <EmptyState title="Kartou ste zatiaľ neplatili." />
+        ) : (
+          cardTx.map((t) => <TransactionRow key={t.id} tx={t} />)
+        )}
       </section>
 
       <AlertDialog open={confirmBlock} onOpenChange={setConfirmBlock}>
         <AlertDialogContent className="bg-background">
           <AlertDialogHeader>
             <AlertDialogTitle>Zablokovať kartu?</AlertDialogTitle>
-            <AlertDialogDescription>Kým kartu neodblokujete, nebude možné ňou platiť ani vyberať hotovosť.</AlertDialogDescription>
+            <AlertDialogDescription>
+              Kým kartu neodblokujete, nebude možné ňou platiť ani vyberať hotovosť.
+            </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
             <AlertDialogCancel>Zrušiť</AlertDialogCancel>
-            <AlertDialogAction className="bg-destructive text-destructive-foreground hover:bg-destructive/90" onClick={() => patch({ status: "blocked" }, "Karta zablokovaná")}>
+            <AlertDialogAction
+              className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+              onClick={() => patch({ status: "blocked" }, "Karta zablokovaná")}
+            >
               Zablokovať
             </AlertDialogAction>
           </AlertDialogFooter>
@@ -230,13 +313,31 @@ function CardDetail() {
           onSubmit={(e) => {
             e.preventDefault();
             const n = name.trim();
-            if (n.length < 1 || n.length > 40) return void toast.error("Názov musí mať 1 až 40 znakov");
-            patchCard.mutate({ name: n }, { onSuccess: () => { toast.success("Karta premenovaná"); setRenameOpen(false); }, onError: (err) => toast.error(bankErrorMessage(err)) });
+            if (n.length < 1 || n.length > 40)
+              return void toast.error("Názov musí mať 1 až 40 znakov");
+            patchCard.mutate(
+              { name: n },
+              {
+                onSuccess: () => {
+                  toast.success("Karta premenovaná");
+                  setRenameOpen(false);
+                },
+                onError: (err) => toast.error(bankErrorMessage(err)),
+              },
+            );
           }}
           className="flex flex-col gap-4"
         >
-          <TextField id="card-name" label="Názov karty" maxLength={40} value={name} onChange={(e) => setName(e.target.value)} />
-          <Button type="submit" variant="bank" size="xl" disabled={patchCard.isPending}>Uložiť</Button>
+          <TextField
+            id="card-name"
+            label="Názov karty"
+            maxLength={40}
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+          />
+          <Button type="submit" variant="bank" size="xl" disabled={patchCard.isPending}>
+            Uložiť
+          </Button>
         </form>
       </BottomSheet>
     </div>

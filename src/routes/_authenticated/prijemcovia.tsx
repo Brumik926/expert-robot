@@ -41,7 +41,9 @@ type Tab = "vsetky" | "prijemcovia" | "sablony";
 
 export const Route = createFileRoute("/_authenticated/prijemcovia")({
   validateSearch: (s: Record<string, unknown>): { tab?: Tab } =>
-    s["tab"] === "vsetky" || s["tab"] === "prijemcovia" || s["tab"] === "sablony" ? { tab: s["tab"] } : {},
+    s["tab"] === "vsetky" || s["tab"] === "prijemcovia" || s["tab"] === "sablony"
+      ? { tab: s["tab"] }
+      : {},
   head: () => ({
     meta: [
       { title: "Príjemcovia a šablóny – Tatra banka" },
@@ -53,11 +55,20 @@ export const Route = createFileRoute("/_authenticated/prijemcovia")({
     ],
   }),
   loader: ({ context: { queryClient } }) =>
-    Promise.all([queryClient.ensureQueryData(recipientsQuery), queryClient.ensureQueryData(templatesQuery)]),
+    Promise.all([
+      queryClient.ensureQueryData(recipientsQuery),
+      queryClient.ensureQueryData(templatesQuery),
+    ]),
   component: RecipientsPage,
 });
 
-type RecipientDraft = { id?: string; name: string; iban: string; note: string; is_favorite: boolean };
+type RecipientDraft = {
+  id?: string;
+  name: string;
+  iban: string;
+  note: string;
+  is_favorite: boolean;
+};
 type TemplateDraft = {
   id?: string;
   name: string;
@@ -89,36 +100,59 @@ function RecipientsPage() {
   const { data: recipients } = useSuspenseQuery(recipientsQuery);
   const { data: templates } = useSuspenseQuery(templatesQuery);
   const [q, setQ] = useState("");
-  const [actionsFor, setActionsFor] = useState<{ kind: "r"; item: Recipient } | { kind: "t"; item: PaymentTemplate } | null>(null);
+  const [actionsFor, setActionsFor] = useState<
+    { kind: "r"; item: Recipient } | { kind: "t"; item: PaymentTemplate } | null
+  >(null);
   const [rDraft, setRDraft] = useState<RecipientDraft | null>(null);
   const [tDraft, setTDraft] = useState<TemplateDraft | null>(null);
   const [errors, setErrors] = useState<Record<string, string>>({});
-  const [confirmDelete, setConfirmDelete] = useState<{ kind: "r" | "t"; id: string; name: string } | null>(null);
+  const [confirmDelete, setConfirmDelete] = useState<{
+    kind: "r" | "t";
+    id: string;
+    name: string;
+  } | null>(null);
 
-  const saveR = useBankMutation(async (d: RecipientDraft) => {
-    const parsed = recipientSchema.parse(d);
-    if (d.id) await updateRecipient(d.id, parsed);
-    else await createRecipient(parsed);
-  }, [qk.recipients]);
-  const saveT = useBankMutation(async (d: TemplateDraft) => {
-    const parsed = templateSchema.parse(d);
-    if (d.id) await updateTemplate(d.id, parsed);
-    else await createTemplate(parsed);
-  }, [qk.templates]);
+  const saveR = useBankMutation(
+    async (d: RecipientDraft) => {
+      const parsed = recipientSchema.parse(d);
+      if (d.id) await updateRecipient(d.id, parsed);
+      else await createRecipient(parsed);
+    },
+    [qk.recipients],
+  );
+  const saveT = useBankMutation(
+    async (d: TemplateDraft) => {
+      const parsed = templateSchema.parse(d);
+      if (d.id) await updateTemplate(d.id, parsed);
+      else await createTemplate(parsed);
+    },
+    [qk.templates],
+  );
   const removeR = useBankMutation((id: string) => deleteRecipient(id), [qk.recipients]);
   const removeT = useBankMutation((id: string) => deleteTemplate(id), [qk.templates]);
-  const toggleFav = useBankMutation((r: Recipient) => updateRecipient(r.id, { is_favorite: !r.is_favorite }), [qk.recipients]);
+  const toggleFav = useBankMutation(
+    (r: Recipient) => updateRecipient(r.id, { is_favorite: !r.is_favorite }),
+    [qk.recipients],
+  );
 
   const s = q.trim().toLowerCase();
   const qIban = normalizeIban(q);
   const rs = useMemo(
-    () => recipients.filter((r) => !s || r.name.toLowerCase().includes(s) || (qIban.length > 2 && r.iban.includes(qIban))),
+    () =>
+      recipients.filter(
+        (r) =>
+          !s || r.name.toLowerCase().includes(s) || (qIban.length > 2 && r.iban.includes(qIban)),
+      ),
     [recipients, s, qIban],
   );
   const ts = useMemo(
     () =>
       templates.filter(
-        (t) => !s || t.name.toLowerCase().includes(s) || t.recipient_name.toLowerCase().includes(s) || (qIban.length > 2 && t.iban.includes(qIban)),
+        (t) =>
+          !s ||
+          t.name.toLowerCase().includes(s) ||
+          t.recipient_name.toLowerCase().includes(s) ||
+          (qIban.length > 2 && t.iban.includes(qIban)),
       ),
     [templates, s, qIban],
   );
@@ -174,22 +208,47 @@ function RecipientsPage() {
       {showR ? (
         <section className="px-5 pt-5">
           <div className="mb-4 flex items-center justify-between">
-            <h2 className="text-sm tracking-wide text-muted-foreground uppercase">Príjemcovia ({rs.length})</h2>
-            <button type="button" className="font-medium text-link" onClick={() => { setErrors({}); setRDraft({ ...emptyRecipient }); }}>
+            <h2 className="text-sm tracking-wide text-muted-foreground uppercase">
+              Príjemcovia ({rs.length})
+            </h2>
+            <button
+              type="button"
+              className="font-medium text-link"
+              onClick={() => {
+                setErrors({});
+                setRDraft({ ...emptyRecipient });
+              }}
+            >
               Pridať príjemcu
             </button>
           </div>
           <div className="flex flex-col gap-3">
-            {rs.length === 0 ? <EmptyState title={q ? "Žiadny príjemca nezodpovedá hľadaniu." : "Zatiaľ nemáte uložených príjemcov."} /> : null}
+            {rs.length === 0 ? (
+              <EmptyState
+                title={
+                  q ? "Žiadny príjemca nezodpovedá hľadaniu." : "Zatiaľ nemáte uložených príjemcov."
+                }
+              />
+            ) : null}
             {rs.map((r) => (
-              <button key={r.id} type="button" onClick={() => setActionsFor({ kind: "r", item: r })} className="bank-tile flex items-center gap-4 px-5 py-4 text-left transition-transform active:scale-[0.99]">
+              <button
+                key={r.id}
+                type="button"
+                onClick={() => setActionsFor({ kind: "r", item: r })}
+                className="bank-tile flex items-center gap-4 px-5 py-4 text-left transition-transform active:scale-[0.99]"
+              >
                 <RecipientAvatar name={r.name} />
                 <span className="min-w-0 flex-1">
                   <span className="flex items-center gap-2 text-lg font-bold">
                     <span className="truncate">{r.name}</span>
-                    {r.is_favorite ? <Star className="h-4 w-4 shrink-0 fill-warning text-warning" /> : null}
+                    {r.is_favorite ? (
+                      <Star className="h-4 w-4 shrink-0 fill-warning text-warning" />
+                    ) : null}
                   </span>
-                  <Iban value={r.iban} className="block truncate text-[0.95rem] text-muted-foreground" />
+                  <Iban
+                    value={r.iban}
+                    className="block truncate text-[0.95rem] text-muted-foreground"
+                  />
                 </span>
               </button>
             ))}
@@ -200,15 +259,33 @@ function RecipientsPage() {
       {showT ? (
         <section className="px-5 pt-6 pb-6">
           <div className="mb-4 flex items-center justify-between">
-            <h2 className="text-sm tracking-wide text-muted-foreground uppercase">Šablóny ({ts.length})</h2>
-            <button type="button" className="font-medium text-link" onClick={() => { setErrors({}); setTDraft({ ...emptyTemplate }); }}>
+            <h2 className="text-sm tracking-wide text-muted-foreground uppercase">
+              Šablóny ({ts.length})
+            </h2>
+            <button
+              type="button"
+              className="font-medium text-link"
+              onClick={() => {
+                setErrors({});
+                setTDraft({ ...emptyTemplate });
+              }}
+            >
               Pridať šablónu
             </button>
           </div>
           <div className="flex flex-col gap-3">
-            {ts.length === 0 ? <EmptyState title={q ? "Žiadna šablóna nezodpovedá hľadaniu." : "Zatiaľ nemáte žiadne šablóny."} /> : null}
+            {ts.length === 0 ? (
+              <EmptyState
+                title={q ? "Žiadna šablóna nezodpovedá hľadaniu." : "Zatiaľ nemáte žiadne šablóny."}
+              />
+            ) : null}
             {ts.map((t) => (
-              <button key={t.id} type="button" onClick={() => setActionsFor({ kind: "t", item: t })} className="bank-tile flex items-center gap-4 px-5 py-4 text-left transition-transform active:scale-[0.99]">
+              <button
+                key={t.id}
+                type="button"
+                onClick={() => setActionsFor({ kind: "t", item: t })}
+                className="bank-tile flex items-center gap-4 px-5 py-4 text-left transition-transform active:scale-[0.99]"
+              >
                 <RecipientAvatar name={t.name} />
                 <span className="min-w-0 flex-1">
                   <span className="block truncate text-lg font-bold">{t.name}</span>
@@ -224,7 +301,11 @@ function RecipientsPage() {
       ) : null}
 
       {/* Actions */}
-      <BottomSheet open={!!actionsFor} onOpenChange={(v) => !v && setActionsFor(null)} title={actionsFor?.item.name ?? ""}>
+      <BottomSheet
+        open={!!actionsFor}
+        onOpenChange={(v) => !v && setActionsFor(null)}
+        title={actionsFor?.item.name ?? ""}
+      >
         {actionsFor ? (
           <div className="flex flex-col gap-3">
             <Button
@@ -233,7 +314,10 @@ function RecipientsPage() {
               onClick={() => {
                 const a = actionsFor;
                 setActionsFor(null);
-                navigate({ to: "/platba", search: a.kind === "r" ? { recipientId: a.item.id } : { templateId: a.item.id } });
+                navigate({
+                  to: "/platba",
+                  search: a.kind === "r" ? { recipientId: a.item.id } : { templateId: a.item.id },
+                });
               }}
             >
               <Send /> Zaplatiť
@@ -247,14 +331,19 @@ function RecipientsPage() {
                   const r = actionsFor.item;
                   toggleFav.mutate(r, {
                     onSuccess: () => {
-                      toast.success(r.is_favorite ? "Odstránené z rýchlej platby" : "Pridané do rýchlej platby");
+                      toast.success(
+                        r.is_favorite ? "Odstránené z rýchlej platby" : "Pridané do rýchlej platby",
+                      );
                       setActionsFor(null);
                     },
                     onError: (err) => toast.error(bankErrorMessage(err)),
                   });
                 }}
               >
-                <Star /> {actionsFor.item.is_favorite ? "Odobrať z rýchlej platby" : "Pridať do rýchlej platby"}
+                <Star />{" "}
+                {actionsFor.item.is_favorite
+                  ? "Odobrať z rýchlej platby"
+                  : "Pridať do rýchlej platby"}
               </Button>
             ) : null}
             <Button
@@ -264,7 +353,13 @@ function RecipientsPage() {
                 setErrors({});
                 if (actionsFor.kind === "r") {
                   const r = actionsFor.item;
-                  setRDraft({ id: r.id, name: r.name, iban: formatIban(r.iban), note: r.note ?? "", is_favorite: r.is_favorite });
+                  setRDraft({
+                    id: r.id,
+                    name: r.name,
+                    iban: formatIban(r.iban),
+                    note: r.note ?? "",
+                    is_favorite: r.is_favorite,
+                  });
                 } else {
                   const t = actionsFor.item;
                   setTDraft({
@@ -288,7 +383,11 @@ function RecipientsPage() {
               variant="bankDanger"
               size="xl"
               onClick={() => {
-                setConfirmDelete({ kind: actionsFor.kind, id: actionsFor.item.id, name: actionsFor.item.name });
+                setConfirmDelete({
+                  kind: actionsFor.kind,
+                  id: actionsFor.item.id,
+                  name: actionsFor.item.name,
+                });
                 setActionsFor(null);
               }}
             >
@@ -299,13 +398,47 @@ function RecipientsPage() {
       </BottomSheet>
 
       {/* Recipient form */}
-      <BottomSheet open={!!rDraft} onOpenChange={(v) => !v && setRDraft(null)} title={rDraft?.id ? "Upraviť príjemcu" : "Pridať príjemcu"}>
+      <BottomSheet
+        open={!!rDraft}
+        onOpenChange={(v) => !v && setRDraft(null)}
+        title={rDraft?.id ? "Upraviť príjemcu" : "Pridať príjemcu"}
+      >
         {rDraft ? (
           <form onSubmit={submitRecipient} noValidate className="flex flex-col gap-4">
-            <TextField id="r-name" label="Názov príjemcu" required maxLength={70} value={rDraft.name} onChange={(e) => setRDraft({ ...rDraft, name: e.target.value })} error={errors["name"]} />
-            <TextField id="r-iban" label="IBAN" required autoCapitalize="characters" value={rDraft.iban} onChange={(e) => setRDraft({ ...rDraft, iban: e.target.value.toUpperCase() })} onBlur={() => setRDraft({ ...rDraft, iban: formatIban(rDraft.iban) })} error={errors["iban"]} />
-            <TextField id="r-note" label="Poznámka" maxLength={140} value={rDraft.note} onChange={(e) => setRDraft({ ...rDraft, note: e.target.value })} error={errors["note"]} />
-            <ToggleRow id="r-fav" label="Rýchla platba" description="Zobraziť na domovskej obrazovke" checked={rDraft.is_favorite} onCheckedChange={(v) => setRDraft({ ...rDraft, is_favorite: v })} />
+            <TextField
+              id="r-name"
+              label="Názov príjemcu"
+              required
+              maxLength={70}
+              value={rDraft.name}
+              onChange={(e) => setRDraft({ ...rDraft, name: e.target.value })}
+              error={errors["name"]}
+            />
+            <TextField
+              id="r-iban"
+              label="IBAN"
+              required
+              autoCapitalize="characters"
+              value={rDraft.iban}
+              onChange={(e) => setRDraft({ ...rDraft, iban: e.target.value.toUpperCase() })}
+              onBlur={() => setRDraft({ ...rDraft, iban: formatIban(rDraft.iban) })}
+              error={errors["iban"]}
+            />
+            <TextField
+              id="r-note"
+              label="Poznámka"
+              maxLength={140}
+              value={rDraft.note}
+              onChange={(e) => setRDraft({ ...rDraft, note: e.target.value })}
+              error={errors["note"]}
+            />
+            <ToggleRow
+              id="r-fav"
+              label="Rýchla platba"
+              description="Zobraziť na domovskej obrazovke"
+              checked={rDraft.is_favorite}
+              onCheckedChange={(v) => setRDraft({ ...rDraft, is_favorite: v })}
+            />
             <Button type="submit" variant="bank" size="xl" disabled={saveR.isPending}>
               {saveR.isPending ? "Ukladám…" : "Uložiť príjemcu"}
             </Button>
@@ -314,17 +447,91 @@ function RecipientsPage() {
       </BottomSheet>
 
       {/* Template form */}
-      <BottomSheet open={!!tDraft} onOpenChange={(v) => !v && setTDraft(null)} title={tDraft?.id ? "Upraviť šablónu" : "Nová šablóna"}>
+      <BottomSheet
+        open={!!tDraft}
+        onOpenChange={(v) => !v && setTDraft(null)}
+        title={tDraft?.id ? "Upraviť šablónu" : "Nová šablóna"}
+      >
         {tDraft ? (
           <form onSubmit={submitTemplate} noValidate className="flex flex-col gap-4">
-            <TextField id="t-name" label="Názov šablóny" required maxLength={60} value={tDraft.name} onChange={(e) => setTDraft({ ...tDraft, name: e.target.value })} error={errors["name"]} />
-            <TextField id="t-rname" label="Názov príjemcu" required maxLength={70} value={tDraft.recipient_name} onChange={(e) => setTDraft({ ...tDraft, recipient_name: e.target.value })} error={errors["recipient_name"]} />
-            <TextField id="t-iban" label="IBAN" required autoCapitalize="characters" value={tDraft.iban} onChange={(e) => setTDraft({ ...tDraft, iban: e.target.value.toUpperCase() })} onBlur={() => setTDraft({ ...tDraft, iban: formatIban(tDraft.iban) })} error={errors["iban"]} />
-            <TextField id="t-amount" label="Suma (EUR)" inputMode="decimal" placeholder="0,00" value={tDraft.amount} onChange={(e) => setTDraft({ ...tDraft, amount: e.target.value })} error={errors["amount"]} />
-            <TextField id="t-vs" label="Variabilný symbol" inputMode="numeric" maxLength={10} value={tDraft.variable_symbol} onChange={(e) => setTDraft({ ...tDraft, variable_symbol: e.target.value.replace(/\D/g, "") })} error={errors["variable_symbol"]} />
-            <TextField id="t-ss" label="Špecifický symbol" inputMode="numeric" maxLength={10} value={tDraft.specific_symbol} onChange={(e) => setTDraft({ ...tDraft, specific_symbol: e.target.value.replace(/\D/g, "") })} error={errors["specific_symbol"]} />
-            <TextField id="t-ks" label="Konštantný symbol" inputMode="numeric" maxLength={4} value={tDraft.constant_symbol} onChange={(e) => setTDraft({ ...tDraft, constant_symbol: e.target.value.replace(/\D/g, "") })} error={errors["constant_symbol"]} />
-            <TextField id="t-msg" label="Informácia pre príjemcu" maxLength={140} value={tDraft.message} onChange={(e) => setTDraft({ ...tDraft, message: e.target.value })} error={errors["message"]} />
+            <TextField
+              id="t-name"
+              label="Názov šablóny"
+              required
+              maxLength={60}
+              value={tDraft.name}
+              onChange={(e) => setTDraft({ ...tDraft, name: e.target.value })}
+              error={errors["name"]}
+            />
+            <TextField
+              id="t-rname"
+              label="Názov príjemcu"
+              required
+              maxLength={70}
+              value={tDraft.recipient_name}
+              onChange={(e) => setTDraft({ ...tDraft, recipient_name: e.target.value })}
+              error={errors["recipient_name"]}
+            />
+            <TextField
+              id="t-iban"
+              label="IBAN"
+              required
+              autoCapitalize="characters"
+              value={tDraft.iban}
+              onChange={(e) => setTDraft({ ...tDraft, iban: e.target.value.toUpperCase() })}
+              onBlur={() => setTDraft({ ...tDraft, iban: formatIban(tDraft.iban) })}
+              error={errors["iban"]}
+            />
+            <TextField
+              id="t-amount"
+              label="Suma (EUR)"
+              inputMode="decimal"
+              placeholder="0,00"
+              value={tDraft.amount}
+              onChange={(e) => setTDraft({ ...tDraft, amount: e.target.value })}
+              error={errors["amount"]}
+            />
+            <TextField
+              id="t-vs"
+              label="Variabilný symbol"
+              inputMode="numeric"
+              maxLength={10}
+              value={tDraft.variable_symbol}
+              onChange={(e) =>
+                setTDraft({ ...tDraft, variable_symbol: e.target.value.replace(/\D/g, "") })
+              }
+              error={errors["variable_symbol"]}
+            />
+            <TextField
+              id="t-ss"
+              label="Špecifický symbol"
+              inputMode="numeric"
+              maxLength={10}
+              value={tDraft.specific_symbol}
+              onChange={(e) =>
+                setTDraft({ ...tDraft, specific_symbol: e.target.value.replace(/\D/g, "") })
+              }
+              error={errors["specific_symbol"]}
+            />
+            <TextField
+              id="t-ks"
+              label="Konštantný symbol"
+              inputMode="numeric"
+              maxLength={4}
+              value={tDraft.constant_symbol}
+              onChange={(e) =>
+                setTDraft({ ...tDraft, constant_symbol: e.target.value.replace(/\D/g, "") })
+              }
+              error={errors["constant_symbol"]}
+            />
+            <TextField
+              id="t-msg"
+              label="Informácia pre príjemcu"
+              maxLength={140}
+              value={tDraft.message}
+              onChange={(e) => setTDraft({ ...tDraft, message: e.target.value })}
+              error={errors["message"]}
+            />
             <Button type="submit" variant="bank" size="xl" disabled={saveT.isPending}>
               {saveT.isPending ? "Ukladám…" : "Uložiť šablónu"}
             </Button>

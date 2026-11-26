@@ -32,7 +32,13 @@ async function requireUserId(): Promise<string> {
 
 // ---------- Reads ----------
 export async function fetchAccounts(): Promise<Account[]> {
-  return unwrap(await supabase.from("accounts").select("*").order("is_primary", { ascending: false }).order("created_at"));
+  return unwrap(
+    await supabase
+      .from("accounts")
+      .select("*")
+      .order("is_primary", { ascending: false })
+      .order("created_at"),
+  );
 }
 
 export async function fetchTransactions(): Promise<Transaction[]> {
@@ -66,20 +72,72 @@ export async function fetchCards(): Promise<Card[]> {
   return unwrap(await supabase.from("cards").select("*").order("created_at"));
 }
 
+export const DEFAULT_CARD_LIMITS: CardLimits = {
+  card_id: "",
+  user_id: "",
+  atm_daily: 0,
+  pos_daily: 0,
+  internet_daily: 0,
+  updated_at: "",
+} as CardLimits;
+
 export async function fetchCardLimits(cardId: string): Promise<CardLimits> {
-  return unwrap(await supabase.from("card_limits").select("*").eq("card_id", cardId).maybeSingle());
+  const res = await supabase.from("card_limits").select("*").eq("card_id", cardId).maybeSingle();
+  if (res.error) throw new Error(res.error.message);
+  return res.data ?? { ...DEFAULT_CARD_LIMITS, card_id: cardId };
 }
 
 export async function fetchNotifications(): Promise<Notification[]> {
-  return unwrap(await supabase.from("notifications").select("*").order("created_at", { ascending: false }).limit(200));
+  return unwrap(
+    await supabase
+      .from("notifications")
+      .select("*")
+      .order("created_at", { ascending: false })
+      .limit(200),
+  );
 }
+
+export const DEFAULT_SETTINGS: UserSettings = {
+  user_id: "",
+  theme: "dark",
+  language: "sk",
+  nav_item: "karty",
+  hide_balances: false,
+  show_cards: true,
+  show_quick_payment: true,
+  show_savings: true,
+  show_spending: true,
+  show_rates: true,
+  notify_payments: true,
+  notify_cards: true,
+  notify_marketing: false,
+  updated_at: "",
+} as UserSettings;
 
 export async function fetchSettings(): Promise<UserSettings> {
-  return unwrap(await supabase.from("user_settings").select("*").maybeSingle());
+  const res = await supabase.from("user_settings").select("*").maybeSingle();
+  if (res.error) throw new Error(res.error.message);
+  return res.data ?? DEFAULT_SETTINGS;
 }
 
+export const DEFAULT_PROFILE: Profile = {
+  id: "",
+  full_name: "",
+  client_number: "",
+  email: null,
+  phone: null,
+  street: null,
+  city: null,
+  zip: null,
+  birth_date: null,
+  created_at: "",
+  updated_at: "",
+} as Profile;
+
 export async function fetchProfile(): Promise<Profile> {
-  return unwrap(await supabase.from("profiles").select("*").maybeSingle());
+  const res = await supabase.from("profiles").select("*").maybeSingle();
+  if (res.error) throw new Error(res.error.message);
+  return res.data ?? DEFAULT_PROFILE;
 }
 
 // ---------- Writes ----------
@@ -107,10 +165,19 @@ export type RecipientInput = Pick<TablesInsert<"recipients">, "name" | "iban"> &
 
 export async function createRecipient(input: RecipientInput): Promise<Recipient> {
   const user_id = await requireUserId();
-  return unwrap(await supabase.from("recipients").insert({ ...input, user_id }).select("*").single());
+  return unwrap(
+    await supabase
+      .from("recipients")
+      .insert({ ...input, user_id })
+      .select("*")
+      .single(),
+  );
 }
 
-export async function updateRecipient(id: string, patch: TablesUpdate<"recipients">): Promise<void> {
+export async function updateRecipient(
+  id: string,
+  patch: TablesUpdate<"recipients">,
+): Promise<void> {
   const { error } = await supabase.from("recipients").update(patch).eq("id", id);
   if (error) throw new Error(error.message);
 }
@@ -120,14 +187,26 @@ export async function deleteRecipient(id: string): Promise<void> {
   if (error) throw new Error(error.message);
 }
 
-export type TemplateInput = Omit<TablesInsert<"payment_templates">, "id" | "user_id" | "created_at">;
+export type TemplateInput = Omit<
+  TablesInsert<"payment_templates">,
+  "id" | "user_id" | "created_at"
+>;
 
 export async function createTemplate(input: TemplateInput): Promise<PaymentTemplate> {
   const user_id = await requireUserId();
-  return unwrap(await supabase.from("payment_templates").insert({ ...input, user_id }).select("*").single());
+  return unwrap(
+    await supabase
+      .from("payment_templates")
+      .insert({ ...input, user_id })
+      .select("*")
+      .single(),
+  );
 }
 
-export async function updateTemplate(id: string, patch: TablesUpdate<"payment_templates">): Promise<void> {
+export async function updateTemplate(
+  id: string,
+  patch: TablesUpdate<"payment_templates">,
+): Promise<void> {
   const { error } = await supabase.from("payment_templates").update(patch).eq("id", id);
   if (error) throw new Error(error.message);
 }
@@ -144,10 +223,19 @@ export type StandingOrderInput = Omit<
 
 export async function createStandingOrder(input: StandingOrderInput): Promise<StandingOrder> {
   const user_id = await requireUserId();
-  return unwrap(await supabase.from("standing_orders").insert({ ...input, user_id }).select("*").single());
+  return unwrap(
+    await supabase
+      .from("standing_orders")
+      .insert({ ...input, user_id })
+      .select("*")
+      .single(),
+  );
 }
 
-export async function updateStandingOrder(id: string, patch: TablesUpdate<"standing_orders">): Promise<void> {
+export async function updateStandingOrder(
+  id: string,
+  patch: TablesUpdate<"standing_orders">,
+): Promise<void> {
   const { error } = await supabase.from("standing_orders").update(patch).eq("id", id);
   if (error) throw new Error(error.message);
 }
@@ -169,7 +257,10 @@ export async function updateCardLimits(
   cardId: string,
   patch: Pick<TablesUpdate<"card_limits">, "atm_daily" | "pos_daily" | "internet_daily">,
 ): Promise<void> {
-  const { error } = await supabase.from("card_limits").update(patch).eq("card_id", cardId);
+  const user_id = await requireUserId();
+  const { error } = await supabase
+    .from("card_limits")
+    .upsert({ ...patch, card_id: cardId, user_id }, { onConflict: "card_id" });
   if (error) throw new Error(error.message);
 }
 
@@ -179,7 +270,10 @@ export async function markNotificationRead(id: string, isRead = true): Promise<v
 }
 
 export async function markAllNotificationsRead(): Promise<void> {
-  const { error } = await supabase.from("notifications").update({ is_read: true }).eq("is_read", false);
+  const { error } = await supabase
+    .from("notifications")
+    .update({ is_read: true })
+    .eq("is_read", false);
   if (error) throw new Error(error.message);
 }
 
@@ -192,7 +286,9 @@ export type SettingsPatch = Omit<TablesUpdate<"user_settings">, "user_id" | "upd
 
 export async function updateSettings(patch: SettingsPatch): Promise<void> {
   const user_id = await requireUserId();
-  const { error } = await supabase.from("user_settings").update(patch).eq("user_id", user_id);
+  const { error } = await supabase
+    .from("user_settings")
+    .upsert({ ...patch, user_id }, { onConflict: "user_id" });
   if (error) throw new Error(error.message);
 }
 
@@ -203,18 +299,22 @@ export type ProfilePatch = Pick<
 
 export async function updateProfile(patch: ProfilePatch): Promise<void> {
   const id = await requireUserId();
-  const { error } = await supabase.from("profiles").update(patch).eq("id", id);
+  const { error } = await supabase.from("profiles").upsert({ ...patch, id }, { onConflict: "id" });
   if (error) throw new Error(error.message);
 }
 
 export type SupportRequest = Tables<"support_requests">;
 
 export async function fetchSupportRequests(): Promise<SupportRequest[]> {
-  return unwrap(await supabase.from("support_requests").select("*").order("created_at", { ascending: false }));
+  return unwrap(
+    await supabase.from("support_requests").select("*").order("created_at", { ascending: false }),
+  );
 }
 
 export async function createSupportRequest(
-  input: Pick<TablesInsert<"support_requests">, "kind" | "phone" | "preferred_at" | "topic"> & { note?: string | null },
+  input: Pick<TablesInsert<"support_requests">, "kind" | "phone" | "preferred_at" | "topic"> & {
+    note?: string | null;
+  },
 ): Promise<void> {
   const user_id = await requireUserId();
   const { error } = await supabase.from("support_requests").insert({ ...input, user_id });
@@ -222,7 +322,10 @@ export async function createSupportRequest(
 }
 
 export async function cancelSupportRequest(id: string): Promise<void> {
-  const { error } = await supabase.from("support_requests").update({ status: "cancelled" }).eq("id", id);
+  const { error } = await supabase
+    .from("support_requests")
+    .update({ status: "cancelled" })
+    .eq("id", id);
   if (error) throw new Error(error.message);
 }
 

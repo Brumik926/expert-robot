@@ -6,7 +6,13 @@ export const BANK_NAME = "Tatra banka";
 export function TatraMark({ className }: { className?: string }) {
   return (
     <svg viewBox="0 0 48 48" fill="none" aria-hidden="true" className={cn("h-10 w-10", className)}>
-      <path d="M7 14 L24 42 L41 14" stroke="currentColor" strokeWidth="6" strokeLinecap="round" strokeLinejoin="round" />
+      <path
+        d="M7 14 L24 42 L41 14"
+        stroke="currentColor"
+        strokeWidth="6"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
       <path
         d="M24 3 C25 8.5 26.5 10 32 11 C26.5 12 25 13.5 24 19 C23 13.5 21.5 12 16 11 C21.5 10 23 8.5 24 3 Z"
         fill="var(--primary)"

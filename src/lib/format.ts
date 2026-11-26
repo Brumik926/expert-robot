@@ -13,8 +13,16 @@ export function formatMoney(value: number | string | null | undefined, currency 
   return `${formatAmount(value)} ${currency}`;
 }
 
-const longDate = new Intl.DateTimeFormat("sk-SK", { day: "numeric", month: "long", year: "numeric" });
-const shortDate = new Intl.DateTimeFormat("sk-SK", { day: "2-digit", month: "2-digit", year: "numeric" });
+const longDate = new Intl.DateTimeFormat("sk-SK", {
+  day: "numeric",
+  month: "long",
+  year: "numeric",
+});
+const shortDate = new Intl.DateTimeFormat("sk-SK", {
+  day: "2-digit",
+  month: "2-digit",
+  year: "numeric",
+});
 const timeFmt = new Intl.DateTimeFormat("sk-SK", { hour: "2-digit", minute: "2-digit" });
 
 function toDate(value: string | Date): Date {

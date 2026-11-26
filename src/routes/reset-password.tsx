@@ -55,11 +55,34 @@ function ResetPassword() {
       <PageHeader title="Nové heslo" back="/auth" />
       <form onSubmit={submit} className="flex flex-col gap-4 px-5 pt-6">
         {!recovery ? (
-          <p className="text-sm text-muted-foreground">Otvorte túto stránku cez odkaz z e-mailu na obnovu hesla.</p>
+          <p className="text-sm text-muted-foreground">
+            Otvorte túto stránku cez odkaz z e-mailu na obnovu hesla.
+          </p>
         ) : null}
-        <TextField id="pw" label="Nové heslo" type="password" autoComplete="new-password" value={password} onChange={(e) => setPassword(e.target.value)} />
-        <TextField id="pw2" label="Zopakujte heslo" type="password" autoComplete="new-password" value={confirm} onChange={(e) => setConfirm(e.target.value)} error={error} />
-        <Button type="submit" variant="bank" size="xl" disabled={busy || !recovery} className="mt-4">
+        <TextField
+          id="pw"
+          label="Nové heslo"
+          type="password"
+          autoComplete="new-password"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+        />
+        <TextField
+          id="pw2"
+          label="Zopakujte heslo"
+          type="password"
+          autoComplete="new-password"
+          value={confirm}
+          onChange={(e) => setConfirm(e.target.value)}
+          error={error}
+        />
+        <Button
+          type="submit"
+          variant="bank"
+          size="xl"
+          disabled={busy || !recovery}
+          className="mt-4"
+        >
           {busy ? "Ukladám…" : "Uložiť heslo"}
         </Button>
       </form>

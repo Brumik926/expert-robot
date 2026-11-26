@@ -39,7 +39,9 @@ export function isValidIban(value: string): boolean {
 /** Groups an IBAN into blocks of four: "SK98 1100 0000 ...". */
 export function formatIban(value: string | null | undefined): string {
   if (!value) return "";
-  return normalizeIban(value).replace(/(.{4})/g, "$1 ").trim();
+  return normalizeIban(value)
+    .replace(/(.{4})/g, "$1 ")
+    .trim();
 }
 
 export function ibanGroups(value: string | null | undefined): string[] {

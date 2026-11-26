@@ -29,7 +29,10 @@ export const Route = createFileRoute("/_authenticated/profil")({
     ],
   }),
   loader: ({ context: { queryClient } }) =>
-    Promise.all([queryClient.ensureQueryData(profileQuery), queryClient.ensureQueryData(settingsQuery)]),
+    Promise.all([
+      queryClient.ensureQueryData(profileQuery),
+      queryClient.ensureQueryData(settingsQuery),
+    ]),
   component: ProfilePage,
 });
 
@@ -38,7 +41,11 @@ const personalSchema = z.object({
   birth_date: z
     .string()
     .transform((v) => (v ? v : null))
-    .refine((v) => v === null || (/^\d{4}-\d{2}-\d{2}$/.test(v) && v < new Date().toISOString().slice(0, 10)), "Neplatný dátum narodenia"),
+    .refine(
+      (v) =>
+        v === null || (/^\d{4}-\d{2}-\d{2}$/.test(v) && v < new Date().toISOString().slice(0, 10)),
+      "Neplatný dátum narodenia",
+    ),
 });
 const contactSchema = z.object({
   phone: z
@@ -48,8 +55,16 @@ const contactSchema = z.object({
     .refine((v) => v === null || /^\+?[0-9 ]{6,20}$/.test(v), "Zadajte platné telefónne číslo"),
 });
 const addressSchema = z.object({
-  street: z.string().trim().max(120).transform((v) => (v ? v : null)),
-  city: z.string().trim().max(80).transform((v) => (v ? v : null)),
+  street: z
+    .string()
+    .trim()
+    .max(120)
+    .transform((v) => (v ? v : null)),
+  city: z
+    .string()
+    .trim()
+    .max(80)
+    .transform((v) => (v ? v : null)),
   zip: z
     .string()
     .trim()
@@ -68,7 +83,10 @@ function ProfilePage() {
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [busy, setBusy] = useState(false);
   const save = useBankMutation((p: ProfilePatch) => updateProfile(p), [qk.profile]);
-  const marketing = useBankMutation((v: boolean) => updateSettings({ notify_marketing: v }), [qk.settings]);
+  const marketing = useBankMutation(
+    (v: boolean) => updateSettings({ notify_marketing: v }),
+    [qk.settings],
+  );
 
   function open(s: Exclude<Sheet, null>) {
     setErrors({});
@@ -88,7 +106,8 @@ function ProfilePage() {
 
   function submit(e: React.FormEvent) {
     e.preventDefault();
-    const schema = sheet === "personal" ? personalSchema : sheet === "contact" ? contactSchema : addressSchema;
+    const schema =
+      sheet === "personal" ? personalSchema : sheet === "contact" ? contactSchema : addressSchema;
     const parsed = schema.safeParse(form);
     if (!parsed.success) return setErrors(zodErrors(parsed.error));
     save.mutate(parsed.data as ProfilePatch, {
@@ -109,7 +128,10 @@ function ProfilePage() {
     setBusy(true);
     try {
       const email = profile.email ?? "";
-      const { error: verifyErr } = await supabase.auth.signInWithPassword({ email, password: form["current"] ?? "" });
+      const { error: verifyErr } = await supabase.auth.signInWithPassword({
+        email,
+        password: form["current"] ?? "",
+      });
       if (verifyErr) {
         setErrors({ current: "Súčasné heslo nie je správne" });
         return;
@@ -125,22 +147,53 @@ function ProfilePage() {
     }
   }
 
-  const f = (k: string) => ({ value: form[k] ?? "", onChange: (e: React.ChangeEvent<HTMLInputElement>) => setForm({ ...form, [k]: e.target.value }), error: errors[k] });
+  const f = (k: string) => ({
+    value: form[k] ?? "",
+    onChange: (e: React.ChangeEvent<HTMLInputElement>) => setForm({ ...form, [k]: e.target.value }),
+    error: errors[k],
+  });
 
   return (
     <div className="flex flex-col gap-3 px-5 pb-6 animate-page-in">
       <PageHeader title="Profil" back className="-mx-5" />
       <section className="rounded-xl bg-background px-5 shadow-tile">
-        <h2 className="border-b border-border py-5 text-xl font-bold">{profile.full_name || "Klient"}</h2>
-        <DetailRow className="border-t-0" label="Klientske číslo (PID)" value={profile.client_number} />
+        <h2 className="border-b border-border py-5 text-xl font-bold">
+          {profile.full_name || "Klient"}
+        </h2>
+        <DetailRow
+          className="border-t-0"
+          label="Klientske číslo (PID)"
+          value={profile.client_number}
+        />
         <DetailRow label="E-mail" value={profile.email ?? "—"} />
       </section>
 
       <section className="rounded-xl bg-background px-5 shadow-tile">
         <h2 className="border-b border-border py-5 text-xl font-bold">Osobné a klientske údaje</h2>
-        <NavRow label="Osobné údaje" description={profile.birth_date ? `Narodený/á ${formatShortDate(profile.birth_date)}` : "Meno a dátum narodenia"} onClick={() => open("personal")} className="border-b border-border" />
-        <NavRow label="Kontaktné údaje" description={profile.phone ?? "Telefónne číslo"} onClick={() => open("contact")} className="border-b border-border" />
-        <NavRow label="Adresa" description={[profile.street, profile.zip, profile.city].filter(Boolean).join(", ") || "Trvalý pobyt"} onClick={() => open("address")} className="border-b border-border" />
+        <NavRow
+          label="Osobné údaje"
+          description={
+            profile.birth_date
+              ? `Narodený/á ${formatShortDate(profile.birth_date)}`
+              : "Meno a dátum narodenia"
+          }
+          onClick={() => open("personal")}
+          className="border-b border-border"
+        />
+        <NavRow
+          label="Kontaktné údaje"
+          description={profile.phone ?? "Telefónne číslo"}
+          onClick={() => open("contact")}
+          className="border-b border-border"
+        />
+        <NavRow
+          label="Adresa"
+          description={
+            [profile.street, profile.zip, profile.city].filter(Boolean).join(", ") || "Trvalý pobyt"
+          }
+          onClick={() => open("address")}
+          className="border-b border-border"
+        />
         <NavRow label="Zmena hesla" onClick={() => open("password")} />
       </section>
 
@@ -152,7 +205,12 @@ function ProfilePage() {
           description="Ponuky a novinky Tatra banky"
           checked={settings.notify_marketing}
           disabled={marketing.isPending}
-          onCheckedChange={(v) => marketing.mutate(v, { onSuccess: () => toast.success("Uložené"), onError: (e) => toast.error(bankErrorMessage(e)) })}
+          onCheckedChange={(v) =>
+            marketing.mutate(v, {
+              onSuccess: () => toast.success("Uložené"),
+              onError: (e) => toast.error(bankErrorMessage(e)),
+            })
+          }
         />
       </section>
 
@@ -160,27 +218,72 @@ function ProfilePage() {
         <LogOut /> Odhlásiť sa
       </Button>
 
-      <BottomSheet open={sheet !== null && sheet !== "password"} onOpenChange={(v) => !v && setSheet(null)} title={sheet === "personal" ? "Osobné údaje" : sheet === "contact" ? "Kontaktné údaje" : "Adresa"}>
+      <BottomSheet
+        open={sheet !== null && sheet !== "password"}
+        onOpenChange={(v) => !v && setSheet(null)}
+        title={
+          sheet === "personal" ? "Osobné údaje" : sheet === "contact" ? "Kontaktné údaje" : "Adresa"
+        }
+      >
         <form onSubmit={submit} noValidate className="flex flex-col gap-4">
           {sheet === "personal" ? (
             <>
-              <TextField id="p-name" label="Meno a priezvisko" maxLength={100} {...f("full_name")} />
+              <TextField
+                id="p-name"
+                label="Meno a priezvisko"
+                maxLength={100}
+                {...f("full_name")}
+              />
               <FieldShell label="Dátum narodenia" htmlFor="p-birth" error={errors["birth_date"]}>
-                <input id="p-birth" type="date" value={form["birth_date"] ?? ""} onChange={(e) => setForm({ ...form, birth_date: e.target.value })} className="relative w-full bg-transparent text-[1.05rem] outline-none" />
+                <input
+                  id="p-birth"
+                  type="date"
+                  value={form["birth_date"] ?? ""}
+                  onChange={(e) => setForm({ ...form, birth_date: e.target.value })}
+                  className="relative w-full bg-transparent text-[1.05rem] outline-none"
+                />
               </FieldShell>
             </>
           ) : null}
           {sheet === "contact" ? (
             <>
-              <TextField id="p-phone" label="Telefón" type="tel" autoComplete="tel" placeholder="+421 900 000 000" {...f("phone")} />
-              <p className="text-sm text-muted-foreground">E-mail {profile.email} slúži na prihlásenie a nedá sa tu zmeniť.</p>
+              <TextField
+                id="p-phone"
+                label="Telefón"
+                type="tel"
+                autoComplete="tel"
+                placeholder="+421 900 000 000"
+                {...f("phone")}
+              />
+              <p className="text-sm text-muted-foreground">
+                E-mail {profile.email} slúži na prihlásenie a nedá sa tu zmeniť.
+              </p>
             </>
           ) : null}
           {sheet === "address" ? (
             <>
-              <TextField id="p-street" label="Ulica a číslo" maxLength={120} autoComplete="street-address" {...f("street")} />
-              <TextField id="p-city" label="Mesto" maxLength={80} autoComplete="address-level2" {...f("city")} />
-              <TextField id="p-zip" label="PSČ" maxLength={6} inputMode="numeric" autoComplete="postal-code" {...f("zip")} />
+              <TextField
+                id="p-street"
+                label="Ulica a číslo"
+                maxLength={120}
+                autoComplete="street-address"
+                {...f("street")}
+              />
+              <TextField
+                id="p-city"
+                label="Mesto"
+                maxLength={80}
+                autoComplete="address-level2"
+                {...f("city")}
+              />
+              <TextField
+                id="p-zip"
+                label="PSČ"
+                maxLength={6}
+                inputMode="numeric"
+                autoComplete="postal-code"
+                {...f("zip")}
+              />
             </>
           ) : null}
           <Button type="submit" variant="bank" size="xl" disabled={save.isPending}>
@@ -189,11 +292,33 @@ function ProfilePage() {
         </form>
       </BottomSheet>
 
-      <BottomSheet open={sheet === "password"} onOpenChange={(v) => !v && setSheet(null)} title="Zmena hesla">
+      <BottomSheet
+        open={sheet === "password"}
+        onOpenChange={(v) => !v && setSheet(null)}
+        title="Zmena hesla"
+      >
         <form onSubmit={changePassword} noValidate className="flex flex-col gap-4">
-          <TextField id="pw-cur" label="Súčasné heslo" type="password" autoComplete="current-password" {...f("current")} />
-          <TextField id="pw-new" label="Nové heslo" type="password" autoComplete="new-password" {...f("next")} />
-          <TextField id="pw-conf" label="Zopakujte nové heslo" type="password" autoComplete="new-password" {...f("confirm")} />
+          <TextField
+            id="pw-cur"
+            label="Súčasné heslo"
+            type="password"
+            autoComplete="current-password"
+            {...f("current")}
+          />
+          <TextField
+            id="pw-new"
+            label="Nové heslo"
+            type="password"
+            autoComplete="new-password"
+            {...f("next")}
+          />
+          <TextField
+            id="pw-conf"
+            label="Zopakujte nové heslo"
+            type="password"
+            autoComplete="new-password"
+            {...f("confirm")}
+          />
           <Button type="submit" variant="bank" size="xl" disabled={busy}>
             {busy ? "Mením…" : "Zmeniť heslo"}
           </Button>

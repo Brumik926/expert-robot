@@ -12,7 +12,8 @@ export const Route = createFileRoute("/")({
       { title: "Tatra banka – vitajte v mobilnom bankovníctve" },
       {
         name: "description",
-        content: "Prihláste sa do mobilného bankovníctva Tatra banka: účty, karty, platby a prehľad výdavkov.",
+        content:
+          "Prihláste sa do mobilného bankovníctva Tatra banka: účty, karty, platby a prehľad výdavkov.",
       },
       { property: "og:title", content: "Tatra banka – vitajte v mobilnom bankovníctve" },
       {
@@ -31,11 +32,19 @@ function Welcome() {
   return (
     <div className="dark">
       <main className="relative mx-auto flex min-h-dvh max-w-md flex-col overflow-hidden bg-canvas text-foreground">
-        <img src={art.url} alt="" className="absolute inset-y-0 right-0 h-full w-[85%] object-cover object-left opacity-90" />
+        <img
+          src={art.url}
+          alt=""
+          className="absolute inset-y-0 right-0 h-full w-[85%] object-cover object-left opacity-90"
+        />
         <div className="welcome-fade absolute inset-0" />
 
         <div className="relative flex justify-end px-5 pt-[calc(env(safe-area-inset-top)+1.25rem)]">
-          <Link to="/kontakty" aria-label="Pomoc a kontakty" className="rounded-full p-1 text-primary">
+          <Link
+            to="/kontakty"
+            aria-label="Pomoc a kontakty"
+            className="rounded-full p-1 text-primary"
+          >
             <CircleHelp className="h-11 w-11" strokeWidth={1.3} />
           </Link>
         </div>
@@ -76,16 +85,29 @@ function Welcome() {
           </p>
         </div>
 
-        <nav aria-label="Rýchle odkazy" className="relative grid grid-cols-3 border-t border-border bg-canvas safe-bottom">
-          <Link to="/auth" search={{ mode: "register" }} className="flex flex-col items-center gap-1 py-3 text-sm text-muted-foreground hover:text-foreground">
+        <nav
+          aria-label="Rýchle odkazy"
+          className="relative grid grid-cols-3 border-t border-border bg-canvas safe-bottom"
+        >
+          <Link
+            to="/auth"
+            search={{ mode: "register" }}
+            className="flex flex-col items-center gap-1 py-3 text-sm text-muted-foreground hover:text-foreground"
+          >
             <UserPlus className="h-7 w-7 text-primary" strokeWidth={1.4} />
             Registrácia
           </Link>
-          <Link to="/kurzy" className="flex flex-col items-center gap-1 py-3 text-sm text-muted-foreground hover:text-foreground">
+          <Link
+            to="/kurzy"
+            className="flex flex-col items-center gap-1 py-3 text-sm text-muted-foreground hover:text-foreground"
+          >
             <LineChart className="h-7 w-7 text-primary" strokeWidth={1.4} />
             Kurzový lístok
           </Link>
-          <Link to="/kontakty" className="flex flex-col items-center gap-1 py-3 text-sm text-muted-foreground hover:text-foreground">
+          <Link
+            to="/kontakty"
+            className="flex flex-col items-center gap-1 py-3 text-sm text-muted-foreground hover:text-foreground"
+          >
             <Phone className="h-7 w-7 text-primary" strokeWidth={1.4} />
             Kontakty
           </Link>

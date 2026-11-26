@@ -60,7 +60,8 @@ describe("Platby a IBAN validácia (Etapa 3)", () => {
   });
 
   it("správne overí dostatočný zostatok účtu", () => {
-    expect(checkSufficientFunds(500, 200, 100)).toBe(true); // 500 + 100 overdraft >= 200
-    expect(checkSufficientFunds(50, 100, 0)).toBe(false); // 50 < 100
+    expect(checkSufficientFunds(500, 200, "2026-11-22", "2026-11-22")).toBe(true); // 500 >= 200
+    expect(checkSufficientFunds(50, 100, "2026-11-22", "2026-11-22")).toBe(false); // 50 < 100
+    expect(checkSufficientFunds(50, 100, "2026-12-01", "2026-11-22")).toBe(true); // budúca platba
   });
 });

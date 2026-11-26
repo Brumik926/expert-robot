@@ -7,7 +7,13 @@ import { updateSettings, type SettingsPatch, type UserSettings } from "@/service
 import { bankErrorMessage } from "@/lib/errors";
 import { cn } from "@/lib/utils";
 
-const SECTIONS: { key: keyof Pick<UserSettings, "show_cards" | "show_savings" | "show_quick_payment" | "show_spending" | "show_rates">; label: string }[] = [
+const SECTIONS: {
+  key: keyof Pick<
+    UserSettings,
+    "show_cards" | "show_savings" | "show_quick_payment" | "show_spending" | "show_rates"
+  >;
+  label: string;
+}[] = [
   { key: "show_cards", label: "Karty" },
   { key: "show_savings", label: "Sporenia" },
   { key: "show_quick_payment", label: "Rýchla platba" },
@@ -32,7 +38,9 @@ export function HomeEditSheet({
   return (
     <BottomSheet open={open} onOpenChange={onOpenChange} title="Upraviť zobrazenie">
       <h3 className="text-lg font-extrabold">Domovská obrazovka</h3>
-      <p className="mb-2 text-sm text-muted-foreground">Vyberte, ktoré časti sa zobrazia na domovskej obrazovke.</p>
+      <p className="mb-2 text-sm text-muted-foreground">
+        Vyberte, ktoré časti sa zobrazia na domovskej obrazovke.
+      </p>
       <div>
         {SECTIONS.map((s) => (
           <ToggleRow
@@ -45,7 +53,9 @@ export function HomeEditSheet({
         ))}
       </div>
       <h3 className="mt-6 text-lg font-extrabold">Položka v spodnom menu</h3>
-      <p className="mb-3 text-sm text-muted-foreground">Vyberte štvrtú položku spodnej navigácie.</p>
+      <p className="mb-3 text-sm text-muted-foreground">
+        Vyberte štvrtú položku spodnej navigácie.
+      </p>
       <div role="radiogroup" className="grid grid-cols-2 gap-3">
         {(Object.keys(NAV_CHOICES) as NavItemKey[]).map((key) => {
           const choice = NAV_CHOICES[key];

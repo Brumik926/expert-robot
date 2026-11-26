@@ -33,7 +33,10 @@ export function RecipientPicker({
     return !s || name.toLowerCase().includes(s) || iban.includes(normalizeIban(q));
   };
   const rs = useMemo(() => recipients.filter((r) => match(r.name, r.iban)), [recipients, q]); // eslint-disable-line react-hooks/exhaustive-deps
-  const ts = useMemo(() => templates.filter((t) => match(t.name + " " + t.recipient_name, t.iban)), [templates, q]); // eslint-disable-line react-hooks/exhaustive-deps
+  const ts = useMemo(
+    () => templates.filter((t) => match(t.name + " " + t.recipient_name, t.iban)),
+    [templates, q],
+  ); // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
     <BottomSheet open={open} onOpenChange={onOpenChange} title="Vyberte príjemcu">
@@ -54,7 +57,12 @@ export function RecipientPicker({
             <EmptyState title="Žiadni príjemcovia." />
           ) : (
             rs.map((r) => (
-              <button key={r.id} type="button" onClick={() => onPickRecipient(r)} className="bank-tile flex items-center gap-4 px-5 py-4 text-left">
+              <button
+                key={r.id}
+                type="button"
+                onClick={() => onPickRecipient(r)}
+                className="bank-tile flex items-center gap-4 px-5 py-4 text-left"
+              >
                 <RecipientAvatar name={r.name} />
                 <span className="min-w-0">
                   <span className="block truncate text-lg font-bold">{r.name}</span>
@@ -67,11 +75,18 @@ export function RecipientPicker({
           <EmptyState title="Žiadne šablóny." />
         ) : (
           ts.map((t) => (
-            <button key={t.id} type="button" onClick={() => onPickTemplate(t)} className="bank-tile flex items-center gap-4 px-5 py-4 text-left">
+            <button
+              key={t.id}
+              type="button"
+              onClick={() => onPickTemplate(t)}
+              className="bank-tile flex items-center gap-4 px-5 py-4 text-left"
+            >
               <RecipientAvatar name={t.name} />
               <span className="min-w-0 flex-1">
                 <span className="block truncate text-lg font-bold">{t.name}</span>
-                <span className="block truncate text-sm text-muted-foreground">{t.recipient_name}</span>
+                <span className="block truncate text-sm text-muted-foreground">
+                  {t.recipient_name}
+                </span>
               </span>
               {t.amount ? <Money value={t.amount} className="shrink-0 font-semibold" /> : null}
             </button>

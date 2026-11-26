@@ -18,7 +18,16 @@ type Props = {
 };
 
 /** Payment card artwork with chip, mark and network label. */
-export function CardVisual({ design, brand, cardType, holder, number, blocked, size = "lg", className }: Props) {
+export function CardVisual({
+  design,
+  brand,
+  cardType,
+  holder,
+  number,
+  blocked,
+  size = "lg",
+  className,
+}: Props) {
   const dark = design !== "mono";
   return (
     <div
@@ -30,14 +39,26 @@ export function CardVisual({ design, brand, cardType, holder, number, blocked, s
       role="img"
       aria-label={`${brand} ${cardType === "credit" ? "kreditná" : "debetná"} karta${number ? " " + number : ""}`}
     >
-      <img src={DESIGNS[design] ?? forest.url} alt="" className="absolute inset-0 h-full w-full object-cover" loading="lazy" />
+      <img
+        src={DESIGNS[design] ?? forest.url}
+        alt=""
+        className="absolute inset-0 h-full w-full object-cover"
+        loading="lazy"
+      />
       <div className={cn("absolute inset-0", dark ? "text-paper" : "text-ink")}>
-        <TatraMark className={cn("absolute", size === "sm" ? "top-1.5 left-1.5 h-4 w-4" : "top-4 left-4 h-9 w-9")} />
+        <TatraMark
+          className={cn(
+            "absolute",
+            size === "sm" ? "top-1.5 left-1.5 h-4 w-4" : "top-4 left-4 h-9 w-9",
+          )}
+        />
         {size === "lg" ? (
           <>
             <div className="absolute top-[38%] left-[9%] h-[17%] w-[13%] rounded-md bg-gradient-to-br from-chart-6/90 to-chart-1/70 ring-1 ring-black/20" />
             {number ? (
-              <div className="absolute bottom-[22%] left-[9%] text-sm font-semibold tracking-[0.18em] drop-shadow">{number}</div>
+              <div className="absolute bottom-[22%] left-[9%] text-sm font-semibold tracking-[0.18em] drop-shadow">
+                {number}
+              </div>
             ) : null}
             {holder ? (
               <div className="absolute bottom-[9%] left-[9%] max-w-[55%] truncate text-[0.7rem] font-semibold tracking-wider uppercase drop-shadow">
@@ -54,7 +75,9 @@ export function CardVisual({ design, brand, cardType, holder, number, blocked, s
         >
           {brand === "VISA" ? "VISA" : "mastercard"}
           {size === "lg" ? (
-            <div className="text-[0.6rem] font-medium not-italic">{cardType === "credit" ? "Credit" : "Debit"}</div>
+            <div className="text-[0.6rem] font-medium not-italic">
+              {cardType === "credit" ? "Credit" : "Debit"}
+            </div>
           ) : null}
         </div>
       </div>

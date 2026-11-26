@@ -21,7 +21,9 @@ export const Route = createFileRoute("/_authenticated")({
 });
 
 function applyTheme(theme: string) {
-  const dark = theme === "dark" || (theme === "system" && window.matchMedia("(prefers-color-scheme: dark)").matches);
+  const dark =
+    theme === "dark" ||
+    (theme === "system" && window.matchMedia("(prefers-color-scheme: dark)").matches);
   document.documentElement.classList.toggle("dark", dark);
   try {
     localStorage.setItem("tatra-theme", theme);
@@ -52,7 +54,11 @@ function AuthenticatedLayout() {
     processDueItems()
       .then((n) => {
         if (n > 0) {
-          toast.info(n === 1 ? "Spracovali sme 1 naplánovanú platbu" : `Spracovali sme ${n} naplánované platby`);
+          toast.info(
+            n === 1
+              ? "Spracovali sme 1 naplánovanú platbu"
+              : `Spracovali sme ${n} naplánované platby`,
+          );
           void invalidateMoney();
         }
       })

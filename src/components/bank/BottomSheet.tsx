@@ -1,5 +1,11 @@
 import type { ReactNode } from "react";
-import { Drawer, DrawerContent, DrawerDescription, DrawerHeader, DrawerTitle } from "@/components/ui/drawer";
+import {
+  Drawer,
+  DrawerContent,
+  DrawerDescription,
+  DrawerHeader,
+  DrawerTitle,
+} from "@/components/ui/drawer";
 
 /** Mobile bottom sheet with a grab handle, used for add/edit forms and pickers. */
 export function BottomSheet({
@@ -22,7 +28,9 @@ export function BottomSheet({
           <DrawerTitle className="text-xl font-extrabold">{title}</DrawerTitle>
           {description ? <DrawerDescription>{description}</DrawerDescription> : null}
         </DrawerHeader>
-        <div className="overflow-y-auto px-5 pt-4 pb-[calc(1.5rem+env(safe-area-inset-bottom))]">{children}</div>
+        <div className="overflow-y-auto px-5 pt-4 pb-[calc(1.5rem+env(safe-area-inset-bottom))]">
+          {children}
+        </div>
       </DrawerContent>
     </Drawer>
   );

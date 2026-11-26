@@ -38,7 +38,10 @@ export const Route = createFileRoute("/_authenticated/domov")({
       { title: "Domov – Tatra banka" },
       { name: "description", content: "Prehľad účtov, kariet, sporení a výdavkov." },
       { property: "og:title", content: "Domov – Tatra banka" },
-      { property: "og:description", content: "Prehľad účtov, kariet, sporení a výdavkov vo Tatra banke." },
+      {
+        property: "og:description",
+        content: "Prehľad účtov, kariet, sporení a výdavkov vo Tatra banke.",
+      },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
     ],
@@ -78,7 +81,11 @@ function Home() {
     <div className="flex flex-col gap-3 animate-page-in">
       <header className="sticky top-0 z-30 grid grid-cols-3 items-center bg-background/95 px-5 pt-[calc(env(safe-area-inset-top)+1rem)] pb-4 backdrop-blur">
         <div className="flex">
-          <HeaderIconButton label="Notifikácie" badge={unread} onClick={() => navigate({ to: "/notifikacie" })}>
+          <HeaderIconButton
+            label="Notifikácie"
+            badge={unread}
+            onClick={() => navigate({ to: "/notifikacie" })}
+          >
             <Mail className="h-8 w-8" strokeWidth={1.5} />
           </HeaderIconButton>
         </div>
@@ -109,16 +116,25 @@ function Home() {
               <div className="mt-5 grid grid-cols-[minmax(0,1fr)_minmax(0,1fr)] items-end gap-4 border-t border-border pt-5">
                 <div className="min-w-0">
                   <p className="text-[0.95rem] text-muted-foreground">Aktuálny zostatok</p>
-                  <Money value={a.balance} sensitive className="mt-2 block text-[1.6rem] font-bold" />
+                  <Money
+                    value={a.balance}
+                    sensitive
+                    className="mt-2 block text-[1.6rem] font-bold"
+                  />
                 </div>
-                <Sparkline id={a.id} data={balanceHistory(Number(a.balance), transactions, a.id, 30)} />
+                <Sparkline
+                  id={a.id}
+                  data={balanceHistory(Number(a.balance), transactions, a.id, 30)}
+                />
               </div>
             </Link>
           ))}
         </div>
       </Section>
 
-      {settings.show_cards && cards.length > 0 ? <CardsSection cards={cards} accounts={accounts} /> : null}
+      {settings.show_cards && cards.length > 0 ? (
+        <CardsSection cards={cards} accounts={accounts} />
+      ) : null}
 
       {settings.show_savings && savings.length > 0 ? (
         <Section title="Sporenia" action={<Link to="/trvale-prikazy">Pravidelné sporenie</Link>}>
@@ -135,15 +151,21 @@ function Home() {
                   <div className="p-6">
                     <h3 className="text-xl font-bold">{s.name}</h3>
                     <p className="mt-2 text-[0.95rem] text-muted-foreground">
-                      k účtu: <strong className="text-foreground/90">{current[0]?.name ?? "—"}</strong>
+                      k účtu:{" "}
+                      <strong className="text-foreground/90">{current[0]?.name ?? "—"}</strong>
                     </p>
-                    <Money value={s.balance} sensitive className="mt-5 block text-[1.5rem] font-bold" />
+                    <Money
+                      value={s.balance}
+                      sensitive
+                      className="mt-5 block text-[1.5rem] font-bold"
+                    />
                   </div>
                   <div className="flex items-start gap-3 border-t border-border px-6 py-4 text-[0.95rem] text-muted-foreground">
                     <Info className="mt-0.5 h-5 w-5 shrink-0" strokeWidth={1.6} />
                     {plan ? (
                       <span>
-                        Pravidelné sporenie {formatAmount(plan.amount)} EUR, ďalšie {new Date(plan.next_date).toLocaleDateString("sk-SK")}.
+                        Pravidelné sporenie {formatAmount(plan.amount)} EUR, ďalšie{" "}
+                        {new Date(plan.next_date).toLocaleDateString("sk-SK")}.
                       </span>
                     ) : (
                       <span>Nastavte si pravidelné sporenie v sekcii Trvalé príkazy.</span>
@@ -159,7 +181,9 @@ function Home() {
       {settings.show_quick_payment ? (
         <Section title="Rýchla platba" action={<Link to="/prijemcovia">Zoznam príjemcov</Link>}>
           {favorites.length === 0 ? (
-            <p className="py-8 text-center text-[1.05rem] text-muted-foreground">Nemáte žiadnych príjemcov pre rýchlu platbu.</p>
+            <p className="py-8 text-center text-[1.05rem] text-muted-foreground">
+              Nemáte žiadnych príjemcov pre rýchlu platbu.
+            </p>
           ) : (
             <div className="no-scrollbar -mx-5 flex gap-5 overflow-x-auto px-5 pb-1">
               {favorites.map((r) => (
@@ -192,12 +216,20 @@ function Home() {
           <div className="mt-5 grid grid-cols-[1fr_auto_1fr] items-center gap-4">
             <div className="text-right">
               <p className="text-muted-foreground">Výdavky</p>
-              <Money value={summary.expense} sensitive className="text-[1.5rem] font-bold text-negative" />
+              <Money
+                value={summary.expense}
+                sensitive
+                className="text-[1.5rem] font-bold text-negative"
+              />
             </div>
             <span className="h-12 w-px bg-border" />
             <div>
               <p className="text-muted-foreground">Príjmy</p>
-              <Money value={summary.income} sensitive className="text-[1.5rem] font-bold text-positive" />
+              <Money
+                value={summary.income}
+                sensitive
+                className="text-[1.5rem] font-bold text-positive"
+              />
             </div>
           </div>
           <Link to="/mafin" className="mt-6 grid grid-cols-[auto_minmax(0,1fr)] items-center gap-6">
@@ -208,15 +240,22 @@ function Home() {
                 const Icon = cat.icon;
                 return (
                   <li key={c.key} className="flex min-w-0 items-center gap-3">
-                    <span className="grid h-10 w-10 shrink-0 place-items-center rounded-full bg-card" style={{ color: cat.color }}>
+                    <span
+                      className="grid h-10 w-10 shrink-0 place-items-center rounded-full bg-card"
+                      style={{ color: cat.color }}
+                    >
                       <Icon className="h-5 w-5" strokeWidth={1.7} />
                     </span>
                     <span className="truncate">{cat.label}</span>
-                    <span className="ml-auto shrink-0 text-sm text-muted-foreground">{Math.round(c.share * 100)} %</span>
+                    <span className="ml-auto shrink-0 text-sm text-muted-foreground">
+                      {Math.round(c.share * 100)} %
+                    </span>
                   </li>
                 );
               })}
-              {summary.byCategory.length === 0 ? <li className="text-muted-foreground">Tento mesiac zatiaľ žiadne výdavky.</li> : null}
+              {summary.byCategory.length === 0 ? (
+                <li className="text-muted-foreground">Tento mesiac zatiaľ žiadne výdavky.</li>
+              ) : null}
             </ul>
           </Link>
         </Section>
@@ -226,11 +265,18 @@ function Home() {
         <Section title="Kurzový lístok" action={<Link to="/kurzy">Detail</Link>} flush>
           <ul>
             {EXCHANGE_RATES.slice(0, 3).map((r) => (
-              <li key={r.code} className="mx-5 grid grid-cols-[2rem_minmax(0,1fr)_3.5rem_auto] items-center gap-4 border-t border-border py-5">
-                <span className="text-2xl" aria-hidden="true">{r.flag}</span>
+              <li
+                key={r.code}
+                className="mx-5 grid grid-cols-[2rem_minmax(0,1fr)_3.5rem_auto] items-center gap-4 border-t border-border py-5"
+              >
+                <span className="text-2xl" aria-hidden="true">
+                  {r.flag}
+                </span>
                 <span className="truncate text-[1.05rem]">{r.country}</span>
                 <span className="text-[1.05rem] text-muted-foreground">{r.code}</span>
-                <span className="text-right text-[1.05rem] tabular-nums">{r.buy.toFixed(4).replace(".", ",")}</span>
+                <span className="text-right text-[1.05rem] tabular-nums">
+                  {r.buy.toFixed(4).replace(".", ",")}
+                </span>
               </li>
             ))}
           </ul>
@@ -238,7 +284,11 @@ function Home() {
       ) : null}
 
       <div className="flex justify-center py-6">
-        <button type="button" onClick={() => setEditOpen(true)} className="flex items-center gap-2 text-[0.95rem] font-medium text-link">
+        <button
+          type="button"
+          onClick={() => setEditOpen(true)}
+          className="flex items-center gap-2 text-[0.95rem] font-medium text-link"
+        >
           <SlidersHorizontal className="h-5 w-5" /> Upraviť domovskú obrazovku
         </button>
       </div>
@@ -248,12 +298,19 @@ function Home() {
   );
 }
 
-function CardsSection({ cards, accounts }: { cards: Card[]; accounts: { id: string; balance: number }[] }) {
+function CardsSection({
+  cards,
+  accounts,
+}: {
+  cards: Card[];
+  accounts: { id: string; balance: number }[];
+}) {
   const [index, setIndex] = useState(0);
   const scroller = useRef<HTMLDivElement>(null);
   const card = cards[Math.min(index, cards.length - 1)];
   const toggle = useBankMutation(
-    (v: { id: string; internet_payments: boolean }) => updateCard(v.id, { internet_payments: v.internet_payments }),
+    (v: { id: string; internet_payments: boolean }) =>
+      updateCard(v.id, { internet_payments: v.internet_payments }),
     [qk.cards, qk.notifications],
   );
   if (!card) return null;
@@ -274,14 +331,31 @@ function CardsSection({ cards, accounts }: { cards: Card[]; accounts: { id: stri
         className="no-scrollbar -mx-5 flex snap-x snap-mandatory gap-4 overflow-x-auto px-[14%]"
       >
         {cards.map((c) => (
-          <Link key={c.id} to="/karty/$id" params={{ id: c.id }} className="w-[72%] shrink-0 snap-center first:ml-0">
-            <CardVisual design={c.design} brand={c.brand} cardType={c.card_type} blocked={c.status === "blocked"} />
+          <Link
+            key={c.id}
+            to="/karty/$id"
+            params={{ id: c.id }}
+            className="w-[72%] shrink-0 snap-center first:ml-0"
+          >
+            <CardVisual
+              design={c.design}
+              brand={c.brand}
+              cardType={c.card_type}
+              blocked={c.status === "blocked"}
+            />
           </Link>
         ))}
       </div>
       <div className="mt-4 flex justify-center gap-2" aria-hidden="true">
         {cards.map((c, i) => (
-          <span key={c.id} className={i === index ? "h-2.5 w-2.5 rounded-full bg-primary" : "h-2 w-2 rounded-full bg-muted-foreground/50"} />
+          <span
+            key={c.id}
+            className={
+              i === index
+                ? "h-2.5 w-2.5 rounded-full bg-primary"
+                : "h-2 w-2 rounded-full bg-muted-foreground/50"
+            }
+          />
         ))}
       </div>
       <div className="mt-5 grid grid-cols-[minmax(0,1fr)_auto] gap-4">
@@ -294,9 +368,14 @@ function CardsSection({ cards, accounts }: { cards: Card[]; accounts: { id: stri
           {isCredit ? (
             <>
               <div className="mt-2 h-2 w-40 overflow-hidden rounded-full bg-muted">
-                <div className="h-full rounded-full bg-primary" style={{ width: `${limit ? (available / limit) * 100 : 0}%` }} />
+                <div
+                  className="h-full rounded-full bg-primary"
+                  style={{ width: `${limit ? (available / limit) * 100 : 0}%` }}
+                />
               </div>
-              <p className="mt-1.5 text-sm text-muted-foreground">Z úver. rámca {formatAmount(limit)} EUR</p>
+              <p className="mt-1.5 text-sm text-muted-foreground">
+                Z úver. rámca {formatAmount(limit)} EUR
+              </p>
             </>
           ) : (
             <p className="mt-1 text-sm text-muted-foreground">Disponibilný zostatok</p>
@@ -314,7 +393,8 @@ function CardsSection({ cards, accounts }: { cards: Card[]; accounts: { id: stri
               toggle.mutate(
                 { id: card.id, internet_payments: v },
                 {
-                  onSuccess: () => toast.success(v ? "Internetové platby zapnuté" : "Internetové platby vypnuté"),
+                  onSuccess: () =>
+                    toast.success(v ? "Internetové platby zapnuté" : "Internetové platby vypnuté"),
                   onError: (e) => toast.error(bankErrorMessage(e)),
                 },
               )
@@ -322,7 +402,11 @@ function CardsSection({ cards, accounts }: { cards: Card[]; accounts: { id: stri
             aria-label="Internetové platby"
           />
         </label>
-        <Link to="/karty/$id" params={{ id: card.id }} className="flex items-center justify-center gap-3 text-[1.05rem]">
+        <Link
+          to="/karty/$id"
+          params={{ id: card.id }}
+          className="flex items-center justify-center gap-3 text-[1.05rem]"
+        >
           <SlidersHorizontal className="h-6 w-6 text-primary" strokeWidth={1.5} />
           Limity karty
         </Link>

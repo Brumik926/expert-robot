@@ -1,4 +1,10 @@
-import { forwardRef, type InputHTMLAttributes, type ReactNode, type SelectHTMLAttributes, type TextareaHTMLAttributes } from "react";
+import {
+  forwardRef,
+  type InputHTMLAttributes,
+  type ReactNode,
+  type SelectHTMLAttributes,
+  type TextareaHTMLAttributes,
+} from "react";
 import { cn } from "@/lib/utils";
 
 type FieldShellProps = {
@@ -14,7 +20,17 @@ type FieldShellProps = {
 };
 
 /** Dark input well with the label inside, matching the reference payment form. */
-export function FieldShell({ label, required, error, hint, icon, htmlFor, children, className, inline }: FieldShellProps) {
+export function FieldShell({
+  label,
+  required,
+  error,
+  hint,
+  icon,
+  htmlFor,
+  children,
+  className,
+  inline,
+}: FieldShellProps) {
   return (
     <div className={className}>
       <label
@@ -25,12 +41,21 @@ export function FieldShell({ label, required, error, hint, icon, htmlFor, childr
           error && "ring-2 ring-negative/80",
         )}
       >
-        <span className={cn("text-[0.95rem] text-muted-foreground", inline ? "shrink-0" : "text-[0.8rem]")}>
+        <span
+          className={cn(
+            "text-[0.95rem] text-muted-foreground",
+            inline ? "shrink-0" : "text-[0.8rem]",
+          )}
+        >
           {label}
           {required ? <span className="text-primary"> *</span> : null}
         </span>
-        <div className={cn("flex min-w-0 flex-1 items-center gap-3", inline && "justify-end")}>{children}</div>
-        {icon ? <span className="absolute top-1/2 right-5 -translate-y-1/2 text-primary">{icon}</span> : null}
+        <div className={cn("flex min-w-0 flex-1 items-center gap-3", inline && "justify-end")}>
+          {children}
+        </div>
+        {icon ? (
+          <span className="absolute top-1/2 right-5 -translate-y-1/2 text-primary">{icon}</span>
+        ) : null}
       </label>
       {error ? (
         <p role="alert" className="mt-1.5 px-1 text-sm text-negative">
@@ -89,23 +114,22 @@ type TextAreaFieldProps = Omit<TextareaHTMLAttributes<HTMLTextAreaElement>, "id"
   hint?: string | undefined;
 };
 
-export const TextAreaField = forwardRef<HTMLTextAreaElement, TextAreaFieldProps>(function TextAreaField(
-  { id, label, error, hint, className, ...props },
-  ref,
-) {
-  return (
-    <FieldShell label={label} error={error} hint={hint} htmlFor={id}>
-      <textarea
-        ref={ref}
-        id={id}
-        rows={2}
-        aria-invalid={error ? true : undefined}
-        className={cn(inputBase, "resize-none", className)}
-        {...props}
-      />
-    </FieldShell>
-  );
-});
+export const TextAreaField = forwardRef<HTMLTextAreaElement, TextAreaFieldProps>(
+  function TextAreaField({ id, label, error, hint, className, ...props }, ref) {
+    return (
+      <FieldShell label={label} error={error} hint={hint} htmlFor={id}>
+        <textarea
+          ref={ref}
+          id={id}
+          rows={2}
+          aria-invalid={error ? true : undefined}
+          className={cn(inputBase, "resize-none", className)}
+          {...props}
+        />
+      </FieldShell>
+    );
+  },
+);
 
 type SelectFieldProps = Omit<SelectHTMLAttributes<HTMLSelectElement>, "id"> & {
   id: string;
@@ -124,7 +148,12 @@ export const SelectField = forwardRef<HTMLSelectElement, SelectFieldProps>(funct
       <select
         ref={ref}
         id={id}
-        className={cn(inputBase, "cursor-pointer appearance-none bg-field", inline && "text-right", className)}
+        className={cn(
+          inputBase,
+          "cursor-pointer appearance-none bg-field",
+          inline && "text-right",
+          className,
+        )}
         {...props}
       >
         {options.map((o) => (
@@ -151,7 +180,14 @@ export function SearchField({
 }) {
   return (
     <label className={cn("bank-field flex h-14 items-center gap-4 px-5", className)}>
-      <svg viewBox="0 0 24 24" className="h-6 w-6 shrink-0 text-primary" fill="none" stroke="currentColor" strokeWidth="1.6" aria-hidden="true">
+      <svg
+        viewBox="0 0 24 24"
+        className="h-6 w-6 shrink-0 text-primary"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="1.6"
+        aria-hidden="true"
+      >
         <circle cx="10.5" cy="10.5" r="6.5" />
         <path d="m15.5 15.5 5 5" strokeLinecap="round" />
       </svg>

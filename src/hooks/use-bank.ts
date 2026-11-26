@@ -17,18 +17,36 @@ export const qk = {
 };
 
 export const accountsQuery = queryOptions({ queryKey: qk.accounts, queryFn: bank.fetchAccounts });
-export const transactionsQuery = queryOptions({ queryKey: qk.transactions, queryFn: bank.fetchTransactions });
+export const transactionsQuery = queryOptions({
+  queryKey: qk.transactions,
+  queryFn: bank.fetchTransactions,
+});
 export const transactionQuery = (id: string) =>
   queryOptions({ queryKey: qk.transaction(id), queryFn: () => bank.fetchTransaction(id) });
-export const recipientsQuery = queryOptions({ queryKey: qk.recipients, queryFn: bank.fetchRecipients });
-export const templatesQuery = queryOptions({ queryKey: qk.templates, queryFn: bank.fetchTemplates });
-export const standingOrdersQuery = queryOptions({ queryKey: qk.standingOrders, queryFn: bank.fetchStandingOrders });
+export const recipientsQuery = queryOptions({
+  queryKey: qk.recipients,
+  queryFn: bank.fetchRecipients,
+});
+export const templatesQuery = queryOptions({
+  queryKey: qk.templates,
+  queryFn: bank.fetchTemplates,
+});
+export const standingOrdersQuery = queryOptions({
+  queryKey: qk.standingOrders,
+  queryFn: bank.fetchStandingOrders,
+});
 export const cardsQuery = queryOptions({ queryKey: qk.cards, queryFn: bank.fetchCards });
 export const cardLimitsQuery = (id: string) =>
   queryOptions({ queryKey: qk.cardLimits(id), queryFn: () => bank.fetchCardLimits(id) });
-export const notificationsQuery = queryOptions({ queryKey: qk.notifications, queryFn: bank.fetchNotifications });
+export const notificationsQuery = queryOptions({
+  queryKey: qk.notifications,
+  queryFn: bank.fetchNotifications,
+});
 export const settingsQuery = queryOptions({ queryKey: qk.settings, queryFn: bank.fetchSettings });
-export const supportRequestsQuery = queryOptions({ queryKey: qk.support, queryFn: bank.fetchSupportRequests });
+export const supportRequestsQuery = queryOptions({
+  queryKey: qk.support,
+  queryFn: bank.fetchSupportRequests,
+});
 export const profileQuery = queryOptions({ queryKey: qk.profile, queryFn: bank.fetchProfile });
 
 /** Refreshes everything a money movement can touch: balances, history, MaFin, notifications. */

@@ -16,7 +16,9 @@ export function shiftMonth(key: string, delta: number): string {
 
 export function monthLabel(key: string): string {
   const [y, m] = key.split("-").map(Number);
-  const label = new Intl.DateTimeFormat("sk-SK", { month: "long", year: "numeric" }).format(new Date(y ?? 2026, (m ?? 1) - 1, 1));
+  const label = new Intl.DateTimeFormat("sk-SK", { month: "long", year: "numeric" }).format(
+    new Date(y ?? 2026, (m ?? 1) - 1, 1),
+  );
   return label.charAt(0).toUpperCase() + label.slice(1);
 }
 
@@ -33,7 +35,10 @@ export type MonthSummary = {
 };
 
 export function summarizeMonth(
-  transactions: Pick<Transaction, "status" | "tx_type" | "direction" | "amount" | "category" | "booked_at">[],
+  transactions: Pick<
+    Transaction,
+    "status" | "tx_type" | "direction" | "amount" | "category" | "booked_at"
+  >[],
   month: string,
 ): MonthSummary {
   let income = 0;
@@ -45,15 +50,26 @@ export function summarizeMonth(
     if (tx.direction === "in") income += amount;
     else {
       expense += amount;
-      const key = (CATEGORY_KEYS as readonly string[]).includes(tx.category) ? (tx.category as CategoryKey) : "ine";
+      const key = (CATEGORY_KEYS as readonly string[]).includes(tx.category)
+        ? (tx.category as CategoryKey)
+        : "ine";
       cats.set(key, (cats.get(key) ?? 0) + amount);
     }
   }
   const round = (n: number) => Math.round(n * 100) / 100;
   const byCategory = [...cats.entries()]
-    .map(([key, amount]) => ({ key, amount: round(amount), share: expense > 0 ? amount / expense : 0 }))
+    .map(([key, amount]) => ({
+      key,
+      amount: round(amount),
+      share: expense > 0 ? amount / expense : 0,
+    }))
     .sort((a, b) => b.amount - a.amount);
-  return { income: round(income), expense: round(expense), difference: round(income - expense), byCategory };
+  return {
+    income: round(income),
+    expense: round(expense),
+    difference: round(income - expense),
+    byCategory,
+  };
 }
 
 /** Reconstructs daily end-of-day balances for the last `days` days from the current balance. */
@@ -66,12 +82,26 @@ export function balanceHistory(
 ): { day: string; balance: number }[] {
   const settled = transactions
     .filter((t) => t.account_id === accountId && t.status === "completed")
-    .map((t) => ({ at: new Date(t.booked_at).getTime(), delta: (t.direction === "in" ? 1 : -1) * Number(t.amount) }));
+    .map((t) => ({
+      at: new Date(t.booked_at).getTime(),
+      delta: (t.direction === "in" ? 1 : -1) * Number(t.amount),
+    }));
   const points: { day: string; balance: number }[] = [];
   for (let i = 0; i < days; i++) {
-    const end = new Date(now.getFullYear(), now.getMonth(), now.getDate() - i, 23, 59, 59, 999).getTime();
+    const end = new Date(
+      now.getFullYear(),
+      now.getMonth(),
+      now.getDate() - i,
+      23,
+      59,
+      59,
+      999,
+    ).getTime();
     const after = settled.filter((t) => t.at > end).reduce((s, t) => s + t.delta, 0);
-    points.push({ day: new Date(end).toISOString().slice(0, 10), balance: Math.round((currentBalance - after) * 100) / 100 });
+    points.push({
+      day: new Date(end).toISOString().slice(0, 10),
+      balance: Math.round((currentBalance - after) * 100) / 100,
+    });
   }
   return points.reverse();
 }

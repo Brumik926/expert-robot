@@ -23,7 +23,8 @@ export const Route = createFileRoute("/_authenticated/pohyby")({
     const out: PohybySearch = {};
     if (typeof s["account"] === "string") out.account = s["account"];
     if (typeof s["category"] === "string") out.category = s["category"];
-    if (s["direction"] === "in" || s["direction"] === "out" || s["direction"] === "all") out.direction = s["direction"];
+    if (s["direction"] === "in" || s["direction"] === "out" || s["direction"] === "all")
+      out.direction = s["direction"];
     return out;
   },
   head: () => ({
@@ -37,7 +38,10 @@ export const Route = createFileRoute("/_authenticated/pohyby")({
     ],
   }),
   loader: ({ context: { queryClient } }) =>
-    Promise.all([queryClient.ensureQueryData(accountsQuery), queryClient.ensureQueryData(transactionsQuery)]),
+    Promise.all([
+      queryClient.ensureQueryData(accountsQuery),
+      queryClient.ensureQueryData(transactionsQuery),
+    ]),
   component: Pohyby,
 });
 
@@ -76,7 +80,9 @@ function Pohyby() {
     });
   }, [transactions, account, direction, search.category, query]);
 
-  const scheduled = filtered.filter((t) => t.status === "scheduled").sort((a, b) => a.execution_date.localeCompare(b.execution_date));
+  const scheduled = filtered
+    .filter((t) => t.status === "scheduled")
+    .sort((a, b) => a.execution_date.localeCompare(b.execution_date));
   const booked = filtered.filter((t) => t.status !== "scheduled");
   const groups = useMemo(() => {
     const map = new Map<string, Transaction[]>();
@@ -94,7 +100,11 @@ function Pohyby() {
       <PageHeader
         title="Pohyby na účte"
         right={
-          <HeaderIconButton label="Filter pohybov" badge={activeFilters} onClick={() => setFilterOpen(true)}>
+          <HeaderIconButton
+            label="Filter pohybov"
+            badge={activeFilters}
+            onClick={() => setFilterOpen(true)}
+          >
             <SlidersHorizontal className="h-7 w-7" strokeWidth={1.5} />
           </HeaderIconButton>
         }
@@ -103,11 +113,18 @@ function Pohyby() {
       </PageHeader>
 
       {account ? (
-        <button type="button" onClick={() => setAccountOpen(true)} className="bank-section grid grid-cols-[auto_minmax(0,1fr)_auto] items-start gap-4 text-left">
+        <button
+          type="button"
+          onClick={() => setAccountOpen(true)}
+          className="bank-section grid grid-cols-[auto_minmax(0,1fr)_auto] items-start gap-4 text-left"
+        >
           <span className="text-[1.05rem] text-muted-foreground">K účtu</span>
           <span className="min-w-0 text-right">
             <span className="block text-[1.2rem]">{account.name}</span>
-            <Iban value={account.iban} className="mt-1 block truncate text-[0.95rem] text-muted-foreground" />
+            <Iban
+              value={account.iban}
+              className="mt-1 block truncate text-[0.95rem] text-muted-foreground"
+            />
           </span>
           <ChevronDown className="mt-1 h-6 w-6 text-primary" />
         </button>
@@ -124,9 +141,20 @@ function Pohyby() {
 
       {groups.length === 0 && scheduled.length === 0 ? (
         <section className="bank-section">
-          <EmptyState title={query || activeFilters ? "Žiadne pohyby nezodpovedajú hľadaniu." : "Na účte zatiaľ nie sú žiadne pohyby."}>
+          <EmptyState
+            title={
+              query || activeFilters
+                ? "Žiadne pohyby nezodpovedajú hľadaniu."
+                : "Na účte zatiaľ nie sú žiadne pohyby."
+            }
+          >
             {activeFilters ? (
-              <Button variant="bankOutline" onClick={() => navigate({ search: (p) => ({ account: p.account }) as PohybySearch })}>
+              <Button
+                variant="bankOutline"
+                onClick={() =>
+                  navigate({ search: (p) => ({ account: p.account }) as PohybySearch })
+                }
+              >
                 Zrušiť filtre
               </Button>
             ) : null}
@@ -168,7 +196,9 @@ function Pohyby() {
             id="f-direction"
             label="Typ pohybu"
             value={direction}
-            onChange={(e) => navigate({ search: (p) => ({ ...p, direction: e.target.value as Direction }) })}
+            onChange={(e) =>
+              navigate({ search: (p) => ({ ...p, direction: e.target.value as Direction }) })
+            }
             options={[
               { value: "all", label: "Všetky" },
               { value: "in", label: "Prijaté" },
@@ -189,7 +219,10 @@ function Pohyby() {
                 },
               })
             }
-            options={[{ value: "", label: "Všetky kategórie" }, ...CATEGORY_KEYS.map((k) => ({ value: k, label: CATEGORIES[k].label }))]}
+            options={[
+              { value: "", label: "Všetky kategórie" },
+              ...CATEGORY_KEYS.map((k) => ({ value: k, label: CATEGORIES[k].label })),
+            ]}
           />
           <div className="mt-2 flex flex-col gap-3">
             <Button variant="bank" size="xl" onClick={() => setFilterOpen(false)}>

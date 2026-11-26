@@ -15,7 +15,10 @@ export const Route = createFileRoute("/kontakty")({
   head: () => ({
     meta: [
       { title: "Kontakty a podpora – Tatra banka" },
-      { name: "description", content: "Zavolajte nám, požiadajte o spätné zavolanie alebo si dohodnite stretnutie." },
+      {
+        name: "description",
+        content: "Zavolajte nám, požiadajte o spätné zavolanie alebo si dohodnite stretnutie.",
+      },
       { property: "og:title", content: "Kontakty a podpora – Tatra banka" },
       { property: "og:description", content: "Kontakty a podpora Tatra bankyy." },
       { property: "og:type", content: "website" },
@@ -38,13 +41,22 @@ function Contacts() {
   async function submit(e: React.FormEvent) {
     e.preventDefault();
     if (!kind) return;
-    if (!/^\+?[0-9 ]{6,20}$/.test(phone.trim())) return void toast.error("Zadajte platné telefónne číslo");
+    if (!/^\+?[0-9 ]{6,20}$/.test(phone.trim()))
+      return void toast.error("Zadajte platné telefónne číslo");
     const at = new Date(when);
-    if (!when || Number.isNaN(at.getTime()) || at < new Date()) return void toast.error("Zvoľte budúci termín");
+    if (!when || Number.isNaN(at.getTime()) || at < new Date())
+      return void toast.error("Zvoľte budúci termín");
     setBusy(true);
     try {
-      await createSupportRequest({ kind, phone: phone.trim(), preferred_at: at.toISOString(), topic });
-      toast.success(kind === "callback" ? "Zavoláme vám v zvolenom čase" : "Stretnutie sme zaznamenali");
+      await createSupportRequest({
+        kind,
+        phone: phone.trim(),
+        preferred_at: at.toISOString(),
+        topic,
+      });
+      toast.success(
+        kind === "callback" ? "Zavoláme vám v zvolenom čase" : "Stretnutie sme zaznamenali",
+      );
       setKind(null);
     } catch (err) {
       toast.error(bankErrorMessage(err));
@@ -60,34 +72,92 @@ function Contacts() {
     <main className="mx-auto flex min-h-dvh max-w-md flex-col bg-canvas">
       <PageHeader title="Kontakt" back />
       <section className="grid grid-cols-4 gap-3 px-5 py-6">
-        <a href={`tel:${PHONE.replace(/\s/g, "")}`} className={tile}><span className={box}><Phone className="h-8 w-8" strokeWidth={1.4} /></span>Zavolať</a>
-        <button type="button" className={tile} onClick={() => setKind("callback")}><span className={box}><PhoneIncoming className="h-8 w-8" strokeWidth={1.4} /></span>Zavolajte mi</button>
-        <button type="button" className={tile} onClick={() => setKind("meeting")}><span className={box}><CalendarDays className="h-8 w-8" strokeWidth={1.4} /></span>Dohodnúť stretnutie</button>
-        <a href="mailto:podpora@tatrabanka.example" className={tile}><span className={box}><Mail className="h-8 w-8" strokeWidth={1.4} /></span>Napísať e-mail</a>
+        <a href={`tel:${PHONE.replace(/\s/g, "")}`} className={tile}>
+          <span className={box}>
+            <Phone className="h-8 w-8" strokeWidth={1.4} />
+          </span>
+          Zavolať
+        </a>
+        <button type="button" className={tile} onClick={() => setKind("callback")}>
+          <span className={box}>
+            <PhoneIncoming className="h-8 w-8" strokeWidth={1.4} />
+          </span>
+          Zavolajte mi
+        </button>
+        <button type="button" className={tile} onClick={() => setKind("meeting")}>
+          <span className={box}>
+            <CalendarDays className="h-8 w-8" strokeWidth={1.4} />
+          </span>
+          Dohodnúť stretnutie
+        </button>
+        <a href="mailto:podpora@tatrabanka.example" className={tile}>
+          <span className={box}>
+            <Mail className="h-8 w-8" strokeWidth={1.4} />
+          </span>
+          Napísať e-mail
+        </a>
       </section>
       <section className="bank-section">
         <h2 className="mb-2 text-[1.45rem] font-extrabold">Kontakt</h2>
-        <DetailRow label="Infolinka" value={<a href={`tel:${PHONE.replace(/\s/g, "")}`}>{PHONE}</a>} />
+        <DetailRow
+          label="Infolinka"
+          value={<a href={`tel:${PHONE.replace(/\s/g, "")}`}>{PHONE}</a>}
+        />
         <DetailRow label="Zo zahraničia" value={<a href="tel:+421200000000">+421 2 0000 0000</a>} />
         <DetailRow label="E-mail" value="podpora@tatrabanka.example" />
-        <p className="mt-4 text-xs text-muted-foreground">Tatra banka.</p>
+        <p className="mt-4 text-xs text-muted-foreground">
+          Všetky kontakty sú k dispozícii 24/7. V prípade otázok nás neváhajte kontaktovať.
+        </p>
       </section>
-      <BottomSheet open={kind !== null} onOpenChange={(v) => !v && setKind(null)} title={kind === "meeting" ? "Dohodnúť stretnutie" : "Zavolajte mi"}>
+      <BottomSheet
+        open={kind !== null}
+        onOpenChange={(v) => !v && setKind(null)}
+        title={kind === "meeting" ? "Dohodnúť stretnutie" : "Zavolajte mi"}
+      >
         {session ? (
           <form onSubmit={submit} noValidate className="flex flex-col gap-4">
-            <TextField id="sr-phone" label="Telefón" type="tel" value={phone} onChange={(e) => setPhone(e.target.value)} placeholder="+421 900 000 000" />
+            <TextField
+              id="sr-phone"
+              label="Telefón"
+              type="tel"
+              value={phone}
+              onChange={(e) => setPhone(e.target.value)}
+              placeholder="+421 900 000 000"
+            />
             <FieldShell label="Termín" htmlFor="sr-when">
-              <input id="sr-when" type="datetime-local" value={when} onChange={(e) => setWhen(e.target.value)} className="relative w-full bg-transparent text-[1.05rem] outline-none" />
+              <input
+                id="sr-when"
+                type="datetime-local"
+                value={when}
+                onChange={(e) => setWhen(e.target.value)}
+                className="relative w-full bg-transparent text-[1.05rem] outline-none"
+              />
             </FieldShell>
-            <SelectField id="sr-topic" label="Téma" value={topic} onChange={(e) => setTopic(e.target.value)} options={[
-              { value: "ucty", label: "Účty" }, { value: "karty", label: "Karty" }, { value: "platby", label: "Platby" }, { value: "uvery", label: "Úvery" }, { value: "ine", label: "Iné" },
-            ]} />
-            <Button type="submit" variant="bank" size="xl" disabled={busy}>{busy ? "Odosielam…" : "Odoslať žiadosť"}</Button>
+            <SelectField
+              id="sr-topic"
+              label="Téma"
+              value={topic}
+              onChange={(e) => setTopic(e.target.value)}
+              options={[
+                { value: "ucty", label: "Účty" },
+                { value: "karty", label: "Karty" },
+                { value: "platby", label: "Platby" },
+                { value: "uvery", label: "Úvery" },
+                { value: "ine", label: "Iné" },
+              ]}
+            />
+            <Button type="submit" variant="bank" size="xl" disabled={busy}>
+              {busy ? "Odosielam…" : "Odoslať žiadosť"}
+            </Button>
           </form>
         ) : (
           <div className="flex flex-col gap-4">
             <p className="text-muted-foreground">Na odoslanie žiadosti sa prihláste.</p>
-            <Button asChild variant="bank" size="xl"><Link to="/auth" search={{ mode: "login", redirect: "/kontakty" }}>Prihlásiť sa</Link></Button>
+            <Button asChild variant="bank" size="xl">
+              <Link to="/auth" search={{ mode: "login", redirect: "/kontakty" }}>
+                Prihlásiť sa
+              </Link>
+            </Button>
           </div>
         )}
       </BottomSheet>

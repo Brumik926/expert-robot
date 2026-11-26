@@ -46,7 +46,8 @@ function MaFin() {
   const merchants = useMemo(() => {
     const map = new Map<string, number>();
     for (const t of transactions) {
-      if (!countsForStats(t) || t.direction !== "out" || monthKeyOf(t.booked_at) !== month) continue;
+      if (!countsForStats(t) || t.direction !== "out" || monthKeyOf(t.booked_at) !== month)
+        continue;
       map.set(t.counterparty_name, (map.get(t.counterparty_name) ?? 0) + Number(t.amount));
     }
     return [...map.entries()].sort((a, b) => b[1] - a[1]).slice(0, 5);
@@ -56,11 +57,22 @@ function MaFin() {
     <div className="flex flex-col gap-3 animate-page-in">
       <PageHeader title="MaFin" back>
         <div className="mt-4 flex items-center justify-between">
-          <button type="button" aria-label="Predchádzajúci mesiac" onClick={() => setMonth(shiftMonth(month, -1))} className="p-2 text-primary">
+          <button
+            type="button"
+            aria-label="Predchádzajúci mesiac"
+            onClick={() => setMonth(shiftMonth(month, -1))}
+            className="p-2 text-primary"
+          >
             <ChevronLeft className="h-7 w-7" />
           </button>
           <span className="text-lg font-bold">{monthLabel(month)}</span>
-          <button type="button" aria-label="Nasledujúci mesiac" disabled={month >= thisMonth} onClick={() => setMonth(shiftMonth(month, 1))} className="p-2 text-primary disabled:opacity-30">
+          <button
+            type="button"
+            aria-label="Nasledujúci mesiac"
+            disabled={month >= thisMonth}
+            onClick={() => setMonth(shiftMonth(month, 1))}
+            className="p-2 text-primary disabled:opacity-30"
+          >
             <ChevronRight className="h-7 w-7" />
           </button>
         </div>
@@ -68,16 +80,29 @@ function MaFin() {
 
       <section className="bank-section text-center">
         <p className="text-muted-foreground">Rozdiel</p>
-        <Money value={Math.abs(summary.difference)} signed={summary.difference < 0 ? "out" : "in"} sensitive className="mt-1 block text-[2rem] font-bold" />
+        <Money
+          value={Math.abs(summary.difference)}
+          signed={summary.difference < 0 ? "out" : "in"}
+          sensitive
+          className="mt-1 block text-[2rem] font-bold"
+        />
         <div className="mt-5 grid grid-cols-[1fr_auto_1fr] items-center gap-4">
           <div className="text-right">
             <p className="text-muted-foreground">Výdavky</p>
-            <Money value={summary.expense} sensitive className="text-[1.5rem] font-bold text-negative" />
+            <Money
+              value={summary.expense}
+              sensitive
+              className="text-[1.5rem] font-bold text-negative"
+            />
           </div>
           <span className="h-12 w-px bg-border" />
           <div className="text-left">
             <p className="text-muted-foreground">Príjmy</p>
-            <Money value={summary.income} sensitive className="text-[1.5rem] font-bold text-positive" />
+            <Money
+              value={summary.income}
+              sensitive
+              className="text-[1.5rem] font-bold text-positive"
+            />
           </div>
         </div>
       </section>
@@ -95,8 +120,15 @@ function MaFin() {
               const Icon = cat.icon;
               return (
                 <li key={c.key}>
-                  <Link to="/pohyby" search={{ category: c.key, direction: "out" }} className="flex items-center gap-4 border-t border-border py-4">
-                    <span className="grid h-11 w-11 shrink-0 place-items-center rounded-full bg-card" style={{ color: cat.color }}>
+                  <Link
+                    to="/pohyby"
+                    search={{ category: c.key, direction: "out" }}
+                    className="flex items-center gap-4 border-t border-border py-4"
+                  >
+                    <span
+                      className="grid h-11 w-11 shrink-0 place-items-center rounded-full bg-card"
+                      style={{ color: cat.color }}
+                    >
                       <Icon className="h-5 w-5" strokeWidth={1.7} />
                     </span>
                     <span className="min-w-0 flex-1">
@@ -106,9 +138,14 @@ function MaFin() {
                       </span>
                       <span className="mt-2 flex items-center gap-3">
                         <span className="h-1.5 flex-1 overflow-hidden rounded-full bg-muted">
-                          <span className="block h-full rounded-full" style={{ width: `${c.share * 100}%`, background: cat.color }} />
+                          <span
+                            className="block h-full rounded-full"
+                            style={{ width: `${c.share * 100}%`, background: cat.color }}
+                          />
                         </span>
-                        <span className="w-10 text-right text-sm text-muted-foreground">{Math.round(c.share * 100)} %</span>
+                        <span className="w-10 text-right text-sm text-muted-foreground">
+                          {Math.round(c.share * 100)} %
+                        </span>
                       </span>
                     </span>
                   </Link>
@@ -123,10 +160,20 @@ function MaFin() {
         <div className="h-52" role="img" aria-label="Príjmy a výdavky za posledných 6 mesiacov">
           <ResponsiveContainer width="100%" height="100%">
             <BarChart data={trend} margin={{ top: 4, right: 0, bottom: 0, left: 0 }}>
-              <XAxis dataKey="month" tick={{ fill: "var(--muted-foreground)", fontSize: 12 }} axisLine={false} tickLine={false} />
+              <XAxis
+                dataKey="month"
+                tick={{ fill: "var(--muted-foreground)", fontSize: 12 }}
+                axisLine={false}
+                tickLine={false}
+              />
               <Tooltip
                 cursor={{ fill: "var(--muted)", opacity: 0.4 }}
-                contentStyle={{ background: "var(--popover)", border: "1px solid var(--border)", borderRadius: 10, color: "var(--popover-foreground)" }}
+                contentStyle={{
+                  background: "var(--popover)",
+                  border: "1px solid var(--border)",
+                  borderRadius: 10,
+                  color: "var(--popover-foreground)",
+                }}
                 formatter={(v: number) => formatMoney(v)}
               />
               <Bar dataKey="Príjmy" fill="var(--positive)" radius={[4, 4, 0, 0]} />
@@ -135,8 +182,12 @@ function MaFin() {
           </ResponsiveContainer>
         </div>
         <div className="mt-3 flex justify-center gap-6 text-sm text-muted-foreground">
-          <span className="flex items-center gap-2"><span className="h-3 w-3 rounded-sm bg-positive" /> Príjmy</span>
-          <span className="flex items-center gap-2"><span className="h-3 w-3 rounded-sm bg-negative" /> Výdavky</span>
+          <span className="flex items-center gap-2">
+            <span className="h-3 w-3 rounded-sm bg-positive" /> Príjmy
+          </span>
+          <span className="flex items-center gap-2">
+            <span className="h-3 w-3 rounded-sm bg-negative" /> Výdavky
+          </span>
         </div>
       </Section>
 
@@ -146,7 +197,10 @@ function MaFin() {
         ) : (
           <ol>
             {merchants.map(([name, amount], i) => (
-              <li key={name} className="flex items-center gap-4 border-t border-border py-4 first:border-t-0">
+              <li
+                key={name}
+                className="flex items-center gap-4 border-t border-border py-4 first:border-t-0"
+              >
                 <span className="w-6 text-muted-foreground">{i + 1}.</span>
                 <span className="min-w-0 flex-1 truncate">{name}</span>
                 <Money value={amount} sensitive className="font-semibold text-negative" />

@@ -47,7 +47,9 @@ export const CATEGORIES: Record<CategoryKey, { label: string; icon: LucideIcon; 
 };
 
 export function categoryOf(key: string): (typeof CATEGORIES)[CategoryKey] {
-  return CATEGORIES[(CATEGORY_KEYS as readonly string[]).includes(key) ? (key as CategoryKey) : "ine"];
+  return CATEGORIES[
+    (CATEGORY_KEYS as readonly string[]).includes(key) ? (key as CategoryKey) : "ine"
+  ];
 }
 
 export const TX_TYPE_LABELS: Record<string, { in: string; out: string }> = {

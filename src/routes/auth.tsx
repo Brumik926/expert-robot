@@ -18,8 +18,13 @@ type AuthSearch = { mode?: Mode; redirect?: string };
 export const Route = createFileRoute("/auth")({
   validateSearch: (s: Record<string, unknown>): AuthSearch => {
     const out: AuthSearch = {};
-    if (s["mode"] === "login" || s["mode"] === "register" || s["mode"] === "forgot") out.mode = s["mode"];
-    if (typeof s["redirect"] === "string" && s["redirect"].startsWith("/") && !s["redirect"].startsWith("//"))
+    if (s["mode"] === "login" || s["mode"] === "register" || s["mode"] === "forgot")
+      out.mode = s["mode"];
+    if (
+      typeof s["redirect"] === "string" &&
+      s["redirect"].startsWith("/") &&
+      !s["redirect"].startsWith("//")
+    )
       out.redirect = s["redirect"];
     return out;
   },
@@ -28,7 +33,10 @@ export const Route = createFileRoute("/auth")({
       { title: "Prihlásenie – Tatra banka" },
       { name: "description", content: "Prihláste sa alebo si vytvorte účet v Tatra banke." },
       { property: "og:title", content: "Prihlásenie – Tatra banka" },
-      { property: "og:description", content: "Prihlásenie a registrácia do internet bankingu Tatra banka." },
+      {
+        property: "og:description",
+        content: "Prihlásenie a registrácia do internet bankingu Tatra banka.",
+      },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
     ],
@@ -57,17 +65,24 @@ function AuthPage() {
 
   async function submit(e: React.FormEvent) {
     e.preventDefault();
+    if (busy) return;
     setErrors({});
     if (mode === "forgot") {
       const parsed = z.string().trim().email("Zadajte platný e-mail").safeParse(email);
       if (!parsed.success) return setErrors({ email: parsed.error.issues[0]?.message ?? "" });
       setBusy(true);
-      const { error } = await supabase.auth.resetPasswordForEmail(parsed.data, {
-        redirectTo: `${window.location.origin}/reset-password`,
-      });
-      setBusy(false);
-      if (error) return toast.error(bankErrorMessage(error));
-      return setSentTo({ email: parsed.data, kind: "reset" });
+      try {
+        const { error } = await supabase.auth.resetPasswordForEmail(parsed.data, {
+          redirectTo: `${window.location.origin}/reset-password`,
+        });
+        if (error) return toast.error(bankErrorMessage(error));
+        setSentTo({ email: parsed.data, kind: "reset" });
+      } catch (err) {
+        toast.error(bankErrorMessage(err));
+      } finally {
+        setBusy(false);
+      }
+      return;
     }
     const schema = mode === "register" ? registerSchema : loginSchema;
     const parsed = schema.safeParse({ email, password, fullName });
@@ -77,33 +92,44 @@ function AuthPage() {
       return setErrors(errs);
     }
     setBusy(true);
-    if (mode === "register") {
-      const { data, error } = await supabase.auth.signUp({
+    try {
+      if (mode === "register") {
+        const { data, error } = await supabase.auth.signUp({
+          email: parsed.data.email,
+          password: parsed.data.password,
+          options: {
+            emailRedirectTo: `${window.location.origin}/auth?mode=login`,
+            data: { full_name: fullName.trim() },
+          },
+        });
+        if (error) return toast.error(bankErrorMessage(error));
+        if (data.user && data.user.identities?.length === 0) {
+          return toast.error("Používateľ s týmto e-mailom už existuje.");
+        }
+        if (data.session) return navigate({ to: "/domov", replace: true });
+        setSentTo({ email: parsed.data.email, kind: "confirm" });
+        return;
+      }
+      const { error } = await supabase.auth.signInWithPassword({
         email: parsed.data.email,
         password: parsed.data.password,
-        options: {
-          emailRedirectTo: window.location.origin,
-          data: { full_name: fullName.trim() },
-        },
       });
-      setBusy(false);
       if (error) return toast.error(bankErrorMessage(error));
-      if (data.session) return navigate({ to: "/domov", replace: true });
-      return setSentTo({ email: parsed.data.email, kind: "confirm" });
+      navigate({ to: search.redirect ?? "/domov", replace: true });
+    } catch (err) {
+      toast.error(bankErrorMessage(err));
+    } finally {
+      setBusy(false);
     }
-    const { error } = await supabase.auth.signInWithPassword({
-      email: parsed.data.email,
-      password: parsed.data.password,
-    });
-    setBusy(false);
-    if (error) return toast.error(bankErrorMessage(error));
-    navigate({ to: search.redirect ?? "/domov", replace: true });
   }
 
   if (sentTo) {
     return (
       <main className="mx-auto flex min-h-dvh max-w-md flex-col bg-background">
-        <PageHeader title={sentTo.kind === "confirm" ? "Potvrďte e-mail" : "Obnova hesla"} back="/" />
+        <PageHeader
+          title={sentTo.kind === "confirm" ? "Potvrďte e-mail" : "Obnova hesla"}
+          back="/"
+        />
         <div className="flex flex-1 flex-col items-center px-6 pt-12 text-center animate-page-in">
           <span className="grid h-20 w-20 place-items-center rounded-full bg-accent text-primary animate-pop-in">
             <MailCheck className="h-10 w-10" strokeWidth={1.5} />
@@ -114,7 +140,9 @@ function AuthPage() {
               ? "Na adresu "
               : "Odkaz na nastavenie nového hesla sme poslali na "}
             <strong className="text-foreground">{sentTo.email}</strong>
-            {sentTo.kind === "confirm" ? " sme poslali odkaz na potvrdenie registrácie. Po potvrdení sa môžete prihlásiť." : "."}
+            {sentTo.kind === "confirm"
+              ? " sme poslali odkaz na potvrdenie registrácie. Po potvrdení sa môžete prihlásiť."
+              : "."}
           </p>
           <Button
             variant="bank"
@@ -134,7 +162,16 @@ function AuthPage() {
 
   return (
     <main className="mx-auto flex min-h-dvh max-w-md flex-col bg-background">
-      <PageHeader title={mode === "forgot" ? "Zabudnuté heslo" : mode === "register" ? "Registrácia" : "Prihlásenie"} back="/" />
+      <PageHeader
+        title={
+          mode === "forgot"
+            ? "Zabudnuté heslo"
+            : mode === "register"
+              ? "Registrácia"
+              : "Prihlásenie"
+        }
+        back="/"
+      />
       {mode !== "forgot" ? (
         <UnderlineTabs
           tabs={[
@@ -148,7 +185,11 @@ function AuthPage() {
           }}
         />
       ) : null}
-      <form onSubmit={submit} noValidate className="flex flex-1 flex-col gap-4 px-5 pt-8 pb-8 animate-page-in">
+      <form
+        onSubmit={submit}
+        noValidate
+        className="flex flex-1 flex-col gap-4 px-5 pt-8 pb-8 animate-page-in"
+      >
         <div className="mb-4 flex items-center gap-3 text-muted-foreground">
           <TatraMark className="h-8 w-8 text-foreground" />
           <p className="text-sm">
@@ -194,13 +235,23 @@ function AuthPage() {
           />
         ) : null}
         {mode === "login" ? (
-          <button type="button" onClick={() => setMode("forgot")} className="self-end text-[0.95rem] font-medium text-link">
+          <button
+            type="button"
+            onClick={() => setMode("forgot")}
+            className="self-end text-[0.95rem] font-medium text-link"
+          >
             Zabudli ste heslo?
           </button>
         ) : null}
         <div className="mt-auto flex flex-col gap-3 pt-8">
           <Button type="submit" variant="bank" size="xl" disabled={busy}>
-            {busy ? "Prosím čakajte…" : mode === "register" ? "Vytvoriť účet" : mode === "forgot" ? "Poslať odkaz" : "Prihlásiť sa"}
+            {busy
+              ? "Prosím čakajte…"
+              : mode === "register"
+                ? "Vytvoriť účet"
+                : mode === "forgot"
+                  ? "Poslať odkaz"
+                  : "Prihlásiť sa"}
           </Button>
           {mode === "forgot" ? (
             <Button type="button" variant="bankOutline" size="xl" onClick={() => setMode("login")}>
@@ -208,7 +259,9 @@ function AuthPage() {
             </Button>
           ) : null}
           <p className="text-center text-xs text-muted-foreground">
-          <Link to="/kontakty" className="text-link">Pomoc</Link>
+            <Link to="/kontakty" className="text-link">
+              Pomoc
+            </Link>
           </p>
         </div>
       </form>

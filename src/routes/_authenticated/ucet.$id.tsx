@@ -2,8 +2,24 @@ import { useMemo, useState } from "react";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { toast } from "sonner";
-import { Pencil, Share2, HandCoins, ArrowLeftRight, Send, CalendarClock, FileText, ChevronRight } from "lucide-react";
-import { accountsQuery, qk, recipientsQuery, standingOrdersQuery, transactionsQuery, useBankMutation } from "@/hooks/use-bank";
+import {
+  Pencil,
+  Share2,
+  HandCoins,
+  ArrowLeftRight,
+  Send,
+  CalendarClock,
+  FileText,
+  ChevronRight,
+} from "lucide-react";
+import {
+  accountsQuery,
+  qk,
+  recipientsQuery,
+  standingOrdersQuery,
+  transactionsQuery,
+  useBankMutation,
+} from "@/hooks/use-bank";
 import { PageHeader } from "@/components/bank/PageHeader";
 import { Section } from "@/components/bank/Section";
 import { Money } from "@/components/bank/Money";
@@ -106,13 +122,22 @@ function AccountDetail() {
       <section className="bank-section">
         <div className="bank-tile relative overflow-hidden px-6 py-7 text-center">
           <TatraMark className="pointer-events-none absolute -right-6 -bottom-8 h-44 w-44 text-foreground/5" />
-          <button type="button" aria-label="Premenovať účet" onClick={() => setRenameOpen(true)} className="absolute top-5 right-5 text-primary">
+          <button
+            type="button"
+            aria-label="Premenovať účet"
+            onClick={() => setRenameOpen(true)}
+            className="absolute top-5 right-5 text-primary"
+          >
             <Pencil className="h-6 w-6" strokeWidth={1.5} />
           </button>
           <h2 className="text-xl font-bold">{account.name}</h2>
           <Iban value={account.iban} className="mt-2 block text-[1.05rem] text-muted-foreground" />
           <p className="mt-4 text-sm text-muted-foreground">Aktuálny zostatok</p>
-          <Money value={account.balance} sensitive className="mt-1 block text-[2.4rem] font-medium" />
+          <Money
+            value={account.balance}
+            sensitive
+            className="mt-1 block text-[2.4rem] font-medium"
+          />
           <p className="mt-3 text-sm text-muted-foreground">
             Zostatok platný k {formatShortDate(now)} {formatTime(now)}
           </p>
@@ -134,13 +159,21 @@ function AccountDetail() {
           <button
             type="button"
             onClick={() =>
-              shareText("Môj IBAN", `${account.name}\nIBAN: ${formatIban(account.iban)}\nBIC: TATRAKBX`, "IBAN skopírovaný do schránky")
+              shareText(
+                "Môj IBAN",
+                `${account.name}\nIBAN: ${formatIban(account.iban)}\nBIC: TATRAKBX`,
+                "IBAN skopírovaný do schránky",
+              )
             }
             className="flex items-center justify-center gap-3 py-4 text-[1.05rem]"
           >
             <Share2 className="h-6 w-6 text-primary" strokeWidth={1.5} /> Zdieľať IBAN
           </button>
-          <button type="button" onClick={() => setRequestOpen(true)} className="flex items-center justify-center gap-3 py-4 text-[1.05rem]">
+          <button
+            type="button"
+            onClick={() => setRequestOpen(true)}
+            className="flex items-center justify-center gap-3 py-4 text-[1.05rem]"
+          >
             <HandCoins className="h-6 w-6 text-primary" strokeWidth={1.5} /> Vyžiadať platbu
           </button>
         </div>
@@ -148,11 +181,18 @@ function AccountDetail() {
 
       <Section title="Rýchla platba" action={<Link to="/prijemcovia">Zoznam príjemcov</Link>}>
         {favorites.length === 0 ? (
-          <p className="py-6 text-center text-muted-foreground">Nemáte žiadnych príjemcov pre rýchlu platbu.</p>
+          <p className="py-6 text-center text-muted-foreground">
+            Nemáte žiadnych príjemcov pre rýchlu platbu.
+          </p>
         ) : (
           <div className="no-scrollbar -mx-5 flex gap-5 overflow-x-auto px-5">
             {favorites.map((r) => (
-              <Link key={r.id} to="/platba" search={{ recipientId: r.id, accountId: account.id }} className="flex w-20 shrink-0 flex-col items-center gap-2 text-center">
+              <Link
+                key={r.id}
+                to="/platba"
+                search={{ recipientId: r.id, accountId: account.id }}
+                className="flex w-20 shrink-0 flex-col items-center gap-2 text-center"
+              >
                 <RecipientAvatar name={r.name} />
                 <span className="line-clamp-2 text-sm">{r.name}</span>
               </Link>
@@ -163,11 +203,19 @@ function AccountDetail() {
 
       <section className="bg-canvas px-5 py-6">
         <div className="grid grid-cols-4 gap-3">
-          <Link to="/pohyby" search={{ account: account.id }} className="flex flex-col items-center gap-2 text-center">
+          <Link
+            to="/pohyby"
+            search={{ account: account.id }}
+            className="flex flex-col items-center gap-2 text-center"
+          >
             <ActionTile icon={ArrowLeftRight} />
             <span className="text-sm">Pohyby</span>
           </Link>
-          <Link to="/platba" search={{ accountId: account.id }} className="flex flex-col items-center gap-2 text-center">
+          <Link
+            to="/platba"
+            search={{ accountId: account.id }}
+            className="flex flex-col items-center gap-2 text-center"
+          >
             <ActionTile icon={Send} />
             <span className="text-sm">Platba</span>
           </Link>
@@ -175,7 +223,11 @@ function AccountDetail() {
             <ActionTile icon={CalendarClock} />
             <span className="text-sm">Trvalé príkazy{ordersCount ? ` (${ordersCount})` : ""}</span>
           </Link>
-          <Link to="/prijemcovia" search={{ tab: "sablony" }} className="flex flex-col items-center gap-2 text-center">
+          <Link
+            to="/prijemcovia"
+            search={{ tab: "sablony" }}
+            className="flex flex-col items-center gap-2 text-center"
+          >
             <ActionTile icon={FileText} />
             <span className="text-sm">Šablóny</span>
           </Link>
@@ -184,18 +236,28 @@ function AccountDetail() {
 
       <Section
         title="Vývoj zostatkov"
-        action={<span className="text-sm text-muted-foreground">{history[0] ? formatShortDate(history[0].day) : ""} – {formatShortDate(now)}</span>}
+        action={
+          <span className="text-sm text-muted-foreground">
+            {history[0] ? formatShortDate(history[0].day) : ""} – {formatShortDate(now)}
+          </span>
+        }
       >
         <BalanceChart data={history} />
       </Section>
 
       <Section title="Viac informácií">
         <DetailRow label="Účtovný zostatok" value={<Money value={account.balance} sensitive />} />
-        <DetailRow label="Disponibilný zostatok" value={<Money value={Math.max(0, Number(account.balance) - held)} sensitive />} />
+        <DetailRow
+          label="Disponibilný zostatok"
+          value={<Money value={Math.max(0, Number(account.balance) - held)} sensitive />}
+        />
         <DetailRow label="Naplánované platby" value={<Money value={held} />} />
         <DetailRow label="Číslo účtu" value={<strong>{accountNumber}</strong>} />
         <DetailRow label="Mena" value={account.currency} />
-        <DetailRow label="Typ účtu" value={account.account_type === "savings" ? "Sporiaci účet" : "Bežný účet"} />
+        <DetailRow
+          label="Typ účtu"
+          value={account.account_type === "savings" ? "Sporiaci účet" : "Bežný účet"}
+        />
         <DetailRow label="SWIFT kód (BIC)" value="TATRAKBX" />
       </Section>
 
@@ -204,7 +266,8 @@ function AccountDetail() {
           onSubmit={(e) => {
             e.preventDefault();
             const n = name.trim();
-            if (n.length < 1 || n.length > 60) return void toast.error("Názov musí mať 1 až 60 znakov");
+            if (n.length < 1 || n.length > 60)
+              return void toast.error("Názov musí mať 1 až 60 znakov");
             rename.mutate(n, {
               onSuccess: () => {
                 toast.success("Účet premenovaný");
@@ -215,19 +278,31 @@ function AccountDetail() {
           }}
           className="flex flex-col gap-4"
         >
-          <TextField id="acc-name" label="Názov účtu" maxLength={60} value={name} onChange={(e) => setName(e.target.value)} />
+          <TextField
+            id="acc-name"
+            label="Názov účtu"
+            maxLength={60}
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+          />
           <Button type="submit" variant="bank" size="xl" disabled={rename.isPending}>
             Uložiť
           </Button>
         </form>
       </BottomSheet>
 
-      <BottomSheet open={requestOpen} onOpenChange={setRequestOpen} title="Vyžiadať platbu" description="Pošlite platobné údaje cez správu alebo e-mail.">
+      <BottomSheet
+        open={requestOpen}
+        onOpenChange={setRequestOpen}
+        title="Vyžiadať platbu"
+        description="Pošlite platobné údaje cez správu alebo e-mail."
+      >
         <form
           onSubmit={(e) => {
             e.preventDefault();
             const amount = reqAmount ? parseAmount(reqAmount) : null;
-            if (amount !== null && (!Number.isFinite(amount) || amount <= 0)) return void toast.error("Zadajte platnú sumu");
+            if (amount !== null && (!Number.isFinite(amount) || amount <= 0))
+              return void toast.error("Zadajte platnú sumu");
             const text = [
               "Prosím o platbu:",
               `Príjemca: ${account.name}`,
@@ -237,12 +312,27 @@ function AccountDetail() {
             ]
               .filter(Boolean)
               .join("\n");
-            void shareText("Žiadosť o platbu", text, "Žiadosť skopírovaná do schránky").then(() => setRequestOpen(false));
+            void shareText("Žiadosť o platbu", text, "Žiadosť skopírovaná do schránky").then(() =>
+              setRequestOpen(false),
+            );
           }}
           className="flex flex-col gap-4"
         >
-          <TextField id="req-amount" label="Suma (EUR)" inputMode="decimal" placeholder="0,00" value={reqAmount} onChange={(e) => setReqAmount(e.target.value)} />
-          <TextField id="req-msg" label="Správa pre platiteľa" maxLength={140} value={reqMessage} onChange={(e) => setReqMessage(e.target.value)} />
+          <TextField
+            id="req-amount"
+            label="Suma (EUR)"
+            inputMode="decimal"
+            placeholder="0,00"
+            value={reqAmount}
+            onChange={(e) => setReqAmount(e.target.value)}
+          />
+          <TextField
+            id="req-msg"
+            label="Správa pre platiteľa"
+            maxLength={140}
+            value={reqMessage}
+            onChange={(e) => setReqMessage(e.target.value)}
+          />
           <Button type="submit" variant="bank" size="xl">
             Zdieľať žiadosť
           </Button>

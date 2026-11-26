@@ -73,10 +73,16 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { name: "viewport", content: "width=device-width, initial-scale=1, viewport-fit=cover" },
       { name: "theme-color", content: "#1c1e24" },
       { title: "Tatra banka – mobilné bankovníctvo" },
-      { name: "description", content: "Moderné mobilné bankovníctvo: účty, karty, platby a prehľad výdavkov." },
+      {
+        name: "description",
+        content: "Moderné mobilné bankovníctvo: účty, karty, platby a prehľad výdavkov.",
+      },
       { name: "author", content: "Tatra banka" },
       { property: "og:title", content: "Tatra banka – mobilné bankovníctvo" },
-      { property: "og:description", content: "Moderné mobilné bankovníctvo: účty, karty, platby a prehľad výdavkov." },
+      {
+        property: "og:description",
+        content: "Moderné mobilné bankovníctvo: účty, karty, platby a prehľad výdavkov.",
+      },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
     ],
