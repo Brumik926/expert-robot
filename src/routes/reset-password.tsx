@@ -36,19 +36,20 @@ function ResetPassword() {
     // automatically; we only have to notice that a recovery session exists.
     const params = new URLSearchParams(window.location.search);
     const hasRecoveryToken = window.location.hash.includes("type=recovery") || params.has("code");
-    if (hasRecoveryToken) setRecovery(true);
 
     const { data } = supabase.auth.onAuthStateChange((event) => {
       if (event === "PASSWORD_RECOVERY") setRecovery(true);
     });
 
-    // The token exchange can finish before the event fires; a session that
-    // exists while a recovery token was present means the link was accepted.
+    // The client exchanges the token on its own. A session exists afterwards only
+    // if the link was valid; give the exchange a moment before calling it failed.
     if (hasRecoveryToken) {
-      supabase.auth.getSession().then(({ data: sessionData }) => {
+      const check = async () => {
+        const { data: sessionData } = await supabase.auth.getSession();
         if (sessionData.session) setRecovery(true);
         else setLinkError(true);
-      });
+      };
+      setTimeout(check, 1200);
     }
 
     return () => data.subscription.unsubscribe();
