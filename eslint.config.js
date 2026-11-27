@@ -16,6 +16,7 @@ export default tseslint.config(
       ".vercel",
       "node_modules",
       "tatra-clone",
+      ".harness",
     ],
   },
   {
