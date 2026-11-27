@@ -1,10 +1,11 @@
 -- ============================================================
--- Tatra banka – kompletná databázová schéma (jednorazové nasadenie)
+-- Tatra banka - kompletna databazova schema (jednorazove nasadenie)
 -- Projekt: uubqpswbscksczzefdye
 -- Spôsob: Supabase Dashboard -> SQL Editor -> New query -> Run
 --
--- Tento súbor spája migrácie 0000 + 0001 + 0002 z repozytára
--- a na konci dosadí demo dáta pre účet, ktorý už existuje.
+-- Zlucenie migracii 0000 + 0001 + 0002 z drizzle/migrations.
+-- Skript je idempotentny (create table/index if not exists,
+-- drop+create policy, drop+create trigger) - da sa spustit opakovane.
 -- ============================================================
 
 
@@ -62,7 +63,8 @@ drop policy if exists "Own profile read" on public.profiles;
 create policy "Own profile read" on public.profiles for select to authenticated using (id = (select auth.uid()));
 drop policy if exists "Own profile update" on public.profiles;
 create policy "Own profile update" on public.profiles for update to authenticated using (id = (select auth.uid())) with check (id = (select auth.uid()));
-create trigger if not exists profiles_updated before update on public.profiles for each row execute function public.set_updated_at();
+drop trigger if exists profiles_updated on public.profiles;
+create trigger profiles_updated before update on public.profiles for each row execute function public.set_updated_at();
 
 -- ============ user_settings ============
 create table if not exists public.user_settings (
@@ -88,7 +90,8 @@ drop policy if exists "Own settings read" on public.user_settings;
 create policy "Own settings read" on public.user_settings for select to authenticated using (user_id = (select auth.uid()));
 drop policy if exists "Own settings update" on public.user_settings;
 create policy "Own settings update" on public.user_settings for update to authenticated using (user_id = (select auth.uid())) with check (user_id = (select auth.uid()));
-create trigger if not exists user_settings_updated before update on public.user_settings for each row execute function public.set_updated_at();
+drop trigger if exists user_settings_updated on public.user_settings;
+create trigger user_settings_updated before update on public.user_settings for each row execute function public.set_updated_at();
 
 -- ============ accounts ============
 create table if not exists public.accounts (
@@ -172,7 +175,8 @@ drop policy if exists "Own limits read" on public.card_limits;
 create policy "Own limits read" on public.card_limits for select to authenticated using (user_id = (select auth.uid()));
 drop policy if exists "Own limits update" on public.card_limits;
 create policy "Own limits update" on public.card_limits for update to authenticated using (user_id = (select auth.uid())) with check (user_id = (select auth.uid()));
-create trigger if not exists card_limits_updated before update on public.card_limits for each row execute function public.set_updated_at();
+drop trigger if exists card_limits_updated on public.card_limits;
+create trigger card_limits_updated before update on public.card_limits for each row execute function public.set_updated_at();
 
 -- ============ standing_orders ============
 create table if not exists public.standing_orders (
@@ -325,8 +329,10 @@ create or replace function public.normalize_iban_trigger() returns trigger
 language plpgsql set search_path = public as $$
 begin new.iban := public.normalize_iban(new.iban); return new; end $$;
 
-create trigger if not exists recipients_norm before insert or update on public.recipients for each row execute function public.normalize_iban_trigger();
-create trigger if not exists templates_norm before insert or update on public.payment_templates for each row execute function public.normalize_iban_trigger();
+drop trigger if exists recipients_norm on public.recipients;
+create trigger recipients_norm before insert or update on public.recipients for each row execute function public.normalize_iban_trigger();
+drop trigger if exists templates_norm on public.payment_templates;
+create trigger templates_norm before insert or update on public.payment_templates for each row execute function public.normalize_iban_trigger();
 
 create or replace function public.validate_standing_order() returns trigger
 language plpgsql security definer set search_path = public as $$
@@ -346,7 +352,8 @@ begin
   end if;
   return new;
 end $$;
-create trigger if not exists standing_orders_validate before insert or update on public.standing_orders for each row execute function public.validate_standing_order();
+drop trigger if exists standing_orders_validate on public.standing_orders;
+create trigger standing_orders_validate before insert or update on public.standing_orders for each row execute function public.validate_standing_order();
 
 -- ============ Notifications helper ============
 create or replace function public._notify(p_user uuid, p_kind text, p_title text, p_body text, p_link text default null) returns void
@@ -380,7 +387,8 @@ begin
   end if;
   return new;
 end $$;
-create trigger if not exists cards_notify after update on public.cards for each row execute function public.cards_after_update();
+drop trigger if exists cards_notify on public.cards;
+create trigger cards_notify after update on public.cards for each row execute function public.cards_after_update();
 
 create or replace function public.card_limits_after_update() returns trigger
 language plpgsql security definer set search_path = public as $$
@@ -394,7 +402,8 @@ begin
   end if;
   return new;
 end $$;
-create trigger if not exists card_limits_notify after update on public.card_limits for each row execute function public.card_limits_after_update();
+drop trigger if exists card_limits_notify on public.card_limits;
+create trigger card_limits_notify after update on public.card_limits for each row execute function public.card_limits_after_update();
 
 -- ============ Settlement core ============
 create or replace function public._settle_outgoing(p_tx_id uuid) returns boolean
@@ -665,7 +674,8 @@ begin
   return new;
 end $$;
 
-create trigger if not exists on_auth_user_created after insert on auth.users
+drop trigger if exists on_auth_user_created on auth.users;
+create trigger on_auth_user_created after insert on auth.users
   for each row execute function public.handle_new_user();
 
 -- ============ Function privileges ============
@@ -727,21 +737,24 @@ begin
   end if;
   return new;
 end $$;
-create trigger if not exists support_requests_before before insert on public.support_requests for each row execute function public.support_requests_validate();
+drop trigger if exists support_requests_before on public.support_requests;
+create trigger support_requests_before before insert on public.support_requests for each row execute function public.support_requests_validate();
 revoke execute on function public.support_requests_validate() from public, anon, authenticated;
 
 -- ============ 0002 accounts rename policy ============
 grant update (name) on public.accounts to authenticated;
 drop policy if exists "Own accounts rename" on public.accounts;
 create policy "Own accounts rename" on public.accounts for update to authenticated using (user_id = (select auth.uid())) with check (user_id = (select auth.uid()));
--- ============ Dosadenie demo dát pre existujúce účty ============
--- Účty vytvorené pred nasadením schémy nemajú trigger, takže im dáta chýbajú.
+
+-- ============ Dosadenie demo dat pre existujuce ucty ============
+-- Ucty vytvorene pred nasadenim schemy nemajú trigger, takze im data chybaju.
 do $$
 declare
   u record;
 begin
-  for u in select id, email, coalesce(raw_user_meta_data ->> 'full_name', split_part(email, '@', 1)) as fname
-           from auth.users loop
+  for u in select id, email,
+                    coalesce(raw_user_meta_data ->> 'full_name', split_part(email, '@', 1)) as fname
+             from auth.users loop
     if not exists (select 1 from public.profiles where id = u.id) then
       perform public.seed_demo_data(u.id, u.fname, u.email);
     end if;
